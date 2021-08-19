@@ -8,7 +8,7 @@ import { Course } from 'src/modules/course/schema/course.schema';
 
 export type UserDocument = User & Document;
 
-enum UserType {
+export enum UserType {
   USER,
   INSTRUCTOR,
 }
