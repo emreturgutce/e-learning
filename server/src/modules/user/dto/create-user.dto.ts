@@ -6,12 +6,12 @@ export class CreateUserDto {
   @ApiProperty({ minLength: 0, maxLength: 128, required: false })
   @Length(0, 128)
   @IsOptional()
-  firstname: string;
+  firstname?: string;
 
   @ApiProperty({ minLength: 0, maxLength: 128, required: false })
   @Length(0, 128)
   @IsOptional()
-  lastname: string;
+  lastname?: string;
 
   @ApiProperty()
   @IsEmail()
@@ -24,5 +24,5 @@ export class CreateUserDto {
   @ApiProperty({ enum: UserType, required: false })
   @IsEnum(UserType)
   @IsOptional()
-  type: UserType;
+  type?: UserType;
 }
