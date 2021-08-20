@@ -40,7 +40,7 @@ export class Course {
   @Prop({
     type: Types.ObjectId,
     ref: USER_COLLECTION_NAME,
-    // required: true,
+    required: true,
   })
   instructor: User;
 

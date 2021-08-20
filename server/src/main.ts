@@ -4,6 +4,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { WinstonModule } from 'nest-winston';
 import { format, transports } from 'winston';
 import helmet from 'helmet';
+import csurf from 'csurf';
 import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/exceptions/http-exception.filter';
@@ -31,6 +32,7 @@ async function bootstrap() {
   app.use(helmet());
   app.use(session(redisService.instance));
   app.use(cookieParser(SESSION_SECRET));
+  app.use(csurf());
 
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(new ValidationPipe());

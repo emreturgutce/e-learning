@@ -5,18 +5,23 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UseGuards,
   Session,
+  Req,
+  Res,
+  Logger,
 } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { Session as SessionDoc } from 'express-session';
-import { AuthGuard } from 'src/common/guard/auth.guard';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login-user.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly logger: Logger,
+  ) {}
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
@@ -32,6 +37,8 @@ export class AuthController {
       type: user.type,
     };
 
+    this.logger.log(`User logged in [${user._id}]`);
+
     return {
       message: 'Logged in',
       data: { user },
@@ -43,18 +50,27 @@ export class AuthController {
   public async createUser(@Body() createUserDto: CreateUserDto) {
     const user = await this.authService.createUser(createUserDto);
 
+    this.logger.log(`User created [${user._id}]`);
+
     return {
       message: 'User created',
       data: { user },
     };
   }
 
-  @Get('posts')
-  @UseGuards(AuthGuard)
-  public getPosts() {
+  @Get('csrf')
+  @HttpCode(HttpStatus.OK)
+  public getCsrfToken(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    res.cookie('csrf', req.csrfToken());
+
+    this.logger.log('Csrf token created');
+
     return {
-      message: 'Posts fetched',
-      data: { posts: [] },
+      message: 'Csrf token set to cookie',
+      data: {},
     };
   }
 }
