@@ -8,9 +8,11 @@ import csurf from 'csurf';
 import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/exceptions/http-exception.filter';
-import { GLOBAL_PREFIX, PORT, SESSION_SECRET } from './config';
+import { PORT, SESSION_SECRET } from './config';
 import { session } from './common/middleware/session.middleware';
 import { RedisService } from './providers/redis/redis.service';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { API_VERSION, GLOBAL_PREFIX } from './config/contants';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -26,13 +28,26 @@ async function bootstrap() {
 
   const redisService = app.get(RedisService);
 
+  // Config
   app.disable('x-powered-by');
   app.setGlobalPrefix(GLOBAL_PREFIX);
 
+  // Swagger Setup
+  const config = new DocumentBuilder()
+    .setTitle('E-Learning')
+    .setDescription('E-learning rest api documentation.')
+    .setVersion(API_VERSION)
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+
+  SwaggerModule.setup(`${GLOBAL_PREFIX}/docs`, app, document);
+
+  // Middlewares
   app.use(helmet());
   app.use(session(redisService.instance));
   app.use(cookieParser(SESSION_SECRET));
-  app.use(csurf());
+  // app.use(csurf());
 
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(new ValidationPipe());

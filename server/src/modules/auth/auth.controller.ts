@@ -10,6 +10,7 @@ import {
   Res,
   Logger,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { Session as SessionDoc } from 'express-session';
 import { CreateUserDto } from '../user/dto/create-user.dto';
@@ -17,6 +18,7 @@ import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login-user.dto';
 
 @Controller('auth')
+@ApiTags('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,

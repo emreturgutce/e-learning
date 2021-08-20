@@ -5,7 +5,6 @@ config({ path: `.env.${process.env.NODE_ENV}` });
 export const {
   PORT,
   NODE_ENV,
-  GLOBAL_PREFIX,
   MONGO_URI,
   SESSION_SECRET,
   REDIS_HOST,

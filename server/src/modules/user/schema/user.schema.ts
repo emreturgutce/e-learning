@@ -14,7 +14,14 @@ export enum UserType {
   INSTRUCTOR,
 }
 
-@Schema({ collection: USER_COLLECTION_NAME })
+@Schema({
+  collection: USER_COLLECTION_NAME,
+  toJSON: {
+    transform: (doc, ret) => {
+      delete ret.password;
+    },
+  },
+})
 export class User {
   @Prop({
     type: String,
