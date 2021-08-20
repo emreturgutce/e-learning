@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { hash } from 'bcryptjs';
+import { Document, HookNextFunction, Types } from 'mongoose';
 import {
   COURSE_COLLECTION_NAME,
   USER_COLLECTION_NAME,
@@ -88,3 +89,12 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.pre('save', async function (next: HookNextFunction) {
+  if (this.isModified('password')) {
+    const hashedPassword = await hash(this.get('password'), 10);
+    this.set('password', hashedPassword);
+  }
+
+  return next();
+});
