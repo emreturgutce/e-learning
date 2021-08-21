@@ -22,7 +22,10 @@ export class AuthService {
       );
     }
 
-    const isMatch = await this.comparePasswords(password, user.password);
+    const isMatch = await this.userService.comparePasswords(
+      password,
+      user.password,
+    );
 
     if (!isMatch) {
       throw new UnauthorizedException(`Wrong password for user [${user._id}]`);
@@ -41,19 +44,15 @@ export class AuthService {
       return false;
     }
 
-    const isMatch = await this.comparePasswords(password, user.password);
+    const isMatch = await this.userService.comparePasswords(
+      password,
+      user.password,
+    );
 
     if (!isMatch) {
       return false;
     }
 
     return true;
-  }
-
-  private comparePasswords(
-    password: string,
-    hashedPassword: string,
-  ): Promise<boolean> {
-    return compare(password, hashedPassword);
   }
 }

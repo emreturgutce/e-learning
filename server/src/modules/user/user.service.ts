@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { compare } from 'bcryptjs';
 import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User, UserDocument } from './schema/user.schema';
@@ -31,5 +32,12 @@ export class UserService {
 
   public findUserById(id: string): Promise<UserDocument> {
     return this.userModel.findById(id).exec();
+  }
+
+  public comparePasswords(
+    password: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    return compare(password, hashedPassword);
   }
 }
