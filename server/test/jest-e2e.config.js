@@ -2,22 +2,17 @@
 const { resolve } = require('path');
 
 module.exports = {
-  globals: {
-    'ts-jest': {
-      tsconfig: 'tsconfig.test.json',
-    },
-  },
   moduleFileExtensions: ['js', 'json', 'ts'],
   moduleNameMapper: {
-    '^src/(.*)$': resolve(__dirname, './src/$1'),
+    '^src/(.*)$': resolve(__dirname, '..', './src/$1'),
   },
-  rootDir: 'src',
-  testRegex: '.*\\.spec\\.ts$',
+  testRegex: '.e2e-spec.ts$',
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
-  setupFiles: [resolve(__dirname, './test/setup.ts')],
-  collectCoverageFrom: ['**/*.(t|j)s'],
+  collectCoverageFrom: ['../**/*.(t|j)s'],
+  setupFiles: [resolve(__dirname, './setup.ts')],
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
+  verbose: true,
 };

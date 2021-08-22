@@ -8,7 +8,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 export class AuthService {
   constructor(private readonly userService: UserService) {}
 
-  public createUser(createUserDto: CreateUserDto): Promise<UserDocument> {
+  public async createUser(createUserDto: CreateUserDto): Promise<UserDocument> {
     return this.userService.createUser(createUserDto);
   }
 

@@ -14,7 +14,6 @@ import { RedisModule } from './providers/redis/redis.module';
     AuthModule,
     RedisModule,
   ],
-  controllers: [],
   providers: [Logger],
 })
 export class AppModule {}
