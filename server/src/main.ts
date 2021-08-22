@@ -8,7 +8,7 @@ import csurf from 'csurf';
 import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/exceptions/http-exception.filter';
-import { PORT, SESSION_SECRET } from './config';
+import { FRONTEND_URL, PORT, SESSION_SECRET } from './config';
 import { session } from './common/middleware/session.middleware';
 import { RedisService } from './providers/redis/redis.service';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -32,7 +32,7 @@ async function bootstrap() {
   app.disable('x-powered-by');
   app.setGlobalPrefix(GLOBAL_PREFIX);
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: FRONTEND_URL || 'http://localhost:3000',
     credentials: true,
   });
 

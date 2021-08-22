@@ -20,6 +20,7 @@ declare global {
       REDIS_HOST: string;
       REDIS_PASSWORD: string;
       REDIS_PORT: string;
+      FRONTEND_URL: string;
     }
   }
 }
