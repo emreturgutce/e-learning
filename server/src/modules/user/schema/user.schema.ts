@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { hash } from 'bcryptjs';
+import { hash, compare } from 'bcryptjs';
 import { Document, HookNextFunction, Types } from 'mongoose';
 import {
   COURSE_COLLECTION_NAME,

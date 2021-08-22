@@ -55,7 +55,7 @@ describe('AuthService', () => {
       expect(res.type).toEqual(createUserDto.type);
     });
 
-    it('Should throw bad request error when trying to create user with existing email', async () => {
+    it('Should throw bad request error when tried to create user with existing email', async () => {
       const createUserDto: CreateUserDto = {
         firstname: 'Emre',
         lastname: 'Turgut',
@@ -90,7 +90,7 @@ describe('AuthService', () => {
       expect(res.email).toEqual(loginUserDto.email);
     });
 
-    it('Should throw unauthorized error when getUserByEmail method returns null', async () => {
+    it('Should throw unauthorized error when getUserByEmail method returned null', async () => {
       const loginUserDto: LoginUserDto = {
         email: 'emre@mail.com',
         password: '123456',
@@ -104,7 +104,7 @@ describe('AuthService', () => {
       );
     });
 
-    it('Should throw unauthorized error when comparePasswords method returns false', async () => {
+    it('Should throw unauthorized error when comparePasswords method returned false', async () => {
       const loginUserDto: LoginUserDto = {
         email: 'emre@mail.com',
         password: '123456',
@@ -135,7 +135,7 @@ describe('AuthService', () => {
       expect(res).toEqual(true);
     });
 
-    it('Should return false when getUserByEmail method returns null', async () => {
+    it('Should return false when getUserByEmail method returned null', async () => {
       const loginUserDto: LoginUserDto = {
         email: 'emre@mail.com',
         password: '123456',
@@ -150,7 +150,7 @@ describe('AuthService', () => {
       expect(res).toEqual(false);
     });
 
-    it('Should return false when comparePasswords method returns false', async () => {
+    it('Should return false when comparePasswords method returned false', async () => {
       const loginUserDto: LoginUserDto = {
         email: 'emre@mail.com',
         password: '123456',

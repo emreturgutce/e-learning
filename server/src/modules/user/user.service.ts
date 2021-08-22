@@ -9,29 +9,33 @@ import { User, UserDocument } from './schema/user.schema';
 export class UserService {
   constructor(
     @InjectModel(User.name)
-    private readonly userModel: Model<UserDocument>,
+    private readonly UserModel: Model<UserDocument>,
   ) {}
 
   public async createUser(createUserDto: CreateUserDto): Promise<UserDocument> {
-    try {
-      const user = new this.userModel(createUserDto);
+    const isExist = await this.getUserByEmail(createUserDto.email);
 
-      return await user.save();
-    } catch (err) {
-      throw new BadRequestException(err.message);
+    if (isExist) {
+      throw new BadRequestException(
+        `User with the given email already exists [${createUserDto.email}]`,
+      );
     }
+
+    const user = await this.UserModel.create(createUserDto);
+
+    return user;
   }
 
   public getUsers(): Promise<UserDocument[]> {
-    return this.userModel.find().exec();
+    return this.UserModel.find().exec();
   }
 
   public getUserByEmail(email: string): Promise<UserDocument> {
-    return this.userModel.findOne({ email }).exec();
+    return this.UserModel.findOne({ email }).exec();
   }
 
   public findUserById(id: string): Promise<UserDocument> {
-    return this.userModel.findById(id).exec();
+    return this.UserModel.findById(id).exec();
   }
 
   public comparePasswords(

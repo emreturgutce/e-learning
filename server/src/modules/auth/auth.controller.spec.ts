@@ -68,7 +68,7 @@ describe('AuthController', () => {
       expect(res.data.user).toEqual(createUserDto);
     });
 
-    it('should throw bad request error when createUser throws bad request error', async () => {
+    it('should throw bad request error when createUser throwed bad request error', async () => {
       const createUserDto: CreateUserDto = {
         firstname: 'Emre',
         lastname: 'Turgut',
@@ -105,7 +105,7 @@ describe('AuthController', () => {
       expect(res.data.user.email).toEqual(loginUserDto.email);
     });
 
-    it('should throw unauthorized error when authService.login method throws unauthorized error', async () => {
+    it('should throw unauthorized error when authService.login method throwed unauthorized error', async () => {
       const loginUserDto: LoginUserDto = {
         email: 'test@test.com',
         password: '123456',

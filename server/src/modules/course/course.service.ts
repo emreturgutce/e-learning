@@ -7,11 +7,11 @@ import { Course, CourseDocument } from './schema/course.schema';
 export class CourseService {
   constructor(
     @InjectModel(Course.name)
-    private readonly courseModel: Model<CourseDocument>,
+    private readonly CourseModel: Model<CourseDocument>,
   ) {}
 
   public createCourse() {
-    const course = new this.courseModel({
+    const course = new this.CourseModel({
       title: 'Course 1',
       description: 'Description',
       price: 100,
@@ -23,6 +23,6 @@ export class CourseService {
   }
 
   public getCourses() {
-    return this.courseModel.find().exec();
+    return this.CourseModel.find().exec();
   }
 }
