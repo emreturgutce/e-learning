@@ -31,6 +31,10 @@ async function bootstrap() {
   // Config
   app.disable('x-powered-by');
   app.setGlobalPrefix(GLOBAL_PREFIX);
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  });
 
   // Swagger Setup
   const config = new DocumentBuilder()

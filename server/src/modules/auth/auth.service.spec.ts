@@ -44,7 +44,7 @@ describe('AuthService', () => {
         type: UserType.USER,
       };
 
-      createUser.mockReturnValueOnce(Promise.resolve(createUserDto));
+      createUser.mockResolvedValueOnce(createUserDto);
 
       const res = await authService.createUser(createUserDto);
 
@@ -64,10 +64,8 @@ describe('AuthService', () => {
         type: UserType.USER,
       };
 
-      createUser.mockImplementationOnce(() =>
-        Promise.reject(
-          new BadRequestException('User with the given email already exists'),
-        ),
+      createUser.mockRejectedValueOnce(
+        new BadRequestException('User with the given email already exists'),
       );
 
       await expect(authService.createUser(createUserDto)).rejects.toThrow(
@@ -83,8 +81,8 @@ describe('AuthService', () => {
         password: '123456',
       };
 
-      getUserByEmail.mockReturnValueOnce(Promise.resolve(loginUserDto));
-      comparePasswords.mockReturnValueOnce(Promise.resolve(true));
+      getUserByEmail.mockResolvedValueOnce(loginUserDto);
+      comparePasswords.mockResolvedValueOnce(true);
 
       const res = await authService.login(loginUserDto);
 
@@ -98,8 +96,8 @@ describe('AuthService', () => {
         password: '123456',
       };
 
-      getUserByEmail.mockReturnValueOnce(Promise.resolve(null));
-      comparePasswords.mockReturnValueOnce(Promise.resolve(true));
+      getUserByEmail.mockResolvedValueOnce(null);
+      comparePasswords.mockResolvedValueOnce(true);
 
       await expect(authService.login(loginUserDto)).rejects.toThrow(
         UnauthorizedException,
@@ -112,8 +110,8 @@ describe('AuthService', () => {
         password: '123456',
       };
 
-      getUserByEmail.mockReturnValueOnce(Promise.resolve(loginUserDto));
-      comparePasswords.mockReturnValueOnce(Promise.resolve(false));
+      getUserByEmail.mockResolvedValueOnce(loginUserDto);
+      comparePasswords.mockResolvedValueOnce(false);
 
       await expect(authService.login(loginUserDto)).rejects.toThrow(
         UnauthorizedException,
@@ -128,8 +126,8 @@ describe('AuthService', () => {
         password: '123456',
       };
 
-      getUserByEmail.mockReturnValueOnce(Promise.resolve(loginUserDto));
-      comparePasswords.mockReturnValueOnce(Promise.resolve(true));
+      getUserByEmail.mockResolvedValueOnce(loginUserDto);
+      comparePasswords.mockResolvedValueOnce(true);
 
       const res = await authService.validateUser(loginUserDto);
 
@@ -143,8 +141,8 @@ describe('AuthService', () => {
         password: '123456',
       };
 
-      getUserByEmail.mockReturnValueOnce(Promise.resolve(null));
-      comparePasswords.mockReturnValueOnce(Promise.resolve(true));
+      getUserByEmail.mockResolvedValueOnce(null);
+      comparePasswords.mockResolvedValueOnce(true);
 
       const res = await authService.validateUser(loginUserDto);
 
@@ -158,8 +156,8 @@ describe('AuthService', () => {
         password: '123456',
       };
 
-      getUserByEmail.mockReturnValueOnce(Promise.resolve(loginUserDto));
-      comparePasswords.mockReturnValueOnce(Promise.resolve(false));
+      getUserByEmail.mockResolvedValueOnce(loginUserDto);
+      comparePasswords.mockResolvedValueOnce(false);
 
       const res = await authService.validateUser(loginUserDto);
 

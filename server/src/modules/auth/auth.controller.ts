@@ -66,13 +66,17 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    res.cookie('csrf', req.csrfToken());
+    const csrfToken = req.csrfToken();
+
+    res.cookie('csrf', csrfToken);
 
     this.logger.log('Csrf token created');
 
     return {
       message: 'Csrf token set to cookie',
-      data: {},
+      data: {
+        csrf: csrfToken,
+      },
     };
   }
 }
