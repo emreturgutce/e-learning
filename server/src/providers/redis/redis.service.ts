@@ -13,12 +13,16 @@ export class RedisService {
       port: Number(REDIS_PORT),
     });
 
-    this.redis.on('error', (err) => {
-      this.logger.error(`Error occurred connecting redis [${err}]`);
+    this.redis.on('error', (err: Error) => {
+      this.logger.error(
+        `Error occurred connecting redis [${err}]`,
+        err.stack,
+        RedisService.name,
+      );
     });
 
     this.redis.once('connect', () => {
-      this.logger.log('Connected to redis');
+      this.logger.log('Connected to redis', RedisService.name);
     });
   }
 

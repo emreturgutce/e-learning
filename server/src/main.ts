@@ -1,8 +1,6 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { WinstonModule } from 'nest-winston';
-import { format, transports } from 'winston';
 import helmet from 'helmet';
 import csurf from 'csurf';
 import cookieParser from 'cookie-parser';
@@ -13,17 +11,12 @@ import { session } from './common/middleware/session.middleware';
 import { RedisService } from './providers/redis/redis.service';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { API_VERSION, GLOBAL_PREFIX } from './config/contants';
+import logger from './config/logger';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    logger: WinstonModule.createLogger({
-      format: format.combine(format.timestamp(), format.ms()),
-      transports: [
-        new transports.Console({
-          format: format.combine(format.colorize(), format.simple()),
-        }),
-      ],
-    }),
+    logger,
   });
 
   const redisService = app.get(RedisService);
@@ -53,8 +46,15 @@ async function bootstrap() {
   app.use(cookieParser(SESSION_SECRET));
   // app.use(csurf());
 
+  app.useGlobalInterceptors(new LoggingInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      exceptionFactory: () => {
+        return new BadRequestException('Validation error');
+      },
+    }),
+  );
 
   await app.listen(PORT);
 }

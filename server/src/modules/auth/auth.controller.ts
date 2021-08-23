@@ -39,7 +39,7 @@ export class AuthController {
       type: user.type,
     };
 
-    this.logger.log(`User logged in [${user._id}]`);
+    this.logger.log(`User logged in [${user._id}]`, AuthController.name);
 
     return {
       message: 'Logged in',
@@ -52,7 +52,7 @@ export class AuthController {
   public async createUser(@Body() createUserDto: CreateUserDto) {
     const user = await this.authService.createUser(createUserDto);
 
-    this.logger.log(`User created [${user._id}]`);
+    this.logger.log(`User created [${user._id}]`, AuthController.name);
 
     return {
       message: 'User created',
@@ -70,7 +70,7 @@ export class AuthController {
 
     res.cookie('csrf', csrfToken);
 
-    this.logger.log('Csrf token created');
+    this.logger.log('Csrf token created', AuthController.name);
 
     return {
       message: 'Csrf token set to cookie',
