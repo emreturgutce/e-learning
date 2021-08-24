@@ -27,7 +27,7 @@ export class Course {
     type: String,
     trim: true,
   })
-  description: number;
+  description: string;
 
   @Prop({
     type: Number,
@@ -76,6 +76,11 @@ export class Course {
     type: String,
   })
   preview: string;
+
+  @Prop({
+    type: String,
+  })
+  thumbnail: string;
 
   @Prop({
     type: Types.ObjectId,

@@ -24,6 +24,7 @@
   "dependencies": {
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
+    "@nestjs/mapped-types": "^1.0.0",
     "@nestjs/mongoose": "^8.0.1",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/swagger": "^5.0.9",
@@ -39,6 +40,7 @@
     "helmet": "^4.6.0",
     "ioredis": "^4.27.8",
     "mongoose": "^5.13.7",
+    "nanoid": "^3.1.25",
     "nest-winston": "^1.5.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
