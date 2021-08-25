@@ -35,9 +35,7 @@ export class S3Service {
   }
 
   public generateFileUrl(filePath: string): string {
-    const imageUrl = `https://${AWS_S3_BUCKET}.s3-${AWS_S3_REGION}.amazonaws.com/${filePath}`;
-
-    return imageUrl;
+    return `https://${AWS_S3_BUCKET}.s3-${AWS_S3_REGION}.amazonaws.com/${filePath}`;
   }
 
   private convertImageTypeToWebp(buffer: Buffer): Promise<Buffer> {

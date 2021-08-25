@@ -2,6 +2,11 @@
 const { resolve } = require('path');
 
 module.exports = {
+  globals: {
+    'ts-jest': {
+      tsconfig: resolve(__dirname, '..', 'tsconfig.test.json'),
+    },
+  },
   moduleFileExtensions: ['js', 'json', 'ts'],
   moduleNameMapper: {
     '^src/(.*)$': resolve(__dirname, '..', './src/$1'),

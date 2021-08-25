@@ -62,7 +62,7 @@ describe('AuthController', () => {
 
       const res = await controller.createUser(createUserDto);
 
-      baseSuccessfulResponseAssertion(res);
+      successCaseBaseAssertion(res);
       expect(res.data).toHaveProperty('user');
       expect(res.message).toEqual('User created');
       expect(res.data.user).toEqual(createUserDto);
@@ -99,7 +99,7 @@ describe('AuthController', () => {
 
       const res = await controller.login(loginUserDto, session as Session);
 
-      baseSuccessfulResponseAssertion(res);
+      successCaseBaseAssertion(res);
       expect(res.data).toHaveProperty('user');
       expect(res.message).toEqual('Logged in');
       expect(res.data.user.email).toEqual(loginUserDto.email);
@@ -141,7 +141,7 @@ describe('AuthController', () => {
         res as unknown as Response,
       );
 
-      baseSuccessfulResponseAssertion(response);
+      successCaseBaseAssertion(response);
       expect(response.data).toHaveProperty('csrf');
       expect(response.message).toEqual('Csrf token set to cookie');
       expect(response.data.csrf).toEqual(csrfToken);
