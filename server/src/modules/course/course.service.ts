@@ -64,4 +64,14 @@ export class CourseService {
       { new: true },
     ).exec();
   }
+
+  public async isOwnerOfCourse(id: string, courseId: string): Promise<boolean> {
+    const course = await this.findCourseById(courseId);
+
+    if (!course) {
+      return false;
+    }
+
+    return course.instructor === id;
+  }
 }

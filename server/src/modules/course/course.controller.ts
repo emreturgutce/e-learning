@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Session,
+  UnauthorizedException,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -15,13 +16,15 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
 import { Session as SessionDoc } from 'express-session';
+import { Roles } from 'src/common/decorators/roles.decorator';
 import { AuthGuard } from 'src/common/guard/auth.guard';
+import { RoleGuard } from 'src/common/guard/role.guard';
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 
 @Controller('courses')
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RoleGuard)
 @ApiTags('courses')
 export class CourseController {
   constructor(
@@ -30,12 +33,19 @@ export class CourseController {
   ) {}
 
   @Get()
-  getCourses() {
-    return this.courseService.getCourses();
+  public async getCourses() {
+    const courses = await this.courseService.getCourses();
+
+    this.logger.log('Courses fetched', CourseController.name);
+
+    return {
+      message: 'Courses fetched',
+      data: { courses },
+    };
   }
 
-  // TODO! Only instructors
   @Post()
+  @Roles('INSTRUCTOR')
   public async createCourse(
     @Body() createCourseDto: CreateCourseDto,
     @Session() session: SessionDoc,
@@ -45,7 +55,10 @@ export class CourseController {
       instructor: session.context.id,
     });
 
-    this.logger.log(`Course created [${course._id}]`);
+    this.logger.log(
+      `Course created [courseId: ${course._id}]`,
+      CourseController.name,
+    );
 
     return {
       message: 'Course created',
@@ -53,15 +66,28 @@ export class CourseController {
     };
   }
 
-  // TODO! Only owner
   @Put(':id')
+  @Roles('INSTRUCTOR')
   public async updateCourse(
     @Body() updateCourseDto: UpdateCourseDto,
     @Param('id') id: string,
+    @Session() session: SessionDoc,
   ) {
+    const isOwner = await this.courseService.isOwnerOfCourse(
+      session.context.id,
+      id,
+    );
+
+    if (!isOwner) {
+      throw new UnauthorizedException('Not owner of the course');
+    }
+
     const course = await this.courseService.updateCourse(id, updateCourseDto);
 
-    this.logger.log(`Course updated [${course._id}]`);
+    this.logger.log(
+      `Course updated [courseId: ${course._id}]`,
+      CourseController.name,
+    );
 
     return {
       message: 'Course updated',
@@ -69,7 +95,9 @@ export class CourseController {
     };
   }
 
+  // TODO! Will be removed, increment this after course purchase instead
   @Put(':id/increment/:inc')
+  @Roles('INSTRUCTOR')
   public async incrementTotalStudents(
     @Param('id') id: string,
     @Param('inc') inc: string,
@@ -79,7 +107,10 @@ export class CourseController {
       Number(inc),
     );
 
-    this.logger.log(`Course updated [${course._id}]`);
+    this.logger.log(
+      `Course updated [courseId: ${course._id}]`,
+      CourseController.name,
+    );
 
     return {
       message: 'Course updated',
@@ -88,6 +119,7 @@ export class CourseController {
   }
 
   @Post(':id/thumbnail')
+  @Roles('INSTRUCTOR')
   @UseInterceptors(
     FileInterceptor('file', {
       fileFilter: (_, { mimetype }, cb) => {
@@ -102,13 +134,26 @@ export class CourseController {
   public async uploadThumbnail(
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
+    @Session() session: SessionDoc,
   ) {
+    const isOwner = await this.courseService.isOwnerOfCourse(
+      session.context.id,
+      id,
+    );
+
+    if (!isOwner) {
+      throw new UnauthorizedException('Not owner of the course');
+    }
+
     const course = await this.courseService.uploadCourseThumbnail(
       id,
       file.buffer,
     );
 
-    this.logger.log(`Course thumbnail uploaded [${id}]`);
+    this.logger.log(
+      `Course thumbnail uploaded [courseId: ${id}]`,
+      CourseController.name,
+    );
 
     return {
       message: 'Course thumbnail uploaded',

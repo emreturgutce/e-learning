@@ -1,11 +1,9 @@
-import { UserType } from 'src/modules/user/schema/user.schema';
-
 declare module 'express-session' {
   export interface Session {
     context: {
       id: string;
       email: string;
-      type: UserType;
+      type: string;
     };
   }
 }

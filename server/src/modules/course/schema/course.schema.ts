@@ -42,7 +42,7 @@ export class Course {
     ref: USER_COLLECTION_NAME,
     required: true,
   })
-  instructor: User;
+  instructor: User | string;
 
   @Prop({
     type: [

@@ -9,6 +9,7 @@ import { Course } from 'src/modules/course/schema/course.schema';
 
 export type UserDocument = User & Document;
 
+export type UserRole = 'USER' | 'INSTRUCTOR';
 export enum UserType {
   USER,
   INSTRUCTOR,
@@ -92,7 +93,7 @@ export class User {
     default: 'USER',
     required: true,
   })
-  type: UserType;
+  type: UserRole;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
