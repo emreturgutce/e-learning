@@ -2,13 +2,13 @@ import {
   BadRequestException,
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Logger,
   Param,
   Post,
   Put,
   Session,
-  UnauthorizedException,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -79,7 +79,7 @@ export class CourseController {
     );
 
     if (!isOwner) {
-      throw new UnauthorizedException('Not owner of the course');
+      throw new ForbiddenException('Not owner of the course');
     }
 
     const course = await this.courseService.updateCourse(id, updateCourseDto);
@@ -142,7 +142,7 @@ export class CourseController {
     );
 
     if (!isOwner) {
-      throw new UnauthorizedException('Not owner of the course');
+      throw new ForbiddenException('Not owner of the course');
     }
 
     const course = await this.courseService.uploadCourseThumbnail(

@@ -39,7 +39,10 @@ export class AuthController {
       type: user.type,
     };
 
-    this.logger.log(`User logged in [${user._id}]`, AuthController.name);
+    this.logger.log(
+      `User logged in [userId: ${user._id}]`,
+      AuthController.name,
+    );
 
     return {
       message: 'Logged in',
@@ -52,7 +55,7 @@ export class AuthController {
   public async createUser(@Body() createUserDto: CreateUserDto) {
     const user = await this.authService.createUser(createUserDto);
 
-    this.logger.log(`User created [${user._id}]`, AuthController.name);
+    this.logger.log(`User created [userId: ${user._id}]`, AuthController.name);
 
     return {
       message: 'User created',

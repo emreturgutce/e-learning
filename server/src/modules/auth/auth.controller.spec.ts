@@ -16,13 +16,11 @@ describe('AuthController', () => {
   let controller: AuthController;
   let createUser: jest.Mock;
   let login: jest.Mock;
-  let validateUser: jest.Mock;
   let log: jest.Mock;
 
   beforeEach(async () => {
     createUser = jest.fn();
     login = jest.fn();
-    validateUser = jest.fn();
     log = jest.fn();
 
     const module: TestingModule = await Test.createTestingModule({
@@ -33,7 +31,6 @@ describe('AuthController', () => {
           useValue: {
             createUser,
             login,
-            validateUser,
           },
         },
         {

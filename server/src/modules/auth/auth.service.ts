@@ -8,7 +8,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 export class AuthService {
   constructor(private readonly userService: UserService) {}
 
-  public async createUser(createUserDto: CreateUserDto): Promise<UserDocument> {
+  public createUser(createUserDto: CreateUserDto): Promise<UserDocument> {
     return this.userService.createUser(createUserDto);
   }
 
@@ -17,7 +17,7 @@ export class AuthService {
 
     if (!user) {
       throw new UnauthorizedException(
-        `User could not found with the given email [${email}]`,
+        `User could not found with the given email [email: ${email}]`,
       );
     }
 
@@ -27,31 +27,11 @@ export class AuthService {
     );
 
     if (!isMatch) {
-      throw new UnauthorizedException(`Wrong password for user [${user._id}]`);
+      throw new UnauthorizedException(
+        `Wrong password for user [email: ${email}]`,
+      );
     }
 
     return user;
-  }
-
-  public async validateUser({
-    email,
-    password,
-  }: LoginUserDto): Promise<boolean> {
-    const user = await this.userService.getUserByEmail(email);
-
-    if (!user) {
-      return false;
-    }
-
-    const isMatch = await this.userService.comparePasswords(
-      password,
-      user.password,
-    );
-
-    if (!isMatch) {
-      return false;
-    }
-
-    return true;
   }
 }

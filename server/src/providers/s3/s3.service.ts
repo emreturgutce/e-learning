@@ -25,20 +25,31 @@ export class S3Service {
     fileName: string,
     buffer: Buffer,
   ): Promise<S3.ManagedUpload.SendData> {
-    return this.s3
+    const res = await this.s3
       .upload({
         Bucket: AWS_S3_BUCKET,
         Key: fileName,
         Body: await this.convertImageTypeToWebp(buffer),
       })
       .promise();
+
+    this.logger.debug(
+      `Image uploaded to s3 [fileName: ${fileName}]`,
+      S3Service.name,
+    );
+
+    return res;
   }
 
   public generateFileUrl(filePath: string): string {
     return `https://${AWS_S3_BUCKET}.s3-${AWS_S3_REGION}.amazonaws.com/${filePath}`;
   }
 
-  private convertImageTypeToWebp(buffer: Buffer): Promise<Buffer> {
-    return sharp(buffer).webp({ lossless: true }).toBuffer();
+  private async convertImageTypeToWebp(buffer: Buffer): Promise<Buffer> {
+    const buff = await sharp(buffer).webp({ lossless: true }).toBuffer();
+
+    this.logger.debug('Image converted to webp', S3Service.name);
+
+    return buff;
   }
 }
