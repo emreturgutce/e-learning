@@ -20,6 +20,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { AuthGuard } from 'src/common/guard/auth.guard';
 import { RoleGuard } from 'src/common/guard/role.guard';
 import { CourseService } from './course.service';
+import { AddReviewToCourseDto } from './dto/add-review-to-course.dto';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 
@@ -157,6 +158,37 @@ export class CourseController {
 
     return {
       message: 'Course thumbnail uploaded',
+      data: { course },
+    };
+  }
+
+  @Post(':id/reviews')
+  public async addReviewToCourse(
+    @Param('id') id: string,
+    @Session() session: SessionDoc,
+    @Body() addReviewToCourseDto: Omit<AddReviewToCourseDto, 'user'>,
+  ) {
+    const isBought = await this.courseService.didBuyTheCourse(
+      session.context.id,
+      id,
+    );
+
+    if (!isBought) {
+      throw new ForbiddenException('Not bought the course');
+    }
+
+    const course = await this.courseService.addReviewToCourse(id, {
+      ...addReviewToCourseDto,
+      user: session.context.id,
+    });
+
+    this.logger.log(
+      `Review added to course [courseId: ${course._id}]`,
+      CourseController.name,
+    );
+
+    return {
+      message: 'Review added to course',
       data: { course },
     };
   }

@@ -2,17 +2,23 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { nanoid } from 'nanoid';
+import { UserService } from 'src/modules/user/user.service';
 import { S3Service } from 'src/providers/s3/s3.service';
+import { AddReviewToCourseDto } from './dto/add-review-to-course.dto';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { Course, CourseDocument } from './schema/course.schema';
+import { Review, ReviewDocument } from './schema/review.schema';
 
 @Injectable()
 export class CourseService {
   constructor(
     @InjectModel(Course.name)
     private readonly CourseModel: Model<CourseDocument>,
+    @InjectModel(Review.name)
+    private readonly ReviewModel: Model<ReviewDocument>,
     private readonly s3Service: S3Service,
+    private readonly userService: UserService,
   ) {}
 
   public createCourse(
@@ -40,6 +46,37 @@ export class CourseService {
       { $inc: { total_students: inc } },
       {
         new: true,
+      },
+    ).exec();
+  }
+
+  public async didBuyTheCourse(
+    userId: string,
+    courseId: string,
+  ): Promise<boolean> {
+    const user = await this.userService.findUserById(userId);
+
+    return user.courses.some((course) => course === courseId);
+  }
+
+  private createReview(
+    addReviewToCourseDto: AddReviewToCourseDto,
+  ): Promise<ReviewDocument> {
+    return this.ReviewModel.create(addReviewToCourseDto);
+  }
+
+  public async addReviewToCourse(
+    id: string,
+    addReviewToCourseDto: AddReviewToCourseDto,
+  ) {
+    const review = await this.createReview(addReviewToCourseDto);
+
+    return this.CourseModel.findByIdAndUpdate(
+      id,
+      { $push: { reviews: review._id } },
+      {
+        new: true,
+        useFindAndModify: true,
       },
     ).exec();
   }

@@ -65,7 +65,7 @@ export class User {
       },
     ],
   })
-  courses: Course[];
+  courses: string[];
 
   @Prop({
     type: [
@@ -75,7 +75,7 @@ export class User {
       },
     ],
   })
-  wishlist: Course[];
+  wishlist: string[];
 
   @Prop({
     type: [

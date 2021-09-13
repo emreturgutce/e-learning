@@ -62,7 +62,7 @@ export class Course {
       },
     ],
   })
-  reviews: Review[];
+  reviews: string[];
 
   @Prop({
     type: Number,
