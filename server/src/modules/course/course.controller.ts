@@ -20,9 +20,13 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { AuthGuard } from 'src/common/guard/auth.guard';
 import { RoleGuard } from 'src/common/guard/role.guard';
 import { CourseService } from './course.service';
+import { AddCourseSectionDto } from './dto/add-course-section.dto';
 import { AddReviewToCourseDto } from './dto/add-review-to-course.dto';
 import { CreateCourseDto } from './dto/create-course.dto';
+import { CreateSectionContentDto } from './dto/create-section-content.dto';
+import { UpdateCourseSectionDto } from './dto/update-course-section.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
+import { UpdateSectionContentDto } from './dto/update-section-content.dto';
 
 @Controller('courses')
 @UseGuards(AuthGuard, RoleGuard)
@@ -93,6 +97,93 @@ export class CourseController {
     return {
       message: 'Course updated',
       data: { course },
+    };
+  }
+
+  // TODO! Control if owner
+  @Post(':courseContentId/sections')
+  @Roles('INSTRUCTOR')
+  public async addCourseSection(
+    @Param('courseContentId') courseContentId: string,
+    @Body() addCourseSectionDto: AddCourseSectionDto,
+  ) {
+    const courseContent = await this.courseService.addCourseSection(
+      courseContentId,
+      addCourseSectionDto,
+    );
+
+    this.logger.log(
+      `Course content updated [courseContentId: ${courseContent._id}]`,
+    );
+
+    return {
+      message: 'Course content updated',
+      data: { courseContent },
+    };
+  }
+
+  // TODO! Control if owner
+  @Put(':courseContentId/sections/:sectionId')
+  @Roles('INSTRUCTOR')
+  public async updateCourseSection(
+    @Param('courseContentId') courseContentId: string,
+    @Param('sectionId') sectionId: string,
+    @Body() updateCourseSectionDto: UpdateCourseSectionDto,
+  ) {
+    const courseSection = await this.courseService.updateCourseSection(
+      courseContentId,
+      sectionId,
+      updateCourseSectionDto,
+    );
+
+    this.logger.log(
+      `Course section updated [courseSectionId: ${courseSection._id}]`,
+    );
+
+    return {
+      message: 'Course section updated',
+      data: { courseSection },
+    };
+  }
+
+  @Post('section-contents')
+  @Roles('INSTRUCTOR')
+  public async createSectionContent(
+    @Body() createSectionContentDto: CreateSectionContentDto,
+  ) {
+    const sectionContent = await this.courseService.createSectionContent(
+      createSectionContentDto,
+    );
+
+    this.logger.log(
+      `Section content created [sectionContentId: ${sectionContent._id}]`,
+    );
+
+    return {
+      message: 'Section content created',
+      data: { sectionContent },
+    };
+  }
+
+  // TODO! Control if owner
+  @Put('section-contents/:sectionContentId')
+  @Roles('INSTRUCTOR')
+  public async updateSectionContent(
+    @Param('sectionContentId') sectionContentId: string,
+    @Body() updateSectionContentDto: UpdateSectionContentDto,
+  ) {
+    const sectionContent = await this.courseService.updateSectionContent(
+      sectionContentId,
+      updateSectionContentDto,
+    );
+
+    this.logger.log(
+      `Section content updated [sectionContentId: ${sectionContent._id}]`,
+    );
+
+    return {
+      message: 'Section content updated',
+      data: { sectionContent },
     };
   }
 

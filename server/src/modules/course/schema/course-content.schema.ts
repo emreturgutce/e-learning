@@ -3,6 +3,7 @@ import { Document, Types } from 'mongoose';
 import {
   COURSE_CONTENT_COLLECTION_NAME,
   SECTION_CONTENT_COLLECTION_NAME,
+  USER_COLLECTION_NAME,
 } from 'src/config/contants';
 import { SectionContent } from './section-content.schema';
 
@@ -13,18 +14,31 @@ export class CourseContent {
   @Prop({
     type: [
       {
-        title: String,
-        section_contents: {
-          type: Types.ObjectId,
-          ref: SECTION_CONTENT_COLLECTION_NAME,
+        title: {
+          type: String,
+          unique: true,
         },
+        section_contents: [
+          {
+            type: Types.ObjectId,
+            ref: SECTION_CONTENT_COLLECTION_NAME,
+          },
+        ],
       },
     ],
   })
   sections: {
+    id: string;
     title: string;
-    section_contents: SectionContent[];
+    section_contents: string[];
   }[];
+
+  @Prop({
+    type: Types.ObjectId,
+    ref: USER_COLLECTION_NAME,
+    required: true,
+  })
+  owner: string;
 }
 
 export const CourseContentSchema = SchemaFactory.createForClass(CourseContent);

@@ -1,0 +1,24 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach by Process ID",
+      "processId": "${command:PickProcess}"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug NestJS",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run-script", "start:debug"],
+      "env": { "NODE_ENV": "dev" },
+      "port": 9229,
+      "cwd": "${workspaceFolder}/server",
+      "outputCapture": "std",
+      "skipFiles": ["<node_internals>/**"],
+      "restart": true
+    }
+	]
+}

@@ -7,9 +7,7 @@ import {
   REVIEW_COLLECTION_NAME,
   USER_COLLECTION_NAME,
 } from 'src/config/contants';
-import { User } from 'src/modules/user/schema/user.schema';
 import { Category } from './category.schema';
-import { Review } from './review.schema';
 
 export type CourseDocument = Course & Document;
 
@@ -42,7 +40,7 @@ export class Course {
     ref: USER_COLLECTION_NAME,
     required: true,
   })
-  instructor: User | string;
+  instructor: string;
 
   @Prop({
     type: [

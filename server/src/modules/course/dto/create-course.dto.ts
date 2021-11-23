@@ -29,4 +29,6 @@ export class CreateCourseDto {
   @ApiProperty()
   @IsOptional()
   thumbnail: string;
+
+  content: string;
 }
