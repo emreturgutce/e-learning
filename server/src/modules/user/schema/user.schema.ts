@@ -9,10 +9,11 @@ import { Course } from 'src/modules/course/schema/course.schema';
 
 export type UserDocument = User & Document;
 
-export type UserRole = 'USER' | 'INSTRUCTOR';
+export type UserRole = 'USER' | 'INSTRUCTOR' | 'ADMIN';
 export enum UserType {
   USER,
   INSTRUCTOR,
+  ADMIN,
 }
 
 @Schema({
@@ -89,7 +90,7 @@ export class User {
 
   @Prop({
     type: String,
-    enum: ['INSTRUCTOR', 'USER'],
+    enum: ['INSTRUCTOR', 'USER', 'ADMIN'],
     default: 'USER',
     required: true,
   })

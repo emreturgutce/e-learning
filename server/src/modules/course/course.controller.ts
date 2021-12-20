@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
   Logger,
@@ -22,8 +23,10 @@ import { RoleGuard } from 'src/common/guard/role.guard';
 import { CourseService } from './course.service';
 import { AddCourseSectionDto } from './dto/add-course-section.dto';
 import { AddReviewToCourseDto } from './dto/add-review-to-course.dto';
+import { CreateCategoryDto } from './dto/create-category.dto';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { CreateSectionContentDto } from './dto/create-section-content.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 import { UpdateCourseSectionDto } from './dto/update-course-section.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { UpdateSectionContentDto } from './dto/update-section-content.dto';
@@ -46,6 +49,21 @@ export class CourseController {
     return {
       message: 'Courses fetched',
       data: { courses },
+    };
+  }
+
+  @Get('list-purchased-courses')
+  @Roles('USER')
+  public async listPurchasedCourses(@Session() session: SessionDoc) {
+    const courses = await this.courseService.listPurchasedCourses(
+      session.context.id,
+    );
+
+    this.logger.log('Courses fetched', CourseController.name);
+
+    return {
+      message: 'Courses fetched',
+      data: courses,
     };
   }
 
@@ -281,6 +299,111 @@ export class CourseController {
     return {
       message: 'Review added to course',
       data: { course },
+    };
+  }
+
+  @Get('list-categories')
+  public async listCategories() {
+    const categories = await this.courseService.listCategories();
+
+    return {
+      message: 'Category listed',
+      data: { categories },
+    };
+  }
+
+  @Post('create-category')
+  @Roles('ADMIN')
+  public async createCategory(@Body() createCategoryDto: CreateCategoryDto) {
+    const category = await this.courseService.createCategory(createCategoryDto);
+
+    this.logger.log(
+      `Category created [categoryId: ${category._id}]`,
+      CourseController.name,
+    );
+
+    return {
+      message: 'Category created',
+      data: { category },
+    };
+  }
+
+  @Put('update-category/:id')
+  @Roles('ADMIN')
+  public async updateCategory(
+    @Body() updateCategoryDto: UpdateCategoryDto,
+    @Param('id') categoryId: string,
+  ) {
+    const category = await this.courseService.updateCategory(
+      categoryId,
+      updateCategoryDto,
+    );
+
+    this.logger.log(
+      `Category updated [categoryId: ${category._id}]`,
+      CourseController.name,
+    );
+
+    return {
+      message: 'Category updated',
+      data: { category },
+    };
+  }
+
+  @Delete('delete-category/:id')
+  public async deleteCategory(@Param('id') categoryId: string) {
+    await this.courseService.deleteCategory(categoryId);
+
+    this.logger.log(
+      `Category deleted [categoryId: ${categoryId}]`,
+      CourseController.name,
+    );
+
+    return {
+      message: 'Category deleted',
+      data: {},
+    };
+  }
+
+  @Get('purchase-course/:id')
+  @Roles('USER')
+  public async purchaseCourse(
+    @Param('id') courseId: string,
+    @Session() session: SessionDoc,
+  ) {
+    const { id: userId } = session.context;
+
+    await this.courseService.purchaseCourse(userId, courseId);
+
+    this.logger.log(
+      `Course purchased [courseId: ${courseId}] by user [userId: ${userId}]`,
+      CourseController.name,
+    );
+
+    return {
+      message: 'Course purchased',
+      data: {},
+    };
+  }
+
+  @Get('refund-course/:id')
+  @Roles('USER')
+  public async refundCourse(
+    @Param('id') courseId: string,
+    @Session() session: SessionDoc,
+  ) {
+    const { id: userId } = session.context;
+
+    await this.courseService.refundCourse(userId, courseId);
+
+    this.logger.log(
+      `Course refunded [courseId: ${courseId}] by user [userId: ${userId}]`,
+      CourseController.name,
+    );
+
+    return {
+      message: 'Course refunded',
+      data: {},
     };
   }
 }

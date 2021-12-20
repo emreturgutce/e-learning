@@ -44,4 +44,38 @@ export class UserService {
   ): Promise<boolean> {
     return compare(password, hashedPassword);
   }
+
+  public async isPurchasedCourse(userId: string, courseId: string) {
+    const user = await this.UserModel.findOne({
+      $and: [
+        {
+          _id: userId,
+        },
+        {
+          courses: { $in: [courseId] },
+        },
+      ],
+    }).exec();
+
+    return !!user;
+  }
+
+  public async registerCourse(userId: string, courseId: string) {
+    return this.UserModel.findByIdAndUpdate(userId, {
+      $push: { courses: courseId },
+    }).exec();
+  }
+
+  public async refundCourse(userId: string, courseId: string) {
+    return this.UserModel.findByIdAndUpdate(userId, {
+      $pull: { courses: courseId },
+    }).exec();
+  }
+
+  public async listPurchasedCourses(userId: string) {
+    return this.UserModel.findById(userId)
+      .populate('courses')
+      .select('courses')
+      .exec();
+  }
 }

@@ -36,7 +36,6 @@ export class CourseContent {
   @Prop({
     type: Types.ObjectId,
     ref: USER_COLLECTION_NAME,
-    required: true,
   })
   owner: string;
 }

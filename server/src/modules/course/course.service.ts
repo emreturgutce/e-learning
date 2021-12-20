@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { nanoid } from 'nanoid';
@@ -11,6 +15,7 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 import { Course, CourseDocument } from './schema/course.schema';
 import { Review, ReviewDocument } from './schema/review.schema';
 import {
+  CATEGORY_COLLECTION_NAME,
   COURSE_CONTENT_COLLECTION_NAME,
   SECTION_CONTENT_COLLECTION_NAME,
 } from 'src/config/contants';
@@ -20,6 +25,9 @@ import { SectionContentDocument } from './schema/section-content.schema';
 import { CreateSectionContentDto } from './dto/create-section-content.dto';
 import { UpdateCourseSectionDto } from './dto/update-course-section.dto';
 import { UpdateSectionContentDto } from './dto/update-section-content.dto';
+import { CategoryDocument } from './schema/category.schema';
+import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Injectable()
 export class CourseService {
@@ -32,6 +40,8 @@ export class CourseService {
     private readonly CourseModel: Model<CourseDocument>,
     @InjectModel(SECTION_CONTENT_COLLECTION_NAME)
     private readonly SectionContentModel: Model<SectionContentDocument>,
+    @InjectModel(CATEGORY_COLLECTION_NAME)
+    private readonly CategoryModel: Model<CategoryDocument>,
     private readonly s3Service: S3Service,
     private readonly userService: UserService,
   ) {}
@@ -141,6 +151,18 @@ export class CourseService {
     ).exec();
   }
 
+  public decrementTotalStudent(id: string, dec = 1) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    return this.CourseModel.findByIdAndUpdate(
+      id,
+      { $inc: { total_students: dec * -1 } },
+      {
+        new: true,
+      },
+    ).exec();
+  }
+
   public async didBuyTheCourse(
     userId: string,
     courseId: string,
@@ -205,5 +227,74 @@ export class CourseService {
     }
 
     return course.instructor === id;
+  }
+
+  public async listCategories(): Promise<CategoryDocument[]> {
+    return this.CategoryModel.find().exec();
+  }
+
+  public async createCategory(
+    createCategoryDto: CreateCategoryDto,
+  ): Promise<CategoryDocument> {
+    return this.CategoryModel.create(createCategoryDto);
+  }
+
+  public async updateCategory(
+    categoryId: string,
+    updateCategoryDto: UpdateCategoryDto,
+  ): Promise<CategoryDocument> {
+    return this.CategoryModel.findByIdAndUpdate(categoryId, updateCategoryDto, {
+      new: true,
+    }).exec();
+  }
+
+  public async deleteCategory(categoryId: string): Promise<void> {
+    await this.CategoryModel.findByIdAndUpdate(categoryId, {
+      is_deleted: true,
+    }).exec();
+  }
+
+  public async purchaseCourse(userId: string, courseId: string): Promise<void> {
+    const isCourseExist = await this.CourseModel.exists({ _id: courseId });
+
+    if (!isCourseExist) {
+      throw new NotFoundException(`Course with ${courseId} id not found`);
+    }
+
+    const isPurchasedCourse = await this.userService.isPurchasedCourse(
+      userId,
+      courseId,
+    );
+
+    if (isPurchasedCourse) {
+      throw new BadRequestException(
+        `Course [courseId: ${courseId}] already purchased for user [userId: ${userId}]`,
+      );
+    }
+
+    await this.userService.registerCourse(userId, courseId);
+
+    await this.incrementTotalStudent(courseId);
+  }
+
+  public async refundCourse(userId: string, courseId: string): Promise<void> {
+    const isPurchasedCourse = await this.userService.isPurchasedCourse(
+      userId,
+      courseId,
+    );
+
+    if (!isPurchasedCourse) {
+      throw new BadRequestException(
+        `Course [courseId: ${courseId}] is not purchased by user [userId: ${userId}]`,
+      );
+    }
+
+    await this.userService.refundCourse(userId, courseId);
+
+    await this.incrementTotalStudent(courseId);
+  }
+
+  public async listPurchasedCourses(userId: string) {
+    return this.userService.listPurchasedCourses(userId);
   }
 }
