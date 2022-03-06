@@ -1,4 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { compare } from 'bcryptjs';
 import { Model } from 'mongoose';
@@ -76,6 +82,91 @@ export class UserService {
     return this.UserModel.findById(userId)
       .populate('courses')
       .select('courses')
+      .exec();
+  }
+
+  public async getCart(userId: string) {
+    return this.UserModel.findById(userId).select('cart').exec();
+  }
+
+  public async addCourseToCart(userId: string, courseId: string) {
+    const user = await this.UserModel.findById(userId);
+
+    const hasCourse = user.courses.some(
+      (course) => course.toString() === courseId,
+    );
+    const hasInCart = user.cart.some(
+      (course) => course.toString() === courseId,
+    );
+
+    if (hasCourse || hasInCart) {
+      throw new HttpException('Cannot add to cart.', HttpStatus.BAD_REQUEST);
+    }
+
+    return this.UserModel.findByIdAndUpdate(
+      userId,
+      {
+        $push: { cart: courseId },
+      },
+      { new: true },
+    )
+      .select('cart')
+      .exec();
+  }
+
+  public async removeFromCart(userId: string, courseId: string) {
+    return this.UserModel.findByIdAndUpdate(
+      userId,
+      {
+        $pull: { cart: courseId },
+      },
+      { new: true },
+    )
+      .select('cart')
+      .exec();
+  }
+
+  public async getWishlist(userId: string) {
+    return this.UserModel.findById(userId).select('wishlist').exec();
+  }
+
+  public async addCourseToWishlist(userId: string, courseId: string) {
+    const user = await this.UserModel.findById(userId);
+
+    const hasCourse = user.courses.some(
+      (course) => course.toString() === courseId,
+    );
+    const hasInWishlist = user.wishlist.some(
+      (course) => course.toString() === courseId,
+    );
+
+    if (hasCourse || hasInWishlist) {
+      throw new HttpException(
+        'Cannot add to wishlist.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return this.UserModel.findByIdAndUpdate(
+      userId,
+      {
+        $push: { wishlist: courseId },
+      },
+      { new: true },
+    )
+      .select('wishlist')
+      .exec();
+  }
+
+  public async removeFromWishlist(userId: string, courseId: string) {
+    return this.UserModel.findByIdAndUpdate(
+      userId,
+      {
+        $pull: { wishlist: courseId },
+      },
+      { new: true },
+    )
+      .select('wishlist')
       .exec();
   }
 }

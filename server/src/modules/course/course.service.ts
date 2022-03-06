@@ -297,4 +297,12 @@ export class CourseService {
   public async listPurchasedCourses(userId: string) {
     return this.userService.listPurchasedCourses(userId);
   }
+
+  public async listInstructorsCourses(instructorId: string) {
+    return this.CourseModel.find({ instructor: instructorId }).exec();
+  }
+
+  public async listCourseContents(instructorId: string) {
+    return this.CourseContentModel.find({ owner: instructorId }).exec();
+  }
 }

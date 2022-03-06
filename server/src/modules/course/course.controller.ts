@@ -10,6 +10,7 @@ import {
   Post,
   Put,
   Session,
+  UnauthorizedException,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -56,6 +57,21 @@ export class CourseController {
   @Roles('USER')
   public async listPurchasedCourses(@Session() session: SessionDoc) {
     const courses = await this.courseService.listPurchasedCourses(
+      session.context.id,
+    );
+
+    this.logger.log('Courses fetched', CourseController.name);
+
+    return {
+      message: 'Courses fetched',
+      data: courses,
+    };
+  }
+
+  @Get('list-instructors-courses')
+  @Roles('INSTRUCTOR')
+  public async listInstructorsCourses(@Session() session: SessionDoc) {
+    const courses = await this.courseService.listInstructorsCourses(
       session.context.id,
     );
 
@@ -118,13 +134,22 @@ export class CourseController {
     };
   }
 
-  // TODO! Control if owner
-  @Post(':courseContentId/sections')
+  @Post(':courseId/:courseContentId/sections')
   @Roles('INSTRUCTOR')
   public async addCourseSection(
     @Param('courseContentId') courseContentId: string,
+    @Param('courseId') courseId: string,
     @Body() addCourseSectionDto: AddCourseSectionDto,
+    @Session() session: SessionDoc,
   ) {
+    const { id: userId } = session.context;
+
+    const isOwner = await this.courseService.isOwnerOfCourse(userId, courseId)
+
+    if (!isOwner) {
+      throw new UnauthorizedException("You need to be owner of this course to edit its contents.")
+    }
+
     const courseContent = await this.courseService.addCourseSection(
       courseContentId,
       addCourseSectionDto,
@@ -140,14 +165,23 @@ export class CourseController {
     };
   }
 
-  // TODO! Control if owner
-  @Put(':courseContentId/sections/:sectionId')
+  @Put(':courseId/:courseContentId/sections/:sectionId')
   @Roles('INSTRUCTOR')
   public async updateCourseSection(
     @Param('courseContentId') courseContentId: string,
     @Param('sectionId') sectionId: string,
     @Body() updateCourseSectionDto: UpdateCourseSectionDto,
+    @Param('courseId') courseId: string,
+    @Session() session: SessionDoc,
   ) {
+    const { id: userId } = session.context;
+
+    const isOwner = await this.courseService.isOwnerOfCourse(userId, courseId)
+
+    if (!isOwner) {
+      throw new UnauthorizedException("You need to be owner of this course to edit its contents.")
+    }
+
     const courseSection = await this.courseService.updateCourseSection(
       courseContentId,
       sectionId,
@@ -183,13 +217,22 @@ export class CourseController {
     };
   }
 
-  // TODO! Control if owner
-  @Put('section-contents/:sectionContentId')
+  @Put(':courseId/section-contents/:sectionContentId')
   @Roles('INSTRUCTOR')
   public async updateSectionContent(
     @Param('sectionContentId') sectionContentId: string,
     @Body() updateSectionContentDto: UpdateSectionContentDto,
+    @Param('courseId') courseId: string,
+    @Session() session: SessionDoc,
   ) {
+    const { id: userId } = session.context;
+
+    const isOwner = await this.courseService.isOwnerOfCourse(userId, courseId)
+
+    if (!isOwner) {
+      throw new UnauthorizedException("You need to be owner of this course to edit its contents.")
+    }
+
     const sectionContent = await this.courseService.updateSectionContent(
       sectionContentId,
       updateSectionContentDto,

@@ -86,7 +86,7 @@ export class User {
       },
     ],
   })
-  cart: Course[];
+  cart: string[];
 
   @Prop({
     type: String,
