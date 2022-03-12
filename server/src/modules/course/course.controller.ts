@@ -144,10 +144,12 @@ export class CourseController {
   ) {
     const { id: userId } = session.context;
 
-    const isOwner = await this.courseService.isOwnerOfCourse(userId, courseId)
+    const isOwner = await this.courseService.isOwnerOfCourse(userId, courseId);
 
     if (!isOwner) {
-      throw new UnauthorizedException("You need to be owner of this course to edit its contents.")
+      throw new UnauthorizedException(
+        'You need to be owner of this course to edit its contents.',
+      );
     }
 
     const courseContent = await this.courseService.addCourseSection(
@@ -176,10 +178,12 @@ export class CourseController {
   ) {
     const { id: userId } = session.context;
 
-    const isOwner = await this.courseService.isOwnerOfCourse(userId, courseId)
+    const isOwner = await this.courseService.isOwnerOfCourse(userId, courseId);
 
     if (!isOwner) {
-      throw new UnauthorizedException("You need to be owner of this course to edit its contents.")
+      throw new UnauthorizedException(
+        'You need to be owner of this course to edit its contents.',
+      );
     }
 
     const courseSection = await this.courseService.updateCourseSection(
@@ -227,10 +231,12 @@ export class CourseController {
   ) {
     const { id: userId } = session.context;
 
-    const isOwner = await this.courseService.isOwnerOfCourse(userId, courseId)
+    const isOwner = await this.courseService.isOwnerOfCourse(userId, courseId);
 
     if (!isOwner) {
-      throw new UnauthorizedException("You need to be owner of this course to edit its contents.")
+      throw new UnauthorizedException(
+        'You need to be owner of this course to edit its contents.',
+      );
     }
 
     const sectionContent = await this.courseService.updateSectionContent(
@@ -248,7 +254,6 @@ export class CourseController {
     };
   }
 
-  // TODO! Will be removed, increment this after course purchase instead
   @Put(':id/increment/:inc')
   @Roles('INSTRUCTOR')
   public async incrementTotalStudents(

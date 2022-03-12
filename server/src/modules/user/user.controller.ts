@@ -7,7 +7,7 @@ import {
   Session,
   Post,
   Param,
-  Delete
+  Delete,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Session as SessionDoc } from 'express-session';
@@ -31,11 +31,9 @@ export class UserController {
     };
   }
 
-  @Get("/getCart")
+  @Get('/getCart')
   @HttpCode(HttpStatus.OK)
-  public async getCart(
-    @Session() session: SessionDoc,
-  ) {
+  public async getCart(@Session() session: SessionDoc) {
     const { id: userId } = session.context;
 
     const { cart } = await this.userService.getCart(userId);
@@ -46,7 +44,7 @@ export class UserController {
     };
   }
 
-  @Post("/addCourseToCart/:courseId")
+  @Post('/addCourseToCart/:courseId')
   @HttpCode(HttpStatus.CREATED)
   public async addCourseToCart(
     @Session() session: SessionDoc,
@@ -62,7 +60,7 @@ export class UserController {
     };
   }
 
-  @Delete("/removeFromCart/:courseId")
+  @Delete('/removeFromCart/:courseId')
   @HttpCode(HttpStatus.CREATED)
   public async removeFromCart(
     @Session() session: SessionDoc,
@@ -78,11 +76,9 @@ export class UserController {
     };
   }
 
-  @Get("/getWishlist")
+  @Get('/getWishlist')
   @HttpCode(HttpStatus.OK)
-  public async getWishlist(
-    @Session() session: SessionDoc,
-  ) {
+  public async getWishlist(@Session() session: SessionDoc) {
     const { id: userId } = session.context;
 
     const { wishlist } = await this.userService.getWishlist(userId);
@@ -93,7 +89,7 @@ export class UserController {
     };
   }
 
-  @Post("/addCourseToWishlist/:courseId")
+  @Post('/addCourseToWishlist/:courseId')
   @HttpCode(HttpStatus.CREATED)
   public async addCourseToWishlist(
     @Session() session: SessionDoc,
@@ -101,7 +97,10 @@ export class UserController {
   ) {
     const { id: userId } = session.context;
 
-    const { wishlist } = await this.userService.addCourseToWishlist(userId, courseId);
+    const { wishlist } = await this.userService.addCourseToWishlist(
+      userId,
+      courseId,
+    );
 
     return {
       message: 'Course added to wishlist',
@@ -109,7 +108,7 @@ export class UserController {
     };
   }
 
-  @Delete("/removeFromWishlist/:courseId")
+  @Delete('/removeFromWishlist/:courseId')
   @HttpCode(HttpStatus.CREATED)
   public async removeFromWishlist(
     @Session() session: SessionDoc,
@@ -117,7 +116,10 @@ export class UserController {
   ) {
     const { id: userId } = session.context;
 
-    const { wishlist } = await this.userService.removeFromWishlist(userId, courseId);
+    const { wishlist } = await this.userService.removeFromWishlist(
+      userId,
+      courseId,
+    );
 
     return {
       message: 'Course removed from wishlist',
