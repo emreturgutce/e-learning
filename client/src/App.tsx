@@ -1,28 +1,23 @@
 import React from 'react';
 import create from 'zustand'
+import FooterContainer from './container/FooterContainer';
+import HeaderContainer from './container/HeaderContainer';
+import SignInScreen from './screen/SignIn/SignInScreen';
+import SignUpScreen from './screen/SignUp/SignUpScreen';
+import { Route, Routes } from 'react-router-dom';
+import HomeScreen from './screen/Home/HomeScreen';
 
-const useStore = create((set) => ({
-  bears: 0,
-  increasePopulation: () => set(state => ({ bears: state.bears + 1 })),
-  removeAllBears: () => set({ bears: 0 })
-}))
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <HeaderContainer></HeaderContainer>
+      <Routes>
+        <Route path="/" element={<HomeScreen />} />
+        <Route path="SignIn" element={<SignInScreen />} />
+        <Route path="SignUp" element={<SignUpScreen />} />
+      </Routes>
+      <FooterContainer />
     </div>
   );
 }
