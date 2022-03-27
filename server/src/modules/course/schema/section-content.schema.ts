@@ -1,10 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import {
+  EXAM_COLLECTION_NAME,
   QUESTION_COLLECTION_NAME,
   SECTION_CONTENT_COLLECTION_NAME,
   USER_COLLECTION_NAME,
 } from 'src/config/contants';
+import { Exam } from './exam.schema';
 import { Question } from './question.schema';
 
 export type SectionContentDocument = SectionContent & Document;
@@ -48,16 +50,10 @@ export class SectionContent {
   duration: number;
 
   @Prop({
-    type: [
-      {
-        question: {
-          type: Types.ObjectId,
-          ref: QUESTION_COLLECTION_NAME,
-        },
-      },
-    ],
+    type: Types.ObjectId,
+    ref: EXAM_COLLECTION_NAME,
   })
-  questions: Question[];
+  exam: Exam;
 
   @Prop({
     type: Types.ObjectId,

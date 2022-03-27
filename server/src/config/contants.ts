@@ -8,6 +8,8 @@ export const COURSE_COLLECTION_NAME = 'Course';
 export const COURSE_CONTENT_COLLECTION_NAME = 'Course_Content';
 export const SECTION_CONTENT_COLLECTION_NAME = 'Section_Content';
 export const QUESTION_COLLECTION_NAME = 'Question';
+export const EXAM_COLLECTION_NAME = 'Exam';
+export const ANSWERED_EXAM_COLLECTION_NAME = 'AnsweredExam';
 
 // Session
 export const SESSION_PREFIX = 'elearning-session:';

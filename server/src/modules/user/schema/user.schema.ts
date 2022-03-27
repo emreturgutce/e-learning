@@ -2,10 +2,12 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { hash } from 'bcryptjs';
 import { Document, HookNextFunction, Types } from 'mongoose';
 import {
+  ANSWERED_EXAM_COLLECTION_NAME,
   COURSE_COLLECTION_NAME,
+  EXAM_COLLECTION_NAME,
   USER_COLLECTION_NAME,
 } from 'src/config/contants';
-import { Course } from 'src/modules/course/schema/course.schema';
+import { AnsweredExam } from 'src/modules/course/schema/answered-exam.schema';
 
 export type UserDocument = User & Document;
 
@@ -95,6 +97,36 @@ export class User {
     required: true,
   })
   type: UserRole;
+
+  @Prop({
+    type: [
+      {
+        type: Types.ObjectId,
+        ref: ANSWERED_EXAM_COLLECTION_NAME,
+      },
+    ],
+  })
+  unapprovedExams: AnsweredExam[];
+
+  @Prop({
+    type: [
+      {
+        type: Types.ObjectId,
+        ref: EXAM_COLLECTION_NAME,
+      },
+    ],
+  })
+  exams: string[];
+
+  @Prop({
+    type: [
+      {
+        type: Types.ObjectId,
+        ref: ANSWERED_EXAM_COLLECTION_NAME,
+      },
+    ],
+  })
+  completedExams: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
