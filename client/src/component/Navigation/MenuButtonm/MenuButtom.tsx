@@ -35,7 +35,7 @@ type Props = {
 const MenuButtom = ({
   children,
 }: Props) => {
-  const dammyHandler = () => { };
+
 
   return (
     <MenuButtonContainer>
