@@ -1,8 +1,12 @@
-import React from 'react'
+
+import CourseSelectionContainer from '../../container/CourseSelectionContainer';
 
 const HomeScreen = () => {
+
   return (
-    <div>HomeScreen</div>
+    <div>
+      <CourseSelectionContainer></CourseSelectionContainer>
+    </div>
   )
 }
 

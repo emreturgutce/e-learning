@@ -1,13 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Box from '@mui/material/Box'
-import { AppBar, Toolbar } from '@mui/material'
+import { AppBar, IconButton, Toolbar } from '@mui/material'
 import SearchBar from './SearchBar/SearchBar'
-import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
+
 import Button from '@mui/material/Button';
 import MenuButtom from './MenuButtonm/MenuButtom';
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { Link } from "react-router-dom";
+import Badge from '@mui/material/Badge';
+import Popover from '@mui/material/Popover';
+import Typography from '@mui/material/Typography';
+import CartItems from '../Cart/CartItems';
+
 const Navigation = () => {
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+  const [cartItemCount, setCartItemCount] = useState(0)
+  const [isUser, setIsUser] = useState(true)
+  const handleOver = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -22,19 +40,58 @@ const Navigation = () => {
       >
         <Toolbar disableGutters sx={{ my: "auto", gap: 1 }}>
           <Box sx={{ color: "black" }}>
-            Udemy
+            <Link to="/">
+              Udemy
+            </Link>
+
           </Box>
           <Box sx={{ flexGrow: 2 }}>
             <SearchBar />
           </Box>
           <Box sx={{ color: "black" }}>
-            Udemy'de Eğitim Verin
+            <Link to="/shoppingCart">
+              Cart
+            </Link>
+
           </Box>
-          <MenuButtom>
-            <ShoppingCartOutlinedIcon sx={{ fontSize: 24, color: "black" }} />
-          </MenuButtom>
-          <Button variant="outlined" size="medium"> <Link to="/SignIn">Signin</Link></Button>
-          <Button variant="outlined" size="medium" > <Link to="/SignUp"> Signup</Link></Button>
+
+
+          <IconButton aria-describedby={id} onClick={handleOver}>
+            <Badge badgeContent={cartItemCount} color="secondary">
+              <ShoppingCartOutlinedIcon sx={{ fontSize: 24, color: "black" }} />
+            </Badge>
+          </IconButton>
+          <Popover
+
+            id={id}
+            sx={{
+              marginTop: 3
+            }}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+
+          >
+            <div>
+              <CartItems ></CartItems>
+            </div>
+
+          </Popover>
+          {
+            !isUser ? (
+              <div>
+                <Button variant="outlined" size="medium" sx={{ marginRight: 1 }}> <Link to="/SignIn">Signin</Link></Button>
+                <Button variant="outlined" size="medium" > <Link to="/SignUp"> Signup</Link></Button>
+              </div>
+            ) :
+              (<Box sx={{ color: "black" }}><Link to="/myCourse">MyCourse</Link></Box>)
+
+          }
+
         </Toolbar>
 
       </AppBar>
