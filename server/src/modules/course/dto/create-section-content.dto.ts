@@ -21,16 +21,22 @@ export class CreateSectionContentDto {
 
   @ApiProperty()
   @IsString()
+  @IsOptional()
   video_url: string;
 
   @ApiProperty()
   @IsString()
+  @IsOptional()
   text: string;
 
   @ApiProperty()
   @IsNumber()
+  @IsOptional()
   duration: number;
 
   @ApiProperty()
-  questions: string[];
+  @IsOptional()
+  exam: string;
+
+  owner: string;
 }

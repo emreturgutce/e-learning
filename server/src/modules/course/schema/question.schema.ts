@@ -5,7 +5,7 @@ import {
   USER_COLLECTION_NAME,
 } from 'src/config/contants';
 
-enum QuestionType {
+export enum QuestionType {
   OPEN_ENDED,
   MULTIPLE_CHOICES_SINGLE_ANSWER,
 }
@@ -47,6 +47,14 @@ export class Question {
     required: true,
   })
   owner: string;
+
+  @Prop({
+    type: Number,
+    required: true,
+    min: 0,
+    max: 100,
+  })
+  point: number;
 }
 
 export const QuestionSchema = SchemaFactory.createForClass(Question);

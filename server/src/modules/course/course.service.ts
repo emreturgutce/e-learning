@@ -15,8 +15,11 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 import { Course, CourseDocument } from './schema/course.schema';
 import { Review, ReviewDocument } from './schema/review.schema';
 import {
+  ANSWERED_EXAM_COLLECTION_NAME,
   CATEGORY_COLLECTION_NAME,
   COURSE_CONTENT_COLLECTION_NAME,
+  EXAM_COLLECTION_NAME,
+  QUESTION_COLLECTION_NAME,
   SECTION_CONTENT_COLLECTION_NAME,
 } from 'src/config/contants';
 import { CreateCourseContentDto } from './dto/create-course-content.dto';
@@ -28,6 +31,13 @@ import { UpdateSectionContentDto } from './dto/update-section-content.dto';
 import { CategoryDocument } from './schema/category.schema';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { ExamDocument } from './schema/exam.schema';
+import { AnsweredExamDocument } from './schema/answered-exam.schema';
+import { CreateQuestionDto } from './dto/create-question.dto';
+import { QuestionDocument } from './schema/question.schema';
+import { UpdateQuestionDto } from './dto/update-question.dto';
+import { CreateExamDto } from './dto/create-exam.dto';
+import { UpdateExamDto } from './dto/update-exam.dto';
 
 @Injectable()
 export class CourseService {
@@ -42,6 +52,12 @@ export class CourseService {
     private readonly SectionContentModel: Model<SectionContentDocument>,
     @InjectModel(CATEGORY_COLLECTION_NAME)
     private readonly CategoryModel: Model<CategoryDocument>,
+    @InjectModel(EXAM_COLLECTION_NAME)
+    private readonly ExamModel: Model<ExamDocument>,
+    @InjectModel(ANSWERED_EXAM_COLLECTION_NAME)
+    private readonly AnsweredExamModel: Model<AnsweredExamDocument>,
+    @InjectModel(QUESTION_COLLECTION_NAME)
+    private readonly QuestionModel: Model<QuestionDocument>,
     private readonly s3Service: S3Service,
     private readonly userService: UserService,
   ) {}
@@ -203,7 +219,17 @@ export class CourseService {
   }
 
   public findCourseById(id: string) {
-    return this.CourseModel.findById(id).exec();
+    return this.CourseModel.findById(id)
+      .populate({
+        path: 'content',
+        populate: {
+          path: 'sections',
+          populate: {
+            path: 'section_contents',
+          },
+        },
+      })
+      .exec();
   }
 
   public async uploadCourseThumbnail(courseId: string, file: Buffer) {
@@ -304,5 +330,92 @@ export class CourseService {
 
   public async listCourseContents(instructorId: string) {
     return this.CourseContentModel.find({ owner: instructorId }).exec();
+  }
+
+  public async createQuestion(createQuestionDto: CreateQuestionDto) {
+    return this.QuestionModel.create(createQuestionDto);
+  }
+
+  public async listQuestions(owner: string) {
+    return this.QuestionModel.find({ owner }).exec();
+  }
+
+  public async deleteQuestion(questionId: string) {
+    return this.QuestionModel.findByIdAndDelete(questionId).exec();
+  }
+
+  public async updateQuestion(
+    questionId: string,
+    updateQuestionDto: UpdateQuestionDto,
+  ) {
+    return this.QuestionModel.findByIdAndUpdate(
+      questionId,
+      updateQuestionDto,
+    ).exec();
+  }
+
+  public async createExam(createExamDto: CreateExamDto) {
+    const questions = await this.QuestionModel.find({
+      _id: { $in: createExamDto.questions },
+    }).exec();
+
+    const totalPoints = questions.reduce((prev, curr) => {
+      return prev + curr.point;
+    }, 0);
+
+    if (totalPoints !== 100) {
+      throw new BadRequestException('Total points must be equal to 100.');
+    }
+
+    return this.ExamModel.create(createExamDto);
+  }
+
+  public async getUnapprovedExams(instructorId: string) {
+    return this.userService.getUnapprovedExams(instructorId);
+  }
+
+  public async getCompletedExams(studentId: string) {
+    return this.userService.getCompletedExams(studentId);
+  }
+
+  public async getExams(studentId: string) {
+    return this.userService.getExams(studentId);
+  }
+
+  public async getInstructorExams(instructorId: string) {
+    return this.ExamModel.find({ owner: instructorId }).exec();
+  }
+
+  public async updateExam(examId: string, updateExamDto: UpdateExamDto) {
+    return this.ExamModel.findByIdAndUpdate(examId, updateExamDto).exec();
+  }
+
+  public async completeExam(
+    examId: string,
+    studentId: string,
+    answers: string[],
+  ) {
+    const exam = await this.ExamModel.findById(examId).exec();
+    const answeredExam = await this.AnsweredExamModel.create({
+      exam: examId,
+      answer: answers,
+      student: studentId,
+      approved: false,
+    });
+
+    await this.userService.addToUnapprovedExams(exam.owner, answeredExam.id);
+    await this.userService.addToCompletedExams(studentId, answeredExam.id);
+  }
+
+  public async approveExam(
+    examId: string,
+    instructorId: string,
+    point: number,
+  ) {
+    await this.userService.approveExam(examId, instructorId);
+    await this.AnsweredExamModel.findByIdAndUpdate(examId, {
+      totalPoints: point,
+      approved: true,
+    }).exec();
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
   BadRequestException,
   HttpCode,
@@ -167,6 +168,60 @@ export class UserService {
       { new: true },
     )
       .select('wishlist')
+      .exec();
+  }
+
+  public async approveExam(answeredExamId: string, instructorId: string) {
+    const user = await this.UserModel.findById(instructorId)
+      .populate('unapprovedExams')
+      .exec();
+
+    console.log(user);
+
+    const unapprovedExams = user.unapprovedExams.filter(
+      (exam: any) => exam.id !== answeredExamId,
+    );
+
+    await this.UserModel.findByIdAndUpdate(instructorId, {
+      unapprovedExams,
+    }).exec();
+  }
+
+  public async addToUnapprovedExams(
+    instructorId: string,
+    answeredExamId: string,
+  ) {
+    return this.UserModel.findByIdAndUpdate(instructorId, {
+      // @ts-ignore
+      $push: { unapprovedExams: answeredExamId },
+    });
+  }
+
+  public async addToCompletedExams(studentId: string, answeredExamId: string) {
+    return this.UserModel.findByIdAndUpdate(studentId, {
+      // @ts-ignore
+      $push: { completedExams: answeredExamId },
+    });
+  }
+
+  public async getUnapprovedExams(instructorId: string) {
+    return this.UserModel.findById(instructorId)
+      .populate('unapprovedExams')
+      .select('unapprovedExams')
+      .exec();
+  }
+
+  public async getCompletedExams(studentId: string) {
+    return this.UserModel.findById(studentId)
+      .populate('completedExams')
+      .select('completedExams')
+      .exec();
+  }
+
+  public async getExams(studentId: string) {
+    return this.UserModel.findById(studentId)
+      .populate('exams')
+      .select('exams')
       .exec();
   }
 }

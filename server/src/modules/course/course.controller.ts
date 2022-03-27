@@ -24,12 +24,17 @@ import { RoleGuard } from 'src/common/guard/role.guard';
 import { CourseService } from './course.service';
 import { AddCourseSectionDto } from './dto/add-course-section.dto';
 import { AddReviewToCourseDto } from './dto/add-review-to-course.dto';
+import { ApproveExamDto } from './dto/approve-exam.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CreateCourseDto } from './dto/create-course.dto';
+import { CreateExamDto } from './dto/create-exam.dto';
+import { CreateQuestionDto } from './dto/create-question.dto';
 import { CreateSectionContentDto } from './dto/create-section-content.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { UpdateCourseSectionDto } from './dto/update-course-section.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
+import { UpdateExamDto } from './dto/update-exam.dto';
+import { UpdateQuestionDto } from './dto/update-question.dto';
 import { UpdateSectionContentDto } from './dto/update-section-content.dto';
 
 @Controller('courses')
@@ -50,6 +55,209 @@ export class CourseController {
     return {
       message: 'Courses fetched',
       data: { courses },
+    };
+  }
+
+  @Get('get-course/:id')
+  @Roles('USER')
+  public async getCourseById(
+    @Param('id') id: string,
+    @Session() session: SessionDoc,
+  ) {
+    const { courses } = await this.courseService.listPurchasedCourses(
+      session.context.id,
+    );
+
+    const didPurchased = courses.some((course: any) => course.id === id);
+
+    if (!didPurchased) {
+      throw new ForbiddenException('You must purchase the course');
+    }
+
+    const course = await this.courseService.findCourseById(id);
+
+    return {
+      message: 'Course fetched',
+      data: { course },
+    };
+  }
+
+  @Post('questions/create-question')
+  @Roles('INSTRUCTOR')
+  public async createQuestion(
+    @Body() createQuestion: CreateQuestionDto,
+    @Session() session: SessionDoc,
+  ) {
+    const question = await this.courseService.createQuestion({
+      ...createQuestion,
+      owner: session.context.id,
+    });
+
+    return {
+      message: 'Question created',
+      data: { question },
+    };
+  }
+
+  @Get('questions/list-questions')
+  @Roles('INSTRUCTOR')
+  public async listQuestions(@Session() session: SessionDoc) {
+    const questions = await this.courseService.listQuestions(
+      session.context.id,
+    );
+
+    return {
+      message: 'Question created',
+      data: { questions },
+    };
+  }
+
+  @Delete('questions/delete-question/:questionId')
+  @Roles('INSTRUCTOR')
+  public async deleteQuestion(@Param('questionId') questionId: string) {
+    await this.courseService.deleteQuestion(questionId);
+
+    return {
+      message: 'Question deleted',
+      data: {},
+    };
+  }
+
+  @Put('questions/update-question/:questionId')
+  @Roles('INSTRUCTOR')
+  public async updateQuestion(
+    @Body() updateQuestionDto: UpdateQuestionDto,
+    @Param('questionId') questionId: string,
+  ) {
+    const question = await this.courseService.updateQuestion(
+      questionId,
+      updateQuestionDto,
+    );
+
+    return {
+      message: 'Question updated',
+      data: { question },
+    };
+  }
+
+  @Post('exams/create-exam')
+  @Roles('INSTRUCTOR')
+  public async createExam(
+    @Body() createExamDto: CreateExamDto,
+    @Session() session: SessionDoc,
+  ) {
+    const exam = await this.courseService.createExam({
+      ...createExamDto,
+      owner: session.context.id,
+    });
+
+    return {
+      message: 'Exam updated',
+      data: { exam },
+    };
+  }
+
+  @Put('exams/update-exam/:examId')
+  @Roles('INSTRUCTOR')
+  public async updateExam(
+    @Body() updateExamDto: UpdateExamDto,
+    @Param('examId') examId: string,
+  ) {
+    const exam = await this.courseService.updateExam(examId, updateExamDto);
+
+    return {
+      message: 'Exam updated',
+      data: { exam },
+    };
+  }
+
+  @Put('exams/complete-exam/:examId')
+  @Roles('USER')
+  public async completeExam(
+    @Body() answers: string[],
+    @Param('examId') examId: string,
+    @Session() session: SessionDoc,
+  ) {
+    const exam = await this.courseService.completeExam(
+      examId,
+      session.context.id,
+      answers,
+    );
+
+    return {
+      message: 'Exam completed',
+      data: { exam },
+    };
+  }
+
+  @Post('exams/approve-exam/:examId')
+  @Roles('INSTRUCTOR')
+  public async approveExam(
+    @Body() { point }: ApproveExamDto,
+    @Param('examId') examId: string,
+    @Session() session: SessionDoc,
+  ) {
+    const exam = await this.courseService.approveExam(
+      examId,
+      session.context.id,
+      point,
+    );
+
+    return {
+      message: 'Exam approved',
+      data: { exam },
+    };
+  }
+
+  @Get('exams/unapproved-exams')
+  @Roles('INSTRUCTOR')
+  public async getUnapprovedExams(@Session() session: SessionDoc) {
+    const exams = await this.courseService.getUnapprovedExams(
+      session.context.id,
+    );
+
+    return {
+      message: 'Unapproved exams fetched',
+      data: { exams },
+    };
+  }
+
+  @Get('exams/completed-exams')
+  @Roles('USER')
+  public async getCompletedExams(@Session() session: SessionDoc) {
+    const exams = await this.courseService.getCompletedExams(
+      session.context.id,
+    );
+
+    return {
+      message: 'Completed exams fetched',
+      data: { exams },
+    };
+  }
+
+  @Get('exams/exams')
+  @Roles('USER')
+  public async getExams(@Session() session: SessionDoc) {
+    const exams = await this.courseService.getUnapprovedExams(
+      session.context.id,
+    );
+
+    return {
+      message: 'Exams fetched',
+      data: { exams },
+    };
+  }
+
+  @Get('exams/instructor-exams')
+  @Roles('INSTRUCTOR')
+  public async getInstructorExams(@Session() session: SessionDoc) {
+    const exams = await this.courseService.getInstructorExams(
+      session.context.id,
+    );
+
+    return {
+      message: 'Instructor exams fetched',
+      data: { exams },
     };
   }
 
@@ -167,7 +375,7 @@ export class CourseController {
     };
   }
 
-  @Put(':courseId/:courseContentId/sections/:sectionId')
+  @Put('update-course-section/:courseId/:courseContentId/sections/:sectionId')
   @Roles('INSTRUCTOR')
   public async updateCourseSection(
     @Param('courseContentId') courseContentId: string,
@@ -206,10 +414,12 @@ export class CourseController {
   @Roles('INSTRUCTOR')
   public async createSectionContent(
     @Body() createSectionContentDto: CreateSectionContentDto,
+    @Session() session: SessionDoc,
   ) {
-    const sectionContent = await this.courseService.createSectionContent(
-      createSectionContentDto,
-    );
+    const sectionContent = await this.courseService.createSectionContent({
+      ...createSectionContentDto,
+      owner: session.context.id,
+    });
 
     this.logger.log(
       `Section content created [sectionContentId: ${sectionContent._id}]`,
@@ -276,7 +486,7 @@ export class CourseController {
     };
   }
 
-  @Post(':id/thumbnail')
+  @Post('upload-thumbnail/:id/thumbnail')
   @Roles('INSTRUCTOR')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -319,7 +529,7 @@ export class CourseController {
     };
   }
 
-  @Post(':id/reviews')
+  @Post('add-reviews/:id/reviews')
   public async addReviewToCourse(
     @Param('id') id: string,
     @Session() session: SessionDoc,
