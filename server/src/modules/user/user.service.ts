@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
   BadRequestException,
-  HttpCode,
   HttpException,
   HttpStatus,
   Injectable,
@@ -10,6 +9,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { compare } from 'bcryptjs';
 import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
+import { SendMessageDto } from './dto/send-message.dto';
+import { Chat, ChatDocument } from './schema/chat.schema';
+import { Message, MessageDocument } from './schema/message.schema';
 import { User, UserDocument } from './schema/user.schema';
 
 @Injectable()
@@ -17,6 +19,10 @@ export class UserService {
   constructor(
     @InjectModel(User.name)
     private readonly UserModel: Model<UserDocument>,
+    @InjectModel(Chat.name)
+    private readonly ChatModel: Model<ChatDocument>,
+    @InjectModel(Message.name)
+    private readonly MessageModel: Model<MessageDocument>,
   ) {}
 
   public async createUser(createUserDto: CreateUserDto): Promise<UserDocument> {
@@ -222,6 +228,34 @@ export class UserService {
     return this.UserModel.findById(studentId)
       .populate('exams')
       .select('exams')
+      .exec();
+  }
+
+  public addToChats(userId: string, chatId: string) {
+    return this.UserModel.findByIdAndUpdate(userId, {
+      $push: { chats: chatId },
+    });
+  }
+
+  public createChat(participants: string[]) {
+    return this.ChatModel.create({ participants, messages: [] });
+  }
+
+  public async sendMessage(sendMessageDto: SendMessageDto) {
+    const msg = await this.MessageModel.create({
+      sender: sendMessageDto.sender,
+      receiver: sendMessageDto.receiver,
+      content: sendMessageDto.message,
+    });
+    await this.ChatModel.findByIdAndUpdate(sendMessageDto.chatId, {
+      $push: { messages: msg.id },
+    });
+  }
+
+  public async getMessages(chatId: string) {
+    return this.ChatModel.findById(chatId)
+      .populate('messages')
+      .populate('participants', 'email _id')
       .exec();
   }
 }
