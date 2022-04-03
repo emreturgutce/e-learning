@@ -10,6 +10,7 @@ import MyCourses from './screen/My-Courses/MyCourses';
 import Course from './screen/Course/Course';
 import ShoppingCart from './screen/Cart/ShoppingCart';
 import { CoursesProvider } from './context/Course/CourseContext';
+import CreateCourse from './screen/CreateCourse/CreateCourse';
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
           <Route path="/Course/:id" element={<Course />} />
           <Route path="/myCourse" element={<MyCourses />} />
           <Route path="/list" element={<Wishlist />} />
+          <Route path="/CreateCourse" element={<CreateCourse />} />
 
 
         </Routes>

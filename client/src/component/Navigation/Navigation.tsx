@@ -11,11 +11,13 @@ import Badge from '@mui/material/Badge';
 import Popover from '@mui/material/Popover';
 import Typography from '@mui/material/Typography';
 import CartItems from '../Cart/CartItems';
+import { useAuth } from '../../context/Auth/AuthContent';
 
 const Navigation = () => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+  const userAuth = useAuth();
   const [cartItemCount, setCartItemCount] = useState(0)
-  const [isUser, setIsUser] = useState(true)
+  const [isUser, setIsUser] = useState(false)
   const handleOver = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -48,47 +50,57 @@ const Navigation = () => {
           <Box sx={{ flexGrow: 2 }}>
             <SearchBar />
           </Box>
-          <Box sx={{ color: "black" }}>
-            <Link to="/shoppingCart">
-              Cart
-            </Link>
-
-          </Box>
-
-
-          <IconButton aria-describedby={id} onClick={handleOver}>
-            <Badge badgeContent={cartItemCount} color="secondary">
-              <ShoppingCartOutlinedIcon sx={{ fontSize: 24, color: "black" }} />
-            </Badge>
-          </IconButton>
-          <Popover
-
-            id={id}
-            sx={{
-              marginTop: 3
-            }}
-            open={open}
-            anchorEl={anchorEl}
-            onClose={handleClose}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-
-          >
-            <div>
-              <CartItems ></CartItems>
-            </div>
-
-          </Popover>
           {
-            !isUser ? (
+            userAuth?.loggedIn ? (
+              <>
+
+                <Box sx={{ color: "black" }}>
+                  <Link to="/shoppingCart">
+                    Cart
+                  </Link>
+
+                </Box>
+
+
+                <IconButton aria-describedby={id} onClick={handleOver}>
+                  <Badge badgeContent={cartItemCount} color="secondary">
+                    <ShoppingCartOutlinedIcon sx={{ fontSize: 24, color: "black" }} />
+                  </Badge>
+                </IconButton>
+                <Popover
+
+                  id={id}
+                  sx={{
+                    marginTop: 3
+                  }}
+                  open={open}
+                  anchorEl={anchorEl}
+                  onClose={handleClose}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  }}
+
+                >
+                  <div>
+                    <CartItems ></CartItems>
+                  </div>
+
+                </Popover></>
+            ) : null
+          }
+
+          {
+            !userAuth?.loggedIn ? (
               <div>
                 <Button variant="outlined" size="medium" sx={{ marginRight: 1 }}> <Link to="/SignIn">Signin</Link></Button>
-                <Button variant="outlined" size="medium" > <Link to="/SignUp"> Signup</Link></Button>
+                <Button variant="outlined" size="medium" > <Link to="/SignUp"> Signup </Link></Button>
               </div>
             ) :
-              (<Box sx={{ color: "black" }}><Link to="/myCourse">MyCourse</Link></Box>)
+              (<Box sx={{ color: "black" }}>
+                <Link to="/myCourse">MyCourse {userAuth?.user?.email}</Link>
+                <Button variant="outlined" size="medium" onClick={() => { console.log("logout") }}>Logout</Button>
+              </Box>)
 
           }
 

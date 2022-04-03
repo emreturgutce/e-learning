@@ -416,6 +416,7 @@ export class CourseController {
     @Body() createSectionContentDto: CreateSectionContentDto,
     @Session() session: SessionDoc,
   ) {
+    console.log(createSectionContentDto);
     const sectionContent = await this.courseService.createSectionContent({
       ...createSectionContentDto,
       owner: session.context.id,

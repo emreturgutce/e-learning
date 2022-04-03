@@ -35,6 +35,7 @@ export class CreateSectionContentDto {
   duration: number;
 
   @ApiProperty()
+  @IsString()
   @IsOptional()
   exam: string;
 

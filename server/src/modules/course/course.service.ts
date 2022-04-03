@@ -364,7 +364,9 @@ export class CourseService {
     }, 0);
 
     if (totalPoints !== 100) {
-      throw new BadRequestException('Total points must be equal to 100.');
+      throw new BadRequestException(
+        `Total points must be equal to 100.${totalPoints}`,
+      );
     }
 
     return this.ExamModel.create(createExamDto);
