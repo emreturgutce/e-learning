@@ -13,18 +13,30 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import Email from '@mui/icons-material/Email'
 import Lock from '@mui/icons-material/Lock'
-
+import { fetchLogin, fetchPurchasedCourses, fetchWishlist } from '../../api';
+import { useAuth } from '../../context/Auth/AuthContent';
+import { useNavigate } from "react-router-dom";
 
 const theme = createTheme();
 
 const SignIn = () => {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const navigate = useNavigate();
+  const userAuth = useAuth();
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
+    const LoginResponse = await fetchLogin({
+      email: data.get('email')?.toString(),
+      password: data.get('password')?.toString(),
     });
+
+    const user = {
+      email: LoginResponse.data.data.user.email,
+      type: LoginResponse.data.data.user.type,
+      _id: LoginResponse.data.data.user._id
+    }
+    userAuth?.login(user);
+    navigate("/myCourse");
   };
   return (
     <ThemeProvider theme={theme}>
@@ -49,6 +61,7 @@ const SignIn = () => {
               <input
                 type="text"
                 id="Email"
+                name="email"
                 className="ml-2 focus:outline-none focus:none focus:border-none"
                 placeholder="E-Posta"
                 autoComplete="false"
@@ -59,6 +72,7 @@ const SignIn = () => {
               <input
                 type="password"
                 id="Password"
+                name='password'
                 className="ml-2 focus:outline-none focus:none focus:border-none"
                 placeholder="Password"
                 autoComplete="false"

@@ -5,15 +5,29 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {
   BrowserRouter,
-
-
 } from "react-router-dom";
-
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
+import { AuthProvider } from './context/Auth/AuthContent';
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 const rootElement = document.getElementById("root");
 ReactDOM.render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>,
+  <QueryClientProvider client={queryClient}>
+    <AuthProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </AuthProvider>
+    <ReactQueryDevtools initialIsOpen={false} />
+  </QueryClientProvider>
+  ,
   rootElement
 );
 

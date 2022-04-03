@@ -87,8 +87,15 @@ export class UserService {
 
   public async listPurchasedCourses(userId: string) {
     return this.UserModel.findById(userId)
-      .populate('courses')
-      .select('courses')
+      .populate({
+        path: 'courses',
+        select: 'title description thumbnail',
+        populate: {
+          path: 'instructor',
+          select: 'firstname lastname -_id',
+        },
+      })
+      .select('courses -_id')
       .exec();
   }
 
