@@ -6,6 +6,7 @@ import {
   COURSE_COLLECTION_NAME,
   EXAM_COLLECTION_NAME,
   USER_COLLECTION_NAME,
+  CHAT_COLLECTION_NAME,
 } from 'src/config/contants';
 import { AnsweredExam } from 'src/modules/course/schema/answered-exam.schema';
 
@@ -127,6 +128,16 @@ export class User {
     ],
   })
   completedExams: string[];
+
+  @Prop({
+    type: [
+      {
+        type: Types.ObjectId,
+        ref: CHAT_COLLECTION_NAME,
+      },
+    ],
+  })
+  chats: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

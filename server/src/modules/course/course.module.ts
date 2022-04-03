@@ -22,7 +22,6 @@ import { CategorySchema } from './schema/category.schema';
 import { ExamSchema } from './schema/exam.schema';
 import { AnsweredExamSchema } from './schema/answered-exam.schema';
 import { QuestionSchema } from './schema/question.schema';
-import { MessagesGateway } from './messages.gateway';
 
 @Module({
   imports: [
@@ -39,7 +38,7 @@ import { MessagesGateway } from './messages.gateway';
     UserModule,
     S3Module,
   ],
-  providers: [CourseService, Logger, MessagesGateway],
+  providers: [CourseService, Logger],
   controllers: [CourseController],
 })
 export class CourseModule {}

@@ -10,6 +10,8 @@ export const SECTION_CONTENT_COLLECTION_NAME = 'Section_Content';
 export const QUESTION_COLLECTION_NAME = 'Question';
 export const EXAM_COLLECTION_NAME = 'Exam';
 export const ANSWERED_EXAM_COLLECTION_NAME = 'AnsweredExam';
+export const CHAT_COLLECTION_NAME = 'Chat';
+export const MESSAGE_COLLECTION_NAME = 'Message';
 
 // Session
 export const SESSION_PREFIX = 'elearning-session:';
