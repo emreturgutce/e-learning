@@ -11,6 +11,7 @@ import Course from './screen/Course/Course';
 import ShoppingCart from './screen/Cart/ShoppingCart';
 import { CoursesProvider } from './context/Course/CourseContext';
 import CreateCourse from './screen/CreateCourse/CreateCourse';
+import ProtectedUserRout from './screen/ProtectedUserRout';
 
 
 function App() {
@@ -21,11 +22,17 @@ function App() {
         <HeaderContainer></HeaderContainer>
         <Routes>
           <Route path="/" element={<HomeScreen />} />
-          <Route path="/shoppingCart" element={<ShoppingCart />} />
+
           <Route path="/SignIn" element={<SignInScreen />} />
           <Route path="/SignUp" element={<SignUpScreen />} />
+
+          <Route path="/shoppingCart" element={<ShoppingCart />} />
           <Route path="/Course/:id" element={<Course />} />
-          <Route path="/myCourse" element={<MyCourses />} />
+          <Route path="/myCourse" element={
+            <ProtectedUserRout user={true}>
+              <MyCourses />
+            </ProtectedUserRout>
+          } />
           <Route path="/list" element={<Wishlist />} />
           <Route path="/CreateCourse" element={<CreateCourse />} />
 
