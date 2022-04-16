@@ -82,4 +82,31 @@ export class AuthController {
       },
     };
   }
+
+  @Get('me')
+  @HttpCode(HttpStatus.OK)
+  public async me(@Session() session: SessionDoc) {
+    return {
+      message: 'Logged in',
+      data: { user: session.context },
+    };
+  }
+
+  @Get('logout')
+  @HttpCode(HttpStatus.OK)
+  public async logout(
+    @Session() session: SessionDoc,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    session.context = null;
+
+    session.destroy(null);
+
+    res.clearCookie('session_token');
+
+    return {
+      message: 'Logged in',
+      data: { user: session.context },
+    };
+  }
 }

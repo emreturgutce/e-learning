@@ -141,7 +141,17 @@ export class UserService {
   }
 
   public async getWishlist(userId: string) {
-    return this.UserModel.findById(userId).select('wishlist').exec();
+    return this.UserModel.findById(userId)
+      .populate({
+        path: 'wishlist',
+        select: 'title description thumbnail',
+        populate: {
+          path: 'instructor',
+          select: 'firstname lastname _id',
+        },
+      })
+      .select('wishlist')
+      .exec();
   }
 
   public async addCourseToWishlist(userId: string, courseId: string) {

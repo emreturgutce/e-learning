@@ -1,13 +1,10 @@
-
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import {
-  BrowserRouter,
-} from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
+import { BrowserRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import { AuthProvider } from './context/Auth/AuthContent';
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,7 +14,7 @@ const queryClient = new QueryClient({
     },
   },
 });
-const rootElement = document.getElementById("root");
+const rootElement = document.getElementById('root');
 ReactDOM.render(
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
@@ -26,9 +23,8 @@ ReactDOM.render(
       </BrowserRouter>
     </AuthProvider>
     <ReactQueryDevtools initialIsOpen={false} />
-  </QueryClientProvider>
-  ,
-  rootElement
+  </QueryClientProvider>,
+  rootElement,
 );
 
 // If you want to start measuring performance in your app, pass a function
