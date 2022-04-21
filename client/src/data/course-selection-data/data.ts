@@ -17,17 +17,20 @@ type dataType2 = {
   total_students: number;
   approved: true;
   content: {
-    id: string;
+    _id: string;
     title: string;
-    section_contents: {
-      id: string;
-      title: string;
-      type: string;
-      video_url: string;
-      duration: number;
-      owner: string;
+    section: {
+      section_contents: {
+        _id: string;
+        title?: string;
+        type: string;
+        video_url?: string;
+        duration?: number;
+        owner: string;
+        __v?: number;
+      }[];
     }[];
-  }[];
+  };
   price: number;
   reviews: {
     id: string;
@@ -448,7 +451,7 @@ export const dataScience: dataType = [
 ];
 const section_contents = [
   {
-    id: "1",
+    _id: "1",
     title: "matematiksel hesap",
     type: "video",
     video_url: "https://www.youtube.com/watch?v=pKMojx5joxs",
@@ -456,7 +459,7 @@ const section_contents = [
     owner: "Ali1",
   },
   {
-    id: "2",
+    _id: "2",
     title: "mantık Module",
     type: "video",
     video_url: "https://www.youtube.com/watch?v=egr98Od0_w8",
@@ -464,7 +467,7 @@ const section_contents = [
     owner: "Ali1",
   },
   {
-    id: "3",
+    _id: "3",
     title: "else-if",
     type: "video",
     video_url: "https://www.youtube.com/watch?v=4Gsw3EzATzI",
@@ -472,7 +475,7 @@ const section_contents = [
     owner: "Ali1",
   },
 ];
-const content = [
+const section = [
   {
     id: "1",
     title: "python-bolum-1",
@@ -491,7 +494,7 @@ export const Courses: dataType2 = [
     preview: "https://www.youtube.com/watch?v=rfscVS0vtbw",
     thumbnail: "https://miro.medium.com/max/1400/1*RJMxLdTHqVBSijKmOO5MAg.jpeg",
     total_students: 10,
-    content: [content[0], content[1]],
+    content: { _id: "1", title: "test", section },
     approved: true,
     reviews: [{ id: "1", name: "Ali", desc: "Test Deneme " }],
     instructor: "Ali1",
@@ -504,7 +507,7 @@ export const Courses: dataType2 = [
     preview: "https://www.youtube.com/watch?v=rfscVS0vtbw",
     thumbnail: "https://miro.medium.com/max/1400/1*RJMxLdTHqVBSijKmOO5MAg.jpeg",
     total_students: 10,
-    content: [content[0], content[1]],
+    content: { _id: "1", title: "test", section },
     approved: true,
     reviews: [
       { id: "1", name: "Ali", desc: "Test Deneme " },

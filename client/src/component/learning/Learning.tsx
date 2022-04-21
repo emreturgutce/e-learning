@@ -5,6 +5,7 @@ import Stack from '@mui/material/Stack';
 import { useCourses } from '../../context/Course/CourseContext';
 import { useQuery } from 'react-query';
 import { fetchPurchasedCourses } from '../../api';
+import { Link } from 'react-router-dom';
 const Learning = () => {
   const datas = useCourses();
   const [myCourses, setMyCourses] = useState(datas?.courses.slice(0, 4));
@@ -27,26 +28,30 @@ const Learning = () => {
         <div className='grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-6'>
           {!(data?.data.data.courses.length == 0) &&
             data?.data.data.courses.map((item: any) => (
-              <a
-                href='#'
-                className='group border-2 border-slate-100 '
-                style={{ borderRadius: 8 }}
-                key={item._id}
-              >
-                <div className='w-full aspect-w-1 aspect-h-1 bg-gray-200 rounded-lg overflow-hidden xl:aspect-w-7 xl:aspect-h-8'>
-                  <img
-                    src='https://i.haber3.com/files/2018/11/7/4965548/4965548_0.jpg'
-                    alt='Tall slender porcelain bottle with natural clay textured body and cork stopper.'
-                    className='w-full h-full object-center object-cover group-hover:opacity-75'
-                  />
+              <Link to={`/Course/${item._id}`} key={item._id}>
+                <div
+
+                  className='group rounded-t-lg border-2 marging p-1 border-slate-100 ' >
+
+                  <div className='w-full aspect-w-1 aspect-h-1 bg-gray-200 rounded-lg overflow-hidden xl:aspect-w-7 xl:aspect-h-8'>
+                    <img
+                      src={item.thumbnail}
+                      alt='Tall slender porcelain bottle with natural clay textured body and cork stopper.'
+                      className='w-full h-full object-center object-cover group-hover:opacity-75'
+                    />
+                  </div>
+                  <p className='mt-1 text-md font-medium  truncate   text-gray-900'>
+                    {item.description}{' '}
+                  </p>
+                  <h3 className='mt-4 text-sm text-gray-700'>
+                    {item.title}- teacher:{item.instructor.firstname}
+                  </h3>
+
+
                 </div>
-                <p className='mt-1 text-md font-medium  truncate   text-gray-900'>
-                  {item.description}{' '}
-                </p>
-                <h3 className='mt-4 text-sm text-gray-700'>
-                  {item.title}- teacher:{item.instructor.firstname}
-                </h3>
-              </a>
+
+              </Link>
+
             ))}
         </div>
         {Math.round(data?.data.data.courses.length / 4) > 0 && (
@@ -63,7 +68,7 @@ const Learning = () => {
           </Stack>
         )}
       </div>
-    </div>
+    </div >
   );
 };
 

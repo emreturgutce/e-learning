@@ -10,7 +10,7 @@ import { height } from '@mui/system';
 import { Courses } from '../../data/course-selection-data/data';
 import { useParams } from 'react-router-dom';
 import { getCourseById } from '../../api';
-import { useQuery } from 'react-query';
+import { useQuery, UseQueryOptions } from 'react-query';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -84,12 +84,18 @@ interface StyledTabProps {
   label: string;
 }
 
+
 const Course = () => {
   const { id } = useParams();
   const [value, setValue] = React.useState(0);
-  const [course, setCourse] = React.useState(Courses[Number(id)])
-  const [content, setContent] = React.useState(course.content[0])
-  const [section, setSection] = React.useState(content.section_contents[0])
+  const [course, setCourse] = React.useState(Courses[Number(1)])
+  const [content, setContent] = React.useState(course.content)
+  const [section, setSection] = React.useState(content.section[0].section_contents[0])
+
+  const { isLoading, error, data } = useQuery(["course", id], () =>
+    getCourseById(id)
+  );
+  if (isLoading) return <div>"lOADİNG"</div>;
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -104,7 +110,7 @@ const Course = () => {
               width='100%'
               height='400px'
               controls={true}
-              url={`https://media.w3.org/2010/05/sintel/trailer_hd.mp4`}
+              url={section.video_url}
             />
           </div>
           <div className=''>
@@ -169,14 +175,19 @@ const Course = () => {
         </div>
 
         <div className='basis-1/4 mr-0'>
-          <CustomizedAccordions
-            content={course.content}
-            title={course.title}
-            setSection={setSection}
-          ></CustomizedAccordions>
+          {
+            data?.data?.course?.content && (
+              <CustomizedAccordions
+                content={data?.data?.course?.content}
+                title={data?.data.course.title}
+                setSection={setSection}
+              ></CustomizedAccordions>
+            )
+          }
+
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

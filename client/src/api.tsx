@@ -17,12 +17,51 @@ type SignupRequest = {
   password: string;
   type: UserType;
 };
+type CourseType = {
+  message: string
+  data: {
+    course: {
+      approved?: false,
+      total_students?: number,
+      reviews?: [],
+      categories?: [],
+      price?: 100,
+      _id?: string,
+      title?: string,
+      description?: string,
+      thumbnail?: string,
+      instructor?: string,
+      __v?: number;
+      content:
+      {
+        _id: string;
+        title?: string;
+        __v?: number;
+        sections: {
+          id: string;
+          title?: string;
+          section_contents: {
+            _id: string;
+            title?: string;
+            type: string;
+            video_url?: string;
+            duration?: number;
+            owner: string;
+            __v?: number
+          }[];
+        }[]
+      },
+    }
+  }
 
-export const getCourseById = async (id: string | undefined) => {
+
+}
+export const getCourseById = async (id: string | undefined): Promise<CourseType> => {
+  console.log("sdğsdıs")
   const { data } = await axios.get(`http://localhost:8080/api/v1.0/courses/get-course/${id}`, {
     withCredentials: true,
   });
-  return { data };
+  return data;
 };
 
 export const getUser = async () => {
