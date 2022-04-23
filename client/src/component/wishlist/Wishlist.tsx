@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { pythonData } from '../../data/course-selection-data/data';
-import Course from '../course/Course';
+import CourseCard from '../course/CourseCard';
 import { useCourses } from '../../context/Course/CourseContext';
-import { fetchWishlistCourses } from '../../api';
+import {fetchWishlistCourses, MyCourse} from '../../api';
 import { useQuery } from 'react-query';
+import {useUserContext} from "../../context/User/UserContext";
 type datatype = {
   id: number;
   img: string;
@@ -18,10 +19,17 @@ type datatype = {
 };
 
 const Wishlist = () => {
+  const userContext = useUserContext();
   const { isLoading, isError, data, error } = useQuery(
     'user:wishlist',
     fetchWishlistCourses,
   );
+  const [wishlist, setWishlist] = useState<MyCourse[]>(data?.data.data.wishlist)
+
+  useEffect(() => {
+    setWishlist(data?.data.data.wishlist);
+    userContext?.setWishlist(data?.data.data.wishlist);
+  }, [data]);
 
   console.log(data);
 
@@ -29,7 +37,7 @@ const Wishlist = () => {
     <div>
       <div className='max-w-2xl mx-auto py-16 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8 w-3/4'>
         <div className='grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8'>
-          {data?.data.data.wishlist?.map((item: any) => (
+          {wishlist?.map((item: any) => (
             <a
               href='#'
               className='group border-2 border-slate-100 overflow-hidden '

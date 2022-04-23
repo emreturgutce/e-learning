@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import { AppBar, IconButton, Toolbar } from '@mui/material';
 import SearchBar from './SearchBar/SearchBar';
@@ -19,6 +19,7 @@ const Navigation = () => {
     null,
   );
   const userAuth = useAuth();
+  const [loggedIn, setLoggedIn] = useState(userAuth?.loggedIn)
   const [cartItemCount, setCartItemCount] = useState(0);
   const [isUser, setIsUser] = useState(false);
   const navigate = useNavigate();
@@ -32,6 +33,10 @@ const Navigation = () => {
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
+
+  useEffect(() => {
+      setLoggedIn(userAuth?.loggedIn)
+  }, [userAuth?.loggedIn])
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -51,7 +56,7 @@ const Navigation = () => {
           <Box sx={{ flexGrow: 2 }}>
             <SearchBar />
           </Box>
-          {userAuth?.loggedIn ? (
+          {loggedIn ? (
             <>
               <Box sx={{ color: 'black' }}>
                 <Link to='/shoppingCart'>Cart</Link>
@@ -84,7 +89,7 @@ const Navigation = () => {
             </>
           ) : null}
 
-          {!userAuth?.loggedIn ? (
+          {!loggedIn ? (
             <div>
               <Button variant='outlined' size='medium' sx={{ marginRight: 1 }}>
                 {' '}
@@ -103,7 +108,7 @@ const Navigation = () => {
                 size='medium'
                 onClick={() => {
                   logoutUser();
-                  userAuth.logout();
+                  userAuth?.logout();
                   navigate('SignIn');
                 }}
               >

@@ -100,7 +100,25 @@ export class UserService {
   }
 
   public async getCart(userId: string) {
-    return this.UserModel.findById(userId).select('cart').exec();
+    return this.UserModel.findById(userId)
+      .populate({
+        path: 'cart',
+        select: 'title description thumbnail price total_students reviews',
+        populate: {
+          path: 'instructor',
+          select: 'firstname lastname _id',
+        },
+      })
+      .populate({
+        path: 'cart',
+        select: 'title description thumbnail price total_students reviews',
+        populate: {
+          path: 'reviews',
+          select: '_id rating',
+        },
+      })
+      .select('cart -_id')
+      .exec();
   }
 
   public async addCourseToCart(userId: string, courseId: string) {

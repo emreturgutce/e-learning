@@ -16,7 +16,6 @@ export class CourseContent {
       {
         title: {
           type: String,
-          unique: true,
         },
         section_contents: [
           {

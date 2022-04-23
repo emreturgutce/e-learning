@@ -125,31 +125,29 @@ const CourseMark = styled.div`
 `;
 type courseType = {
   item: {
-    id: number;
-    img: string;
+    _id: string;
+    thumbnail: string;
     title: string;
-    desc: string;
+    description: string;
     rateScore: number;
-    reviewerNum: string;
+    reviews: string[];
     price: number;
-    onSale?: boolean;
-    onSalePrice?: number;
-    mark?: string | undefined;
+    approved?: boolean;
   }
 }
-const Course = (props: courseType) => {
+const CourseCard = (props: courseType) => {
   let increment = 0;
   let max = 5;
 
   return (
     <div className="border-2 border-slate-100" style={{ borderRadius: 8 }}>
       <CourseImgWrapper>
-        <CourseImg src={props.item.img} alt={props.item.title}></CourseImg>
+        <CourseImg src={props.item.thumbnail} alt={props.item.title}></CourseImg>
       </CourseImgWrapper>
 
       <CourseTextWrapper>
         <CourseTitle>{props.item.title}</CourseTitle>
-        <CourseDes>{props.item.desc}</CourseDes>
+        <CourseDes>{props.item.description}</CourseDes>
 
         <CourseRateWrapper>
           <CourseRateScore>{props.item.rateScore}</CourseRateScore>
@@ -169,23 +167,21 @@ const Course = (props: courseType) => {
               }
             })}
           </CourseRateStars>
-          <CourseRateReviewerNum>({props.item.reviewerNum})</CourseRateReviewerNum>
+          <CourseRateReviewerNum>({props.item.reviews.length})</CourseRateReviewerNum>
         </CourseRateWrapper>
         <PriceWrapper>
-          {props.item.onSale ? (
+          {props.item.approved ? (
             <>
-              <CoursePrice>CA${props.item.onSalePrice}</CoursePrice>&nbsp;&nbsp;
+              <CoursePrice>CA${props.item.price}</CoursePrice>&nbsp;&nbsp;
 
             </>
           ) : (
             <CoursePrice>CA${props.item.price}</CoursePrice>
           )}
         </PriceWrapper>
-
-        {props.item.mark && <CourseMark>{props.item.mark}</CourseMark>}
       </CourseTextWrapper>
     </div>
   );
 };
 
-export default Course;
+export default CourseCard;

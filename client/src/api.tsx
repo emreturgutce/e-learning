@@ -17,6 +17,53 @@ type SignupRequest = {
   password: string;
   type: UserType;
 };
+
+export type Course = {
+  approved: boolean,
+  total_students: number,
+  reviews: string[],
+  categories: string[],
+  price: number,
+  _id: string,
+  title: string,
+  description: string,
+  thumbnail: string,
+  instructor: string,
+  __v: number;
+}
+
+export type CourseCart = {
+  total_students: number,
+  reviews: {
+    _id: string,
+    rating: number,
+  }[],
+  price: number,
+  _id: string,
+  title: string,
+  description: string,
+  thumbnail?: string,
+  instructor: {
+    _id: string,
+    firstname?: string,
+    lastname?: string,
+  }
+}
+
+export type FetchCartResponse = {
+  message: string;
+  data: {
+    cart: CourseCart[],
+  },
+}
+
+type FetchCoursesResponse = {
+  message: string;
+  data: {
+    courses: Course[],
+  }
+}
+
 type CourseType = {
   message: string
   data: {
@@ -57,19 +104,21 @@ type CourseType = {
 
 }
 
+export type MyCourse = {
+  _id: string;
+  title: string;
+  description?: string;
+  thumbnail?: string;
+  instructor: {
+    firstname: string;
+    lastname: string;
+  }
+}
+
 type MyCoursesType = {
   message: string
   data: {
-    courses: {
-      _id: string;
-      title: string;
-      description?: string;
-      thumbnail?: string;
-      instructor: {
-        firstname: string;
-        lastname: string;
-      }
-    }[]
+    courses: MyCourse[]
   }
 }
 export const getCourseById = async (id: string | undefined): Promise<CourseType> => {
@@ -135,3 +184,27 @@ export const fetchWishlistCourses = async () => {
   );
   return { data: response.data };
 };
+
+export const fetchCourses = async (): Promise<FetchCoursesResponse> => {
+  const { data } = await axios.get(
+      `http://localhost:8080/api/v1.0/courses`,
+      { withCredentials: true },
+  );
+  return data;
+}
+
+export const fetchCart = async (): Promise<FetchCartResponse> => {
+  const { data } = await axios.get(
+      `http://localhost:8080/api/v1.0/users/getCart`,
+      { withCredentials: true },
+  );
+  return data;
+}
+
+export const removeFromCart = async (id: string): Promise<FetchCartResponse> => {
+  const { data } = await axios.delete(
+      `http://localhost:8080/api/v1.0/users/removeFromCart/${id}`,
+      { withCredentials: true },
+  );
+  return data;
+}

@@ -37,8 +37,10 @@ const AuthProvider = ({ children }: AuthContextProps) => {
   };
 
   const logout = () => {
+    console.log('LOGOUT')
     setLoggedIn(false);
     setUser(null);
+    console.log(user, loggedIn)
   };
   const values = {
     user,

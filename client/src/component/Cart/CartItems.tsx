@@ -9,6 +9,9 @@ import { Box } from '@mui/system';
 import { js } from "../../data/course-selection-data/data";
 import { Link } from 'react-router-dom';
 import { useCourses } from '../../context/Course/CourseContext'
+import {useUserContext} from "../../context/User/UserContext";
+import {useEffect, useState} from "react";
+import {CourseCart, fetchCart} from "../../api";
 type CartItemsProps = {
   setCartItemCount: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -25,34 +28,38 @@ interface ICourses {
   mark?: string | undefined;
 }
 const CartItems = () => {
+  const userContext = useUserContext()
   const data = useCourses()
-  const courses = (data?.courses.slice(0, 3))
   const [totalMony, setTotalMony] = React.useState(0)
-  React.useEffect(() => {
-    let count = 0;
-    let mony = 0;
-    courses?.map((item) => {
-      mony += item.price;
-      count++;
-    })
-    setTotalMony(mony)
+  const [cart, setCart] = useState<CourseCart[]>([])
 
+  useEffect(() => {
+    fetchCart().then(({ data: { cart } }) => {
+      console.log(cart);
+      setCart(cart);
+      userContext?.setCart(cart);
+    })
   }, [])
+
+  useEffect(() => {
+    setTotalMony(cart.reduce((prev, curr) => prev + curr.price, 0));
+  }, [cart])
+
 
   return (
     <div>
 
       <Card sx={{ maxWidth: 345 }}>
-        {!(courses?.length == 0) &&
-          courses?.map((item) => (
+        {!(cart?.length == 0) &&
+          cart?.map((item) => (
 
-            <CardContent key={item.id}>
+            <CardContent key={item._id}>
               <Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={2} >
                 <Box gridColumn="span 4">
                   <CardMedia
                     component="img"
                     height="80"
-                    image={item.img}
+                    image={item.thumbnail ?? "https://img-c.udemycdn.com/course/240x135/1352468_3d97_7.jpg"}
                     alt="Test"
 
                   />
@@ -61,7 +68,7 @@ const CartItems = () => {
                   {item.title}
                 </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {item.desc}
+                    {item.description}
                   </Typography>
 
                 </Box>
@@ -71,10 +78,11 @@ const CartItems = () => {
         }
 
         <CardActions>
-          <Typography >{totalMony}</Typography>
+          <div className="flex justify-between w-full">
+            <Typography >{totalMony}</Typography>
 
-          <Link to="/shoppingCart">CART</Link>
-
+            <Link to="/shoppingCart">CART</Link>
+          </div>
         </CardActions>
       </Card>
     </div>

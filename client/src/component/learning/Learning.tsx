@@ -4,19 +4,22 @@ import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import { useCourses } from '../../context/Course/CourseContext';
 import { useQuery } from 'react-query';
-import { fetchPurchasedCourses } from '../../api';
+import {fetchPurchasedCourses, MyCourse} from '../../api';
 import { Link } from 'react-router-dom';
+import {useUserContext} from "../../context/User/UserContext";
 const Learning = () => {
 
 
+  const userContext = useUserContext();
 
   const { status, isError, data, error } = useQuery(
     'user:courses',
     fetchPurchasedCourses,
   );
-  const [myCourses, setMyCourses] = useState(data?.data.courses.slice(0, 4));
+  const [myCourses, setMyCourses] = useState<MyCourse[]>(data?.data.courses.slice(0, 4) ?? []);
   useEffect(() => {
-    setMyCourses(data?.data.courses.slice(0, 4));
+    setMyCourses(data?.data.courses.slice(0, 4) ?? []);
+    userContext?.setMyCourses(data?.data.courses ?? [])
   }, [data])
 
   if (status === "loading") return <div>"lOADİNG"</div>
@@ -28,7 +31,7 @@ const Learning = () => {
     event: React.ChangeEvent<unknown>,
     value: number,
   ) => {
-    setMyCourses(data?.data.courses.slice(value * 4 - 4, value * 4));
+    setMyCourses(data?.data.courses.slice(value * 4 - 4, value * 4) ?? []);
   };
 
   return (

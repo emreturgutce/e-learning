@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
-import Course from "../course/Course";
+import CourseCard from "../course/CourseCard";
 type arrowProps = {
   direction: string;
 }
@@ -108,7 +108,7 @@ const Carousel = (data: datatype) => {
         chevronWidth={chevronWidth}
       >
         {data.data.map((item) => (
-          <Course item={item} key={item.id} />
+            {/*<CourseCard item={item} key={item.id} />*/}
         ))}
       </ItemsCarousel>
     </CourseWrapper>
