@@ -56,8 +56,23 @@ type CourseType = {
 
 
 }
+
+type MyCoursesType = {
+  message: string
+  data: {
+    courses: {
+      _id: string;
+      title: string;
+      description?: string;
+      thumbnail?: string;
+      instructor: {
+        firstname: string;
+        lastname: string;
+      }
+    }[]
+  }
+}
 export const getCourseById = async (id: string | undefined): Promise<CourseType> => {
-  console.log("sdğsdıs")
   const { data } = await axios.get(`http://localhost:8080/api/v1.0/courses/get-course/${id}`, {
     withCredentials: true,
   });
@@ -105,12 +120,12 @@ export const fetchWishlist = async () => {
   return { data: response.data };
 };
 
-export const fetchPurchasedCourses = async () => {
-  const response = await axios.get(
+export const fetchPurchasedCourses = async (): Promise<MyCoursesType> => {
+  const { data } = await axios.get(
     `http://localhost:8080/api/v1.0/courses/list-purchased-courses`,
     { withCredentials: true },
   );
-  return { data: response.data };
+  return data;
 };
 
 export const fetchWishlistCourses = async () => {

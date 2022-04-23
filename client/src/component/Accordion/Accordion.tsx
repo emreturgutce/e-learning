@@ -105,7 +105,7 @@ type accordionType = {
     duration?: number;
     owner: string;
     __v?: number
-  }>>;
+  } | undefined>>;
 }
 export default function CustomizedAccordions(props: accordionType) {
   const [expanded, setExpanded] = React.useState<string | false>('panel1');

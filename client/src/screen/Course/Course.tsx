@@ -87,14 +87,16 @@ interface StyledTabProps {
 
 const Course = () => {
   const { id } = useParams();
-  const [value, setValue] = React.useState(0);
-  const [course, setCourse] = React.useState(Courses[Number(1)])
-  const [content, setContent] = React.useState(course.content)
-  const [section, setSection] = React.useState(content.section[0].section_contents[0])
-
   const { isLoading, error, data } = useQuery(["course", id], () =>
     getCourseById(id)
   );
+
+  const [value, setValue] = React.useState(0);
+  const [course, setCourse] = React.useState(Courses[Number(1)])
+  const [content, setContent] = React.useState(data?.data?.course?.content)
+  const [section, setSection] = React.useState(content?.sections[0].section_contents[0])
+
+
   if (isLoading) return <div>"lOADİNG"</div>;
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -110,7 +112,7 @@ const Course = () => {
               width='100%'
               height='400px'
               controls={true}
-              url={section.video_url}
+              url={section?.video_url}
             />
           </div>
           <div className=''>
