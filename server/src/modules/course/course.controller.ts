@@ -36,6 +36,7 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { UpdateSectionContentDto } from './dto/update-section-content.dto';
+import {PurchaseCourseDto} from "./dto/purchase-course.dto";
 
 @Controller('courses')
 @UseGuards(AuthGuard, RoleGuard)
@@ -624,18 +625,20 @@ export class CourseController {
     };
   }
 
-  @Get('purchase-course/:id')
+  @Post('purchase-course')
   @Roles('USER')
   public async purchaseCourse(
-    @Param('id') courseId: string,
     @Session() session: SessionDoc,
+    @Body() purchaseCourseDto: PurchaseCourseDto,
   ) {
     const { id: userId } = session.context;
 
-    await this.courseService.purchaseCourse(userId, courseId);
+    for await (const course of purchaseCourseDto.ids) {
+      await this.courseService.purchaseCourse(userId, course);
+    }
 
     this.logger.log(
-      `Course purchased [courseId: ${courseId}] by user [userId: ${userId}]`,
+      `Course purchased [courseIds: ${purchaseCourseDto.ids}] by user [userId: ${userId}]`,
       CourseController.name,
     );
 

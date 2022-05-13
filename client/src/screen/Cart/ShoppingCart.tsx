@@ -4,7 +4,7 @@ import { Star, StarHalf } from "@mui/icons-material";
 import styled from "styled-components";
 import Box from '@mui/material/Box';
 import {Button, CardMedia, Container, Typography } from "@mui/material";
-import {CourseCart, fetchCart, removeFromCart} from "../../api";
+import {CourseCart, fetchCart, purchaseCourses, removeFromCart} from "../../api";
 import {useUserContext} from "../../context/User/UserContext";
 
 const CourseRateStars = styled.div`
@@ -96,7 +96,14 @@ const ShoppingCart = () => {
     }
   }
 
-  const purchaseCourse = async () => {}
+  const purchaseCourse = async () => {
+    try {
+      const ids = cart.map((c) => c._id)
+      await purchaseCourses(ids)
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   return (
     <div>

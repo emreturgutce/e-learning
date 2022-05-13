@@ -208,3 +208,21 @@ export const removeFromCart = async (id: string): Promise<FetchCartResponse> => 
   );
   return data;
 }
+
+export const addToCart = async (courseId: string): Promise<void> => {
+  const { data } = await axios.post(
+      `http://localhost:8080/api/v1.0/users/addCourseToCart/${courseId}`,
+      null,
+      { withCredentials: true },
+  );
+  return data;
+}
+
+export const purchaseCourses = async (courseIds: string[]): Promise<void> => {
+  const { data } = await axios.post(
+      `http://localhost:8080/api/v1.0/courses/purchase-course`,
+      { ids: courseIds },
+      { withCredentials: true },
+  );
+  return data;
+}

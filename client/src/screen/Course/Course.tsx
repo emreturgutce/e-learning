@@ -8,7 +8,7 @@ import { styled } from '@mui/material/styles';
 import ReactPlayer from 'react-player';
 import { height } from '@mui/system';
 import { Courses } from '../../data/course-selection-data/data';
-import { useParams } from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import { getCourseById } from '../../api';
 import { useQuery, UseQueryOptions } from 'react-query';
 
@@ -90,11 +90,16 @@ const Course = () => {
   const { isLoading, error, data } = useQuery(["course", id], () =>
     getCourseById(id)
   );
+  const navigate = useNavigate()
 
   const [value, setValue] = React.useState(0);
   const [course, setCourse] = React.useState(Courses[Number(1)])
   const [content, setContent] = React.useState(data?.data?.course?.content)
   const [section, setSection] = React.useState(content?.sections[0].section_contents[0])
+
+  if (error) {
+    navigate("/")
+  }
 
 
   if (isLoading) return <div>"lOADİNG"</div>;

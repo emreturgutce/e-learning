@@ -1,9 +1,13 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 
 import { Star, StarHalf } from "@mui/icons-material";
 
 import styled from "styled-components";
 import tw from 'twin.macro';
+import {IconButton} from "@mui/material";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import {addToCart, CourseCart, fetchCart} from "../../api";
+import {useUserContext} from "../../context/User/UserContext";
 
 const Container = styled.div`
   display: flex;
@@ -136,8 +140,35 @@ type courseType = {
   }
 }
 const CourseCard = (props: courseType) => {
+  const userContext = useUserContext()
+  const [cart, setCart] = useState<CourseCart[]>([])
+  const [isInCart, setIsInCart] = useState<boolean>(false)
   let increment = 0;
   let max = 5;
+
+  useEffect(() => {
+    fetchCart().then(({ data: { cart } }) => {
+      setCart(cart);
+      userContext?.setCart(cart);
+      setIsInCart(isInCartFn(props.item._id))
+      console.log(cart, isInCart, props.item._id)
+    })
+  }, [])
+
+  const handleAddToCart = async (courseId: string) => {
+    try {
+      await addToCart(courseId)
+      fetchCart().then(({ data: { cart } }) => {
+        setCart(cart);
+        userContext?.setCart(cart);
+        setIsInCart(isInCartFn(props.item._id))
+      })
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  const isInCartFn = (courseId: string) => !!cart.find((c) => c._id === courseId);
 
   return (
     <div className="border-2 border-slate-100" style={{ borderRadius: 8 }}>
@@ -170,14 +201,24 @@ const CourseCard = (props: courseType) => {
           <CourseRateReviewerNum>({props.item.reviews.length})</CourseRateReviewerNum>
         </CourseRateWrapper>
         <PriceWrapper>
-          {props.item.approved ? (
-            <>
-              <CoursePrice>CA${props.item.price}</CoursePrice>&nbsp;&nbsp;
-
-            </>
-          ) : (
+          <div className="flex justify-between items-center w-full">
             <CoursePrice>CA${props.item.price}</CoursePrice>
-          )}
+            {
+              isInCart ? (
+                  <IconButton disabled onClick={() => handleAddToCart(props.item._id)}>
+                    <ShoppingCartOutlinedIcon
+                        sx={{ fontSize: 24, color: 'black' }}
+                    />
+                  </IconButton>
+              ) : (
+                  <IconButton onClick={() => handleAddToCart(props.item._id)}>
+                    <ShoppingCartOutlinedIcon
+                        sx={{ fontSize: 24, color: 'black' }}
+                    />
+                  </IconButton>
+              )
+            }
+          </div>
         </PriceWrapper>
       </CourseTextWrapper>
     </div>
