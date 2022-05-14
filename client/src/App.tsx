@@ -14,6 +14,7 @@ import ProtectedUserRout from './screen/ProtectedUserRout';
 import { useAuth } from './context/Auth/AuthContent';
 import { getUser } from './api';
 import { useQuery } from 'react-query';
+import {CourseDetail} from "./screen/Course/CourseDetail";
 
 function App() {
   const userAuth = useAuth();
@@ -38,6 +39,7 @@ function App() {
 
           <Route path='/shoppingCart' element={<ShoppingCart />} />
           <Route path='/Course/:id' element={<Course />} />
+          <Route path='/course-detail/:id' element={<CourseDetail />} />
           <Route
             path='/myCourse'
             element={

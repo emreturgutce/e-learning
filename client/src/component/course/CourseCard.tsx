@@ -73,11 +73,11 @@ const CourseDes = styled.div`
   white-space: nowrap;
 `;
 
-const CourseRateWrapper = styled.div`
+export const CourseRateWrapper = styled.div`
   display: flex;
   margin-bottom: 0.4rem;
 `;
-const CourseRateScore = styled.span`
+export const CourseRateScore = styled.span`
   margin-right: 0.4rem;
   color: #b4690e;
   font-weight: 700;
@@ -85,11 +85,11 @@ const CourseRateScore = styled.span`
   letter-spacing: -0.02rem;
   font-size: 1rem;
 `;
-const CourseRateStars = styled.div`
+export const CourseRateStars = styled.div`
   display: flex;
   align-props.items: center;
 `;
-const CourseRateReviewerNum = styled.span`
+export const CourseRateReviewerNum = styled.span`
   color: #6a6f73;
   margin-left: 0.4rem;
   font-weight: 400;

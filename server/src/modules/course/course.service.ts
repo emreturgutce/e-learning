@@ -232,6 +232,21 @@ export class CourseService {
       .exec();
   }
 
+  public findCourseDetailById(id: string) {
+    return this.CourseModel.findById(id)
+      .populate({
+        path: 'content',
+        populate: {
+          path: 'sections',
+          populate: {
+            path: 'section_contents',
+            select: 'title type',
+          },
+        },
+      })
+      .exec();
+  }
+
   public async uploadCourseThumbnail(courseId: string, file: Buffer) {
     const path = `courses/${courseId}/thumbnails/${nanoid(10)}.webp`;
     const imageUrl = this.s3Service.generateFileUrl(path);

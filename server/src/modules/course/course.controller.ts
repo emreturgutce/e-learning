@@ -83,6 +83,17 @@ export class CourseController {
     };
   }
 
+  @Get('get-course-detail/:id')
+  @Roles('USER')
+  public async getCourseDetailById(@Param('id') id: string) {
+    const course = await this.courseService.findCourseDetailById(id);
+
+    return {
+      message: 'Course fetched',
+      data: { course },
+    };
+  }
+
   @Post('questions/create-question')
   @Roles('INSTRUCTOR')
   public async createQuestion(

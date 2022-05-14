@@ -5,7 +5,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
-import ReactPlayer from 'react-player';
+import ReactPlayer  from 'react-player';
 import { height } from '@mui/system';
 import { Courses } from '../../data/course-selection-data/data';
 import {useNavigate, useParams} from 'react-router-dom';
@@ -98,7 +98,7 @@ const Course = () => {
   const [section, setSection] = React.useState(content?.sections[0].section_contents[0])
 
   if (error) {
-    navigate("/")
+    navigate(`/course-detail/${id}`)
   }
 
 

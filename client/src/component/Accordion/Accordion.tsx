@@ -9,7 +9,7 @@ import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import CssBaseline from '@mui/material/CssBaseline';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Box from '@mui/material/Box';
@@ -17,6 +17,8 @@ import Container from '@mui/material/Container';
 import Slide from '@mui/material/Slide';
 import { Button } from '@mui/material';
 import { Link } from 'react-router-dom';
+import _ from 'lodash';
+
 interface Props {
   /**
    * Injected by the documentation to work in an iframe.
@@ -77,6 +79,7 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
 type accordionType = {
+  isDetail?: boolean,
   content:
   {
     _id: string;
@@ -85,7 +88,7 @@ type accordionType = {
     sections: {
       id: string;
       title?: string;
-      section_contents: {
+      section_contents?: {
         _id: string;
         title?: string;
         type: string;
@@ -97,7 +100,7 @@ type accordionType = {
     }[]
   },
   title?: string;
-  setSection: React.Dispatch<React.SetStateAction<{
+  setSection?: React.Dispatch<React.SetStateAction<{
     _id: string;
     title?: string;
     type: string;
@@ -125,32 +128,66 @@ export default function CustomizedAccordions(props: accordionType) {
             <Typography>{props.title}</Typography>
           </Toolbar>
 
-          <Box sx={{ overflow: 'auto', height: 800 }}>
-            {
-              props.content.sections.map(
-                (item, index) => (
-                  < Accordion expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}>
-                    <AccordionSummary aria-controls={`panel${index}d-content`} id={`panel${index}d-header`}>
-                      <Typography>{item.title}</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      {item?.section_contents && item.section_contents.map((section, index) => (
-                        <div>
-                          <Button onClick={() => props.setSection(item.section_contents[index])}>  {section.title}</Button>
-                        </div>
+          {
+            props.isDetail ? (
+                <Box sx={{ overflow: 'auto' }}>
+                  {
+                    props.content.sections.map(
+                        (item, index) => (
+                            < Accordion expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}>
+                              <AccordionSummary aria-controls={`panel${index}d-content`} id={`panel${index}d-header`}>
+                                <Typography>{item.title}</Typography>
+                              </AccordionSummary>
+                              <AccordionDetails>
+                                {item?.section_contents && item.section_contents.map((section, index) => (
+                                    <div style={{padding: "0.4rem 0", display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
+                                      {
+                                        section.type === "VIDEO" ? (
+                                            <PlayCircleIcon fontSize={"small"}/>
+                                        ) : (
+                                            <PlayCircleIcon/>
+                                        )
+                                      }
+                                      {
+                                        section.title && (
+                                              <p className="ml-3">{_.capitalize(section.title)}</p>
+                                          )
+                                      }
+                                    </div>
 
-                      ))}
+                                ))}
 
-                    </AccordionDetails>
-                  </Accordion>
-                )
-              )
-            }
+                              </AccordionDetails>
+                            </Accordion>
+                        )
+                    )
+                  }
+                </Box>
+            ) : (
+                <Box sx={{ overflow: 'auto', height: 800 }}>
+                  {
+                    props.content.sections.map(
+                        (item, index) => (
+                            < Accordion expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}>
+                              <AccordionSummary aria-controls={`panel${index}d-content`} id={`panel${index}d-header`}>
+                                <Typography>{item.title}</Typography>
+                              </AccordionSummary>
+                              <AccordionDetails>
+                                {item?.section_contents && item.section_contents.map((section, index) => (
+                                    <div>
+                                      <Button onClick={() => (props.setSection && item.section_contents) && props.setSection(item.section_contents[index])}>  {section.title}</Button>
+                                    </div>
 
+                                ))}
 
-
-
-          </Box>
+                              </AccordionDetails>
+                            </Accordion>
+                        )
+                    )
+                  }
+                </Box>
+            )
+          }
 
         </React.Fragment>
       }

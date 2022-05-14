@@ -3,7 +3,7 @@ import Footer from "../component/Footer/Footer";
 
 const FooterContainer = () => {
   return (
-    <Footer />
+      <Footer />
   );
 };
 

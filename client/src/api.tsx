@@ -104,6 +104,36 @@ type CourseType = {
 
 }
 
+
+type CourseDetailType = {
+  message: string
+  data: {
+    course: {
+      approved?: false,
+      total_students?: number,
+      reviews?: [],
+      categories?: [],
+      price?: 100,
+      _id?: string,
+      title?: string,
+      description?: string,
+      thumbnail?: string,
+      instructor?: string,
+      __v?: number;
+      content:
+          {
+            _id: string;
+            title?: string;
+            __v?: number;
+            sections: {
+              id: string;
+              title?: string;
+            }[]
+          },
+    }
+  }
+}
+
 export type MyCourse = {
   _id: string;
   title: string;
@@ -165,7 +195,7 @@ export const fetchWishlist = async () => {
     `http://localhost:8080/api/v1.0/users/getWishlist`,
     { withCredentials: true },
   );
-  //console.log(response.data);
+  //console.log(response);
   return { data: response.data };
 };
 
@@ -222,6 +252,27 @@ export const purchaseCourses = async (courseIds: string[]): Promise<void> => {
   const { data } = await axios.post(
       `http://localhost:8080/api/v1.0/courses/purchase-course`,
       { ids: courseIds },
+      { withCredentials: true },
+  );
+  return data;
+}
+export const getCourseDetailById = async (id: string | undefined): Promise<CourseDetailType> => {
+  const { data } = await axios.get(`http://localhost:8080/api/v1.0/courses/get-course-detail/${id}`, {
+    withCredentials: true,
+  });
+  return data;
+};
+export const addToWishlist = async (courseId: string): Promise<void> => {
+  const { data } = await axios.post(
+      `http://localhost:8080/api/v1.0/users/addCourseToWishlist/${courseId}`,
+      null,
+      { withCredentials: true },
+  );
+  return data;
+}
+export const removeFromWishlist = async (courseId: string): Promise<void> => {
+  const { data } = await axios.delete(
+      `http://localhost:8080/api/v1.0/users/removeFromWishlist/${courseId}`,
       { withCredentials: true },
   );
   return data;
