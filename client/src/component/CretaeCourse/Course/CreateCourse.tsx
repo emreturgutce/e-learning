@@ -10,54 +10,57 @@ const CreateCourse = () => {
     <Container sx={{ marginTop: 10, width: "80%", justifyItems: "center", justifyContent: "center" }}>
       <Box sx={{}}>
         <Typography variant="h6" gutterBottom>
-          Course
+          Kurs Oluşturma
         </Typography>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={12}>
             <TextField
               required
-              id="cardName"
-              label="Name on card"
+              id="title"
+              label="Kurs Başlığı"
               fullWidth
-              autoComplete="cc-name"
               variant="standard"
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={12}>
             <TextField
               required
-              id="cardNumber"
-              label="Card number"
+              id="description"
+              label="Kurs Açıklaması"
               fullWidth
-              autoComplete="cc-number"
               variant="standard"
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={12}>
             <TextField
               required
-              id="expDate"
-              label="Expiry date"
+              id="price"
+              label="Kurs Fiyatı"
               fullWidth
-              autoComplete="cc-exp"
+              variant="standard"
+              type="number"
+            />
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <TextField
+              id="thumbnail"
+              label="Kurs Resmi"
+              fullWidth
               variant="standard"
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={12}>
             <TextField
-              required
-              id="cvv"
-              label="CVV"
-              helperText="Last three digits on signature strip"
-              fullWidth
-              autoComplete="cc-csc"
-              variant="standard"
+                id="preview"
+                label="Kurs Önizleme Videosu"
+                fullWidth
+                variant="standard"
             />
           </Grid>
           <Grid item xs={12}>
             <FormControlLabel
               control={<Checkbox color="secondary" name="saveCard" value="yes" />}
-              label="Remember credit card details for next time"
+              label="Bu aşama tamamlandıktan sonra bir daha güncellenemez!"
             />
           </Grid>
         </Grid>

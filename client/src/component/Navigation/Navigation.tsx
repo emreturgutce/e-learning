@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import CartItems from '../Cart/CartItems';
 import { useAuth } from '../../context/Auth/AuthContent';
 import { logoutUser } from '../../api';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const Navigation = () => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -51,17 +52,15 @@ const Navigation = () => {
       >
         <Toolbar disableGutters sx={{ my: 'auto', gap: 1 }}>
           <Box sx={{ color: 'black' }}>
-            <Link to='/'>Udemy</Link>
+            <Link to='/'>
+                <img src="/logo-udemy.svg" alt="Udemy" width="91px" height="34px"/>
+            </Link>
           </Box>
           <Box sx={{ flexGrow: 2 }}>
             <SearchBar />
           </Box>
           {loggedIn ? (
             <>
-              <Box sx={{ color: 'black' }}>
-                <Link to='/shoppingCart'>Cart</Link>
-              </Box>
-
               <IconButton aria-describedby={id} onClick={handleOver}>
                 <Badge badgeContent={cartItemCount} color='secondary'>
                   <ShoppingCartOutlinedIcon
@@ -102,18 +101,16 @@ const Navigation = () => {
             </div>
           ) : (
             <Box sx={{ color: 'black' }}>
-              <Link to='/myCourse'>MyCourse {userAuth?.user?.email}</Link>
-              <Button
-                variant='outlined'
-                size='medium'
+              <Link to='/myCourse' style={{marginRight: '12px'}}>Kurslarım</Link>
+              <IconButton
                 onClick={() => {
                   logoutUser();
                   userAuth?.logout();
                   navigate('SignIn');
                 }}
               >
-                Logout
-              </Button>
+                  <LogoutIcon/>
+              </IconButton>
             </Box>
           )}
         </Toolbar>

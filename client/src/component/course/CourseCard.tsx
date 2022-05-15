@@ -24,7 +24,6 @@ const CourseImgWrapper = styled.div`
   ${tw`
   w-full 
   bg-gray-200 
-  rounded-lg 
   overflow-hidden 
 `}
   
@@ -41,6 +40,7 @@ const CourseImg = styled.img`
 `;
 
 const CourseTextWrapper = styled.div`
+  padding: 12px 14px;
   font-size: 1.4rem;
   font-weight: 400;
   line-height: 1.4;
@@ -48,7 +48,6 @@ const CourseTextWrapper = styled.div`
 `;
 const CourseTitle = styled.h3`
   font-size: 1rem;
-  height: 40px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
@@ -74,6 +73,7 @@ const CourseDes = styled.div`
 `;
 
 export const CourseRateWrapper = styled.div`
+  align-items: center;
   display: flex;
   margin-bottom: 0.4rem;
 `;
@@ -81,7 +81,6 @@ export const CourseRateScore = styled.span`
   margin-right: 0.4rem;
   color: #b4690e;
   font-weight: 700;
-  line-height: 1.2;
   letter-spacing: -0.02rem;
   font-size: 1rem;
 `;
@@ -171,7 +170,7 @@ const CourseCard = (props: courseType) => {
   const isInCartFn = (courseId: string) => !!cart.find((c) => c._id === courseId);
 
   return (
-    <div className="border-2 border-slate-100" style={{ borderRadius: 8 }}>
+    <div className="border-slate-100" style={{boxShadow:'0 0 1px 1px rgb(28 29 31 / 10%), 0 3px 1px 0 rgb(28 29 31 / 10%)'}}>
       <CourseImgWrapper>
         <CourseImg src={props.item.thumbnail} alt={props.item.title}></CourseImg>
       </CourseImgWrapper>
@@ -202,7 +201,7 @@ const CourseCard = (props: courseType) => {
         </CourseRateWrapper>
         <PriceWrapper>
           <div className="flex justify-between items-center w-full">
-            <CoursePrice>CA${props.item.price}</CoursePrice>
+            <CoursePrice>₺{props.item.price}</CoursePrice>
             {
               isInCart ? (
                   <IconButton disabled onClick={() => handleAddToCart(props.item._id)}>

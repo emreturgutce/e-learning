@@ -6,8 +6,8 @@ import {
 } from 'src/config/contants';
 
 export enum QuestionType {
-  OPEN_ENDED,
-  MULTIPLE_CHOICES_SINGLE_ANSWER,
+  OPEN_ENDED = 'OPEN_ENDED',
+  MULTIPLE_CHOICES_SINGLE_ANSWER = 'MULTIPLE_CHOICES_SINGLE_ANSWER',
 }
 
 export type QuestionDocument = Question & Document;
