@@ -68,7 +68,7 @@ const CartItems = () => {
                   {item.title}
                 </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {item.description}
+                    {item.description.substring(0, 25)}
                   </Typography>
 
                 </Box>

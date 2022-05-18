@@ -15,6 +15,7 @@ const Learning = () => {
   const { status, isError, data, error } = useQuery(
     'user:courses',
     fetchPurchasedCourses,
+    { staleTime: 0 }
   );
   const [myCourses, setMyCourses] = useState<MyCourse[]>(data?.data.courses.slice(0, 4) ?? []);
   useEffect(() => {

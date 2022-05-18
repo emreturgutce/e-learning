@@ -5,8 +5,6 @@ import {
   SECTION_CONTENT_COLLECTION_NAME,
   USER_COLLECTION_NAME,
 } from 'src/config/contants';
-import { SectionContent } from './section-content.schema';
-
 export type CourseContentDocument = CourseContent & Document;
 
 @Schema({ collection: COURSE_CONTENT_COLLECTION_NAME })
@@ -23,6 +21,9 @@ export class CourseContent {
             ref: SECTION_CONTENT_COLLECTION_NAME,
           },
         ],
+        order: {
+          type: Number,
+        },
       },
     ],
   })
@@ -30,6 +31,7 @@ export class CourseContent {
     id: string;
     title: string;
     section_contents: string[];
+    order: number;
   }[];
 
   @Prop({

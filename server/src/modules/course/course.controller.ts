@@ -36,7 +36,8 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { UpdateSectionContentDto } from './dto/update-section-content.dto';
-import {PurchaseCourseDto} from "./dto/purchase-course.dto";
+import { PurchaseCourseDto } from './dto/purchase-course.dto';
+import { CreateExamV2Dto } from './dto/create-exam-v2.dto';
 
 @Controller('courses')
 @UseGuards(AuthGuard, RoleGuard)
@@ -84,7 +85,6 @@ export class CourseController {
   }
 
   @Get('get-course-detail/:id')
-  @Roles('USER')
   public async getCourseDetailById(@Param('id') id: string) {
     const course = await this.courseService.findCourseDetailById(id);
 
@@ -165,6 +165,32 @@ export class CourseController {
 
     return {
       message: 'Exam updated',
+      data: { exam },
+    };
+  }
+
+  @Post('exams/create-exam/v2')
+  @Roles('INSTRUCTOR')
+  public async createExamV2(
+    @Body() createExamDto: CreateExamV2Dto,
+    @Session() session: SessionDoc,
+  ) {
+    const questionIds: string[] = [];
+    for await (const question of createExamDto.questions) {
+      const questionDoc = await this.courseService.createQuestion({
+        ...question,
+        owner: session.context.id,
+      });
+      questionIds.push(questionDoc._id);
+    }
+
+    const exam = await this.courseService.createExam({
+      questions: questionIds,
+      owner: session.context.id,
+    });
+
+    return {
+      message: 'Exam created.',
       data: { exam },
     };
   }

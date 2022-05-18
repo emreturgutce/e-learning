@@ -37,7 +37,6 @@ export class Question {
 
   @Prop({
     type: String,
-    required: true,
   })
   answer: string;
 

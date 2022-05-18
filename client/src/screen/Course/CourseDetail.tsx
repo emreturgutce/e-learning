@@ -25,6 +25,8 @@ export const CourseDetail = () => {
 
     const isWishlistFn = () => setIsWishlist(!!wishlist?.find((u) => u._id === id));
 
+    console.log(data);
+
     useEffect(() => {
         fetchWishlist().then(({data: { data: { wishlist } }}) => {
             userContext?.setWishlist(wishlist);
@@ -34,6 +36,10 @@ export const CourseDetail = () => {
             console.log(wishlist, isWishlist, id)
         })
     }, [])
+
+    useEffect(() => {
+        isWishlistFn()
+    }, [wishlist])
 
     const handleFavorite = async () => {
         try {
@@ -86,8 +92,8 @@ export const CourseDetail = () => {
         <div>
             <div className="text-white" style={{backgroundColor: "#1c1d1f", width: "100%"}}>
                 <div style={{padding: "2rem 12rem", maxWidth: "85rem"}}>
-                    <h1 style={{fontSize: "2.2rem", marginBottom: "0.8rem"}}>NestJS Zero to Hero - Modern TypeScript Back-end Development</h1>
-                    <div style={{fontSize: "1.3rem", marginBottom: "1rem"}}>Develop and deploy enterprise back-end applications following best practices using Node.js and TypeScript</div>
+                    <h1 style={{fontSize: "2.2rem", marginBottom: "0.8rem"}}>{data?.data.course.title}</h1>
+                    <div style={{fontSize: "1.3rem", marginBottom: "1rem"}}>{data?.data.course.description?.substring(0, 200)}{data?.data.course.description && data?.data.course.description.length > 200 && <span>...</span>}</div>
                     <div style={{display: "flex", alignItems: "center", marginBottom: "0.8rem"}}>
                         <a>
                             <CourseRateWrapper style={{display: "flex", alignItems: "center", marginBottom: 0}}>
@@ -108,11 +114,11 @@ export const CourseDetail = () => {
                                         }
                                     })}
                                 </CourseRateStars>
-                                <CourseRateReviewerNum style={{color: "white"}}>(1.700 puan)</CourseRateReviewerNum>
+                                <CourseRateReviewerNum style={{color: "white"}}>({data?.data.course.reviews && data?.data.course.reviews.length} puan)</CourseRateReviewerNum>
                             </CourseRateWrapper>
 
                         </a>
-                        <div style={{fontSize: "0.85rem", fontWeight: 200, marginLeft: "7px"}}>105.334 öğrenci</div>
+                        <div style={{fontSize: "0.85rem", fontWeight: 200, marginLeft: "7px"}}>{data?.data.course.total_students} öğrenci</div>
                     </div>
                     <div>
                         Oluşturan Ariel Weinberger
@@ -134,9 +140,9 @@ export const CourseDetail = () => {
                 </div>
             </div>
             <div style={{width: '20rem', backgroundColor: '#fff', boxShadow: '0 2px 4px rgb(0 0 0 / 8%), 0 4px 12px rgb(0 0 0 / 8%)', zIndex: 1, position: 'absolute', top: '6.2rem', right: '12.2rem'}}>
-                <img src="https://img-c.udemycdn.com/course/240x135/2053219_e620_2.jpg" alt="Nest.js Kursu" width="100%"/>
+                <img src={data?.data.course.thumbnail} alt={data?.data.course.title} width="100%"/>
                 <div style={{padding: '2.1rem'}}>
-                    <h1 style={{fontSize: "32px", fontWeight: 'bold', }}>₺249.99</h1>
+                    <h1 style={{fontSize: "32px", fontWeight: 'bold', }}>₺{data?.data.course.price}</h1>
                     <div style={{display:'flex', alignItems: 'center', justifyItems: 'space-between'}}>
                         <Button onClick={() => handleAddToCart()} style={{fontSize: "18px", backgroundColor: '#a435f0', height: '48px', color: '#fff', marginRight: '8px', width: '100%', borderRadius: '0'}}>Sepete ekle</Button>
                             {

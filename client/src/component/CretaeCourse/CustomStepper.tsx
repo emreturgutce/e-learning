@@ -6,25 +6,39 @@ import StepButton from '@mui/material/StepButton';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Container } from '@mui/material';
-import CreateSection from './Section/CreateSection';
+import CreateSection, {Section} from './Section/CreateSection';
 import CreateCourse from './Course/CreateCourse';
+import {Course, createCourse, CreateCourseRequest, createSection} from "../../api";
 
 const steps = ['Kurs Oluşturma', 'Kurs Bölümlerini Oluşturma'];
-function getStepContent(step: number) {
-  switch (step) {
-    case 0:
-      return <CreateCourse />;
-    case 1:
-      return <CreateSection />;
-    default:
-      throw new Error('Unknown step');
-  }
-}
+
 export default function HorizontalNonLinearStepper() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState<{
     [k: number]: boolean;
   }>({});
+  const [title, setTitle] = React.useState("");
+  const [description, setDescription] = React.useState("");
+  const [price, setPrice] = React.useState(0);
+  const [thumbnail, setThumbnail] = React.useState("");
+  const [sections, setSections] = React.useState<Section[]>([]);
+  const [course, setCourse] = React.useState<Course | null>(null);
+
+  const handleCreateCourse = async () => {
+    try {
+      const request: CreateCourseRequest = {
+        title,
+        description,
+        price,
+        thumbnail,
+      }
+
+      const data = await createCourse(request)
+      setCourse(data.data.course)
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   const totalSteps = () => {
     return steps.length;
@@ -60,7 +74,27 @@ export default function HorizontalNonLinearStepper() {
     setActiveStep(step);
   };
 
-  const handleComplete = () => {
+  const handleCreateSections = async () => {
+    try {
+      console.log(course)
+      if (course && course._id && course.content) {
+        await Promise.all(sections.map((s) => createSection(course._id, course.content!, {
+          title: s.title,
+          section_contents: s.section_contents.map((sc) => sc.id!),
+          order: s.order,
+        })));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  const handleComplete = async () => {
+    if (activeStep === 0) {
+      await handleCreateCourse()
+    } else if (activeStep === 1) {
+      await handleCreateSections()
+    }
     const newCompleted = completed;
     newCompleted[activeStep] = true;
     setCompleted(newCompleted);
@@ -100,7 +134,28 @@ export default function HorizontalNonLinearStepper() {
             </React.Fragment>
           ) : (
             <React.Fragment>
-              {getStepContent(activeStep)}
+              {
+                activeStep === 0 && (
+                  <CreateCourse
+                      title={title}
+                      setTitle={setTitle}
+                      description={description}
+                      setDescription={setDescription}
+                      price={price}
+                      setPrice={setPrice}
+                      thumbnail={thumbnail}
+                      setThumbnail={setThumbnail}
+                  />
+                )
+              }
+              {
+                  activeStep === 1 && (
+                      <CreateSection
+                        sections={sections}
+                        setSections={setSections}
+                      />
+                  )
+              }
               <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                 <Button
                   color="inherit"

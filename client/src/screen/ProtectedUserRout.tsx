@@ -3,17 +3,15 @@ import { useAuth } from "../context/Auth/AuthContent";
 import { ReactChild } from "react";
 type ProtectedUserRoutProps = {
   children: JSX.Element | JSX.Element[] | ReactChild[],
-  user?: boolean,
+  user?: string,
 }
 
 
 function ProtectedUserRout(props: ProtectedUserRoutProps): any {
   const data = useAuth();
-  console.log(data?.user)
-  const isAdminReturn = (data?.user?.type === "USER" ? (props.children) : (<Navigate to="/signin" />))
-  const isUserReturn = data?.loggedIn ? (props.children) : (<Navigate to="/signin" />)
-
-  return props.user ? isAdminReturn : isUserReturn;
+  console.log(data)
+  const isAdminReturn = (data?.user?.type === props.user ? (props.children) : (<Navigate to="/signin" />))
+  return isAdminReturn;
 }
 
 export default ProtectedUserRout;

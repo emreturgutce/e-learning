@@ -12,9 +12,9 @@ import { Question } from './question.schema';
 export type SectionContentDocument = SectionContent & Document;
 
 export enum ContentType {
-  VIDEO,
-  TEXT,
-  QUIZ,
+  VIDEO = 'VIDEO',
+  TEXT = 'TEXT',
+  QUIZ = 'QUIZ',
 }
 
 @Schema({ collection: SECTION_CONTENT_COLLECTION_NAME })

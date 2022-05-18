@@ -8,6 +8,7 @@ import {IconButton} from "@mui/material";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import {addToCart, CourseCart, fetchCart} from "../../api";
 import {useUserContext} from "../../context/User/UserContext";
+import {useNavigate} from "react-router-dom";
 
 const Container = styled.div`
   display: flex;
@@ -139,6 +140,7 @@ type courseType = {
   }
 }
 const CourseCard = (props: courseType) => {
+  const navigate = useNavigate();
   const userContext = useUserContext()
   const [cart, setCart] = useState<CourseCart[]>([])
   const [isInCart, setIsInCart] = useState<boolean>(false)
@@ -171,7 +173,7 @@ const CourseCard = (props: courseType) => {
 
   return (
     <div className="border-slate-100" style={{boxShadow:'0 0 1px 1px rgb(28 29 31 / 10%), 0 3px 1px 0 rgb(28 29 31 / 10%)'}}>
-      <CourseImgWrapper>
+      <CourseImgWrapper style={{cursor: 'pointer'}} onClick={() => navigate(`/Course/${props.item._id}`)}>
         <CourseImg src={props.item.thumbnail} alt={props.item.title}></CourseImg>
       </CourseImgWrapper>
 

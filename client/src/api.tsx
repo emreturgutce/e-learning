@@ -29,6 +29,7 @@ export type Course = {
   description: string,
   thumbnail: string,
   instructor: string,
+  content?: string,
   __v: number;
 }
 
@@ -94,8 +95,10 @@ type CourseType = {
             video_url?: string;
             duration?: number;
             owner: string;
+            text?: string;
             __v?: number
           }[];
+          order: number;
         }[]
       },
     }
@@ -128,6 +131,7 @@ type CourseDetailType = {
             sections: {
               id: string;
               title?: string;
+              order: number;
             }[]
           },
     }
@@ -273,6 +277,74 @@ export const addToWishlist = async (courseId: string): Promise<void> => {
 export const removeFromWishlist = async (courseId: string): Promise<void> => {
   const { data } = await axios.delete(
       `http://localhost:8080/api/v1.0/users/removeFromWishlist/${courseId}`,
+      { withCredentials: true },
+  );
+  return data;
+}
+
+export interface CreateCourseRequest {
+  title: string;
+  description: string;
+  price: number;
+  thumbnail: string;
+}
+
+export const createCourse = async (request: CreateCourseRequest) => {
+  const { data } = await axios.post(
+      `http://localhost:8080/api/v1.0/courses`,
+      request,
+      { withCredentials: true },
+  );
+  return data;
+}
+
+export interface CreateExamRequest {
+  questions: {
+    text: string;
+    type: 'OPEN_ENDED' | 'MULTIPLE_CHOICES_SINGLE_ANSWER';
+    options: string[];
+    answer: string;
+    point: number;
+  }[];
+}
+
+export const createExam = async (request: CreateExamRequest) => {
+  const { data } = await axios.post(
+      `http://localhost:8080/api/v1.0/courses/exams/create-exam/v2`,
+      request,
+      { withCredentials: true },
+  );
+  return data;
+}
+
+export interface CreateSectionContentRequest {
+  title: string;
+  type?: string;
+  video_url?: string;
+  text?: string;
+  duration?: number;
+  exam?: string;
+}
+
+export const createSectionContent = async (request: CreateSectionContentRequest) => {
+  const { data } = await axios.post(
+      `http://localhost:8080/api/v1.0/courses/section-contents`,
+      request,
+      { withCredentials: true },
+  );
+  return data;
+}
+
+export interface CreateSectionRequest {
+  title: string;
+  section_contents: string[];
+  order: number;
+}
+
+export const createSection = async (courseId: string, courseContentId: string, request: CreateSectionRequest) => {
+  const { data } = await axios.post(
+      `http://localhost:8080/api/v1.0/courses/${courseId}/${courseContentId}/sections`,
+      request,
       { withCredentials: true },
   );
   return data;

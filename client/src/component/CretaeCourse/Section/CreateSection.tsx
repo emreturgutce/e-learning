@@ -14,6 +14,7 @@ import {
     RadioGroup,
     TextField
 } from '@mui/material';
+import {createExam, CreateExamRequest, createSectionContent} from "../../../api";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -48,25 +49,27 @@ function a11yProps(index: number) {
     };
 }
 
-interface Section {
+export interface Section {
     id: number;
     title: string;
     section_contents: SectionContent[];
+    order: number;
 }
 
 enum ContentType {
     VIDEO = 'VIDEO',
-    EXAM = 'EXAM',
+    QUIZ = 'QUIZ',
     TEXT = 'TEXT',
 }
 
-interface SectionContent {
+export interface SectionContent {
+    id?: string;
     title: string,
-    type: ContentType,
-    video_url: string | undefined;
-    text: string | undefined;
-    duration: number | undefined;
-    exam: string | undefined;
+    type?: ContentType,
+    video_url?: string;
+    text?: string;
+    duration?: number;
+    exam?: string;
 }
 
 export enum QuestionType {
@@ -82,12 +85,18 @@ interface Question {
     point: number;
 }
 
-export default function CreateSection() {
+export interface Props {
+    sections: Section[];
+    setSections: React.Dispatch<React.SetStateAction<Section[]>>;
+}
+
+export default function CreateSection({
+                                          sections,
+                                          setSections,
+                                      }: Props) {
     const [id, setId] = React.useState(0);
     const [value, setValue] = React.useState(0);
-    const [sections, setSections] = React.useState<Section[]>([]);
     const [open, setOpen] = React.useState(false);
-    const [sectionTitle, setSectionTitle] = React.useState("");
     const [openContent, setOpenContent] = React.useState(false);
     const [contentTitle, setContentTitle] = React.useState("");
     const [contentType, setContentType] = React.useState<ContentType>(ContentType.VIDEO);
@@ -103,7 +112,8 @@ export default function CreateSection() {
     const [answer, setAnswer] = React.useState("");
     const [point, setPoint] = React.useState(0);
     const [questions, setQuestions] = React.useState<Question[]>([]);
-    const [exam, setExam] = React.useState();
+    const [exam, setExam] = React.useState<string>("");
+    const [sectionTitle, setSectionTitle] = React.useState("");
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -128,12 +138,23 @@ export default function CreateSection() {
     };
 
     const handleAddSection = () => {
-        setSections([...sections, {title: sectionTitle, section_contents: [], id: id}])
+        setSections([...sections, {title: sectionTitle, section_contents: [], id: id, order: id}])
         setId(id + 1)
         handleClose()
     }
 
-    const handleCreateQuestions = () => {
+    const handleCreateQuestions = async () => {
+        try {
+            const request: CreateExamRequest = {
+                questions,
+            };
+            const data = await createExam(request);
+            console.log(data);
+            setExam(data.data.exam._id);
+            handleCloseQuestion();
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     const handleClickOpenQuestion = () => {
@@ -144,26 +165,49 @@ export default function CreateSection() {
         setOpenQuestion(false);
     };
 
-    const handleAddSectionContent = () => {
-        console.log(contentTitle, duration, contentType, id, selectedSection)
-        const section = sections.find((s) => s.id === selectedSection);
-        if (!section) {
-            return;
-        }
-        const otherSections = sections.filter((s) => s.id !== selectedSection);
+    const handleAddSectionContent = async () => {
+        try {
+            const section = sections.find((s) => s.id === selectedSection);
+            if (!section) {
+                return;
+            }
+            const otherSections = sections.filter((s) => s.id !== selectedSection);
 
-        const sectionsCopy = [...otherSections, {
-            ...section,
-            section_contents: [...section.section_contents, {
+            let sectionContent: SectionContent = {
                 title: contentTitle,
                 type: contentType,
                 duration: duration,
-                video_url: videoUrl,
-                exam: undefined,
-                text: text
-            }]
-        }];
-        setSections(sectionsCopy.sort((a, b) => a.id - b.id))
+            };
+            if (contentType === 'QUIZ') {
+                sectionContent = {
+                    ...sectionContent,
+                    exam,
+                }
+            } else if (contentType === 'VIDEO') {
+                sectionContent = {
+                    ...sectionContent,
+                    video_url: videoUrl,
+                }
+            } else if (contentType === 'TEXT') {
+                sectionContent = {
+                    ...sectionContent,
+                    text,
+                }
+            }
+
+            console.log(sectionContent);
+            const data = await createSectionContent(sectionContent)
+            sectionContent.id = data.data.sectionContent._id
+
+            const sectionsCopy = [...otherSections, {
+                ...section,
+                section_contents: [...section.section_contents, sectionContent]
+            }];
+            setSections(sectionsCopy.sort((a, b) => a.id - b.id))
+            handleCloseContent()
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     const addNewOption = () => {
@@ -174,7 +218,13 @@ export default function CreateSection() {
     }
 
     const handleCreateQuestion = () => {
-        setQuestions([...questions, {text: questionText, type: questionType, answer: answer, options: options, point: point}])
+        setQuestions([...questions, {
+            text: questionText,
+            type: questionType,
+            answer: answer,
+            options: options,
+            point: point
+        }])
         setQuestionText("")
         setQuestionType(QuestionType.OPEN_ENDED)
         setAnswer("")
@@ -231,7 +281,7 @@ export default function CreateSection() {
                 </DialogActions>
             </Dialog>
             <Dialog open={openContent} onClose={handleCloseContent}>
-                <DialogTitle>Bölüm Ekle</DialogTitle>
+                <DialogTitle>Bölüm İçeriği Ekle</DialogTitle>
                 <DialogContent style={{width: '500px'}}>
                     <TextField
                         required
@@ -273,7 +323,7 @@ export default function CreateSection() {
                         <MenuItem key="TEXT" value="TEXT">
                             Yazı
                         </MenuItem>
-                        <MenuItem key="EXAM" value="EXAM">
+                        <MenuItem key="QUIZ" value="QUIZ">
                             Sınav
                         </MenuItem>
                     </TextField>
@@ -310,7 +360,7 @@ export default function CreateSection() {
                         )
                     }
                     {
-                        contentType === 'EXAM' && (
+                        contentType === 'QUIZ' && (
                             <Button onClick={handleClickOpenQuestion}>Soruları Oluştur</Button>
                         )
                     }
@@ -403,7 +453,7 @@ export default function CreateSection() {
                     }
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>İptal Et</Button>
+                    <Button onClick={handleCloseQuestion}>İptal Et</Button>
                     <Button onClick={handleCreateQuestions}>Oluştur</Button>
                 </DialogActions>
             </Dialog>

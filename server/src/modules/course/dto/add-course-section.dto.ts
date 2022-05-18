@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsArray, IsNumber, IsString } from 'class-validator';
 
 export class AddCourseSectionDto {
   @ApiProperty()
@@ -7,5 +7,10 @@ export class AddCourseSectionDto {
   title: string;
 
   @ApiProperty()
+  @IsArray()
   section_contents: string[];
+
+  @ApiProperty()
+  @IsNumber()
+  order: number;
 }

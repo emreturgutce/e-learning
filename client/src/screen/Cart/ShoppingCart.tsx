@@ -100,6 +100,11 @@ const ShoppingCart = () => {
     try {
       const ids = cart.map((c) => c._id)
       await purchaseCourses(ids)
+      fetchCart().then(({ data: { cart } }) => {
+        console.log(cart);
+        setCart(cart);
+        userContext?.setCart(cart);
+      })
     } catch (e) {
       console.error(e);
     }

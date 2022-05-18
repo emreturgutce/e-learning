@@ -313,14 +313,18 @@ export class CourseService {
       );
     }
 
-    await this.userService.registerCourse(userId, courseId);
-
-    await this.incrementTotalStudent(courseId);
-
+    await Promise.all([
+      this.userService.registerCourse(userId, courseId),
+      this.incrementTotalStudent(courseId),
+      this.userService.removeFromCart(userId, courseId),
+      this.userService.removeFromWishlist(userId, courseId),
+    ]);
     const course = await this.findCourseById(courseId);
     const chat = await this.userService.createChat([userId, course.instructor]);
-    await this.userService.addToChats(userId, chat.id);
-    await this.userService.addToChats(course.instructor, chat.id);
+    await Promise.all([
+      this.userService.addToChats(userId, chat.id),
+      this.userService.addToChats(course.instructor, chat.id),
+    ]);
   }
 
   public async refundCourse(userId: string, courseId: string): Promise<void> {

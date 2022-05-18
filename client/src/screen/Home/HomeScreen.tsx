@@ -29,7 +29,7 @@ const HomeScreen = () => {
                         return (
                             <CourseCard item={{
                                 ...course,
-                                thumbnail: "https://img-c.udemycdn.com/course/240x135/1352468_3d97_7.jpg",
+                                thumbnail: course.thumbnail || "https://img-c.udemycdn.com/course/240x135/1352468_3d97_7.jpg",
                                 rateScore: 5,
                             }} key={course._id}></CourseCard>
                         )
