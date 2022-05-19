@@ -14,6 +14,7 @@ import CartItems from '../Cart/CartItems';
 import { useAuth } from '../../context/Auth/AuthContent';
 import { logoutUser } from '../../api';
 import LogoutIcon from '@mui/icons-material/Logout';
+import AvatarMenu from "../AvatarMenu";
 
 const Navigation = () => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -39,8 +40,14 @@ const Navigation = () => {
       setLoggedIn(userAuth?.loggedIn)
   }, [userAuth?.loggedIn])
 
-  return (
-    <Box sx={{ flexGrow: 1 }}>
+    const handleLogout = () => {
+        logoutUser();
+        userAuth?.logout();
+        navigate('SignIn');
+    }
+
+    return (
+        <Box sx={{ flexGrow: 1 }}>
       <AppBar
         position='static'
         sx={{
@@ -53,7 +60,16 @@ const Navigation = () => {
         <Toolbar disableGutters sx={{ my: 'auto', gap: 1 }}>
           <Box sx={{ color: 'black' }}>
             <Link to='/'>
-                <img src="/logo-udemy.svg" alt="Udemy" width="91px" height="34px"/>
+                <div className="flex align-middle">
+                    <img src="/logo.png" alt="Udemy" width="45px" height="18px"/>
+                    <span style={{
+                        height: "25px",
+                        alignSelf: "center",
+                        marginLeft: "8px",
+                        marginRight: "16px",
+                        fontWeight: "500",
+                    }}>E-Learning</span>
+                </div>
             </Link>
           </Box>
           <Box sx={{ flexGrow: 2 }}>
@@ -100,17 +116,9 @@ const Navigation = () => {
               </Button>
             </div>
           ) : (
-            <Box sx={{ color: 'black' }}>
+            <Box sx={{ color: 'black', display: 'flex', alignItems: 'center' }}>
               <Link to='/myCourse' style={{marginRight: '12px'}}>Kurslarım</Link>
-              <IconButton
-                onClick={() => {
-                  logoutUser();
-                  userAuth?.logout();
-                  navigate('SignIn');
-                }}
-              >
-                  <LogoutIcon/>
-              </IconButton>
+                <AvatarMenu logout={handleLogout} />
             </Box>
           )}
         </Toolbar>

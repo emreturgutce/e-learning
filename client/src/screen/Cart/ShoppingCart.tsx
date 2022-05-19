@@ -6,6 +6,8 @@ import Box from '@mui/material/Box';
 import {Button, CardMedia, Container, Typography } from "@mui/material";
 import {CourseCart, fetchCart, purchaseCourses, removeFromCart} from "../../api";
 import {useUserContext} from "../../context/User/UserContext";
+import {Navigate} from "react-router-dom";
+import {useAuth} from "../../context/Auth/AuthContent";
 
 const CourseRateStars = styled.div`
   display: flex;
@@ -69,6 +71,7 @@ const Scoring = (props: scoringType) => {
 
 
 const ShoppingCart = () => {
+  const userAuth = useAuth();
   const userContext = useUserContext()
   const [totalPrice, setTotalPrice] = useState(0)
   const [cart, setCart] = useState<CourseCart[]>([])
@@ -84,6 +87,10 @@ const ShoppingCart = () => {
   useEffect(() => {
     setTotalPrice(cart.reduce((prev, curr) => prev + curr.price, 0));
   }, [cart])
+
+  if (!userAuth?.loggedIn) {
+    return <Navigate to={"/SignIn"} />
+  }
 
   const removeItem = async (id: string) => {
     try {

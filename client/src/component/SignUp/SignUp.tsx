@@ -9,15 +9,17 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
+import {Navigate, useNavigate} from 'react-router-dom';
 import Email from '@mui/icons-material/Email';
 import Lock from '@mui/icons-material/Lock';
 import { signup, UserType } from '../../api';
+import {useAuth} from "../../context/Auth/AuthContent";
 
 const theme = createTheme();
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const userAuth = useAuth();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -41,6 +43,10 @@ const SignUp = () => {
     console.log('Logged in succesfully.');
     navigate('/SignIn');
   };
+
+  if (userAuth?.loggedIn) {
+    return <Navigate to={"/"}/>
+  }
 
   return (
     <ThemeProvider theme={theme}>

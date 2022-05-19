@@ -16,6 +16,8 @@ import { getUser } from './api';
 import { useQuery } from 'react-query';
 import {CourseDetail} from "./screen/Course/CourseDetail";
 import {useEffect, useState} from "react";
+import UnapprovedExams from './screen/UnapprovedExams';
+import ApproveExam from "./screen/ApproveExam";
 
 function App() {
   const userAuth = useAuth();
@@ -41,6 +43,16 @@ function App() {
                   <Route path='/SignIn' element={<SignInScreen />} />
                   <Route path='/SignUp' element={<SignUpScreen />} />
 
+                  <Route path='/unapproved-exams' element={
+                    <ProtectedUserRout user={"INSTRUCTOR"}>
+                      <UnapprovedExams />
+                    </ProtectedUserRout>
+                  } />
+                  <Route path='/approve-exam/:id' element={
+                    <ProtectedUserRout user={"INSTRUCTOR"}>
+                      <ApproveExam />
+                    </ProtectedUserRout>
+                  } />
                   <Route path='/shoppingCart' element={<ShoppingCart />} />
                   <Route path='/Course/:id' element={<Course />} />
                   <Route path='/course-detail/:id' element={<CourseDetail />} />

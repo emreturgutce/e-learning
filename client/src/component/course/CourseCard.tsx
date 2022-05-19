@@ -32,11 +32,8 @@ const CourseImgWrapper = styled.div`
 `;
 const CourseImg = styled.img`
     ${tw`
-    w-full 
-    h-full 
     object-center 
     object-cover 
-    
   `}
 `;
 
@@ -172,9 +169,19 @@ const CourseCard = (props: courseType) => {
   const isInCartFn = (courseId: string) => !!cart.find((c) => c._id === courseId);
 
   return (
-    <div className="border-slate-100" style={{boxShadow:'0 0 1px 1px rgb(28 29 31 / 10%), 0 3px 1px 0 rgb(28 29 31 / 10%)'}}>
-      <CourseImgWrapper style={{cursor: 'pointer'}} onClick={() => navigate(`/Course/${props.item._id}`)}>
-        <CourseImg src={props.item.thumbnail} alt={props.item.title}></CourseImg>
+    <div className="border-slate-100" style={{boxShadow:'0 0 1px 1px rgb(28 29 31 / 10%), 0 3px 1px 0 rgb(28 29 31 / 10%)', borderRadius: 8}}>
+      <CourseImgWrapper onClick={() => navigate(`/Course/${props.item._id}`)}
+      style={{
+        cursor: 'pointer',
+        borderTopLeftRadius: 8,
+        borderTopRightRadius: 8,
+      }}>
+        <CourseImg style={{
+          height: "150px",
+          borderTopLeftRadius: 8,
+          borderTopRightRadius: 8,
+          width: "100%",
+        }} src={props.item.thumbnail} alt={props.item.title}></CourseImg>
       </CourseImgWrapper>
 
       <CourseTextWrapper>
@@ -188,14 +195,14 @@ const CourseCard = (props: courseType) => {
               while (increment < props.item.rateScore) {
                 if (props.item.rateScore - increment < 1) {
                   increment++;
-                  return <StarHalf style={{ color: "#e59819" }}></StarHalf>;
+                  return <StarHalf style={{ color: "#e59819", height: '1.2rem', width: '1rem' }}></StarHalf>;
                 }
                 increment++;
-                return <Star style={{ color: "#e59819" }}></Star>;
+                return <Star style={{ color: "#e59819", height: '1.2rem', width: '1rem' }}></Star>;
               }
               while (max > props.item.rateScore) {
                 max--;
-                return <Star style={{ color: "gray" }}></Star>;
+                return <Star style={{ color: "gray", height: '1.2rem', width: '1rem' }}></Star>;
               }
             })}
           </CourseRateStars>

@@ -92,14 +92,8 @@ const Footer = () => {
     <FooterContainer>
       <FooterSection>
         <FooterTop>
-          <LanguageSelectorContainer>
-            <LanguageSelectorBtn>
-              <LanguageIcon style={{ width: '2rem', height: '2rem' }} />
-              <LanguageSpan>English</LanguageSpan>
-            </LanguageSelectorBtn>
-          </LanguageSelectorContainer>
           <FooterListUl>
-            <FooterListLi><FooterLink >Udemy Business</FooterLink></FooterListLi>
+            <FooterListLi><FooterLink >Business</FooterLink></FooterListLi>
             <FooterListLi><FooterLink >Teach on Udemy</FooterLink></FooterListLi>
             <FooterListLi><FooterLink >Get the app</FooterLink></FooterListLi>
             <FooterListLi><FooterLink >About us</FooterLink></FooterListLi>
@@ -121,8 +115,7 @@ const Footer = () => {
           </FooterListUl>
         </FooterTop>
         <FooterBottom>
-          <div><LogoLink ><LogoImg src="/images/footer/logo-udemy-inverted.svg" /></LogoLink></div>
-          <Copyright>&copy; 2022 Udemy, Inc.</Copyright>
+          <Copyright>&copy; 2022</Copyright>
         </FooterBottom>
       </FooterSection>
     </FooterContainer>

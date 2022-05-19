@@ -19,7 +19,7 @@ const Learning = () => {
   );
   const [myCourses, setMyCourses] = useState<MyCourse[]>(data?.data.courses.slice(0, 4) ?? []);
   useEffect(() => {
-    setMyCourses(data?.data.courses.slice(0, 4) ?? []);
+    setMyCourses(data?.data.courses.slice(0, 8) ?? []);
     userContext?.setMyCourses(data?.data.courses ?? [])
   }, [data])
 
@@ -32,7 +32,7 @@ const Learning = () => {
     event: React.ChangeEvent<unknown>,
     value: number,
   ) => {
-    setMyCourses(data?.data.courses.slice(value * 4 - 4, value * 4) ?? []);
+    setMyCourses(data?.data.courses.slice(value * 8 - 8, value * 8) ?? []);
   };
 
   return (
@@ -45,24 +45,55 @@ const Learning = () => {
           <div className='grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-6'>
             {myCourses &&
               myCourses.map((item: any) => (
-                <Link to={`/Course/${item._id}`} key={item._id + Math.random().toString()}>
+                <Link to={`/Course/${item._id}`} key={item._id + Math.random().toString()} style={{height: 250}}>
                   <div
+                      style={{borderRadius: 8}}
+                    className='group border-2 marging border-slate-100 h-full' >
 
-                    className='group rounded-t-lg border-2 marging p-1 border-slate-100 ' >
-
-                    <div className='w-full aspect-w-1 aspect-h-1 bg-gray-200 rounded-lg overflow-hidden xl:aspect-w-7 xl:aspect-h-8'>
+                    <div className='w-full aspect-w-1 aspect-h-1 bg-gray-200 overflow-hidden xl:aspect-w-7 xl:aspect-h-8'
+                    style={{
+                      borderTopLeftRadius: 8,
+                      borderTopRightRadius: 8,
+                    }}>
                       <img
-                        src={item.thumbnail}
+                        src={item.thumbnail || "https://img-c.udemycdn.com/course/240x135/1352468_3d97_7.jpg"}
                         alt='Tall slender porcelain bottle with natural clay textured body and cork stopper.'
-                        className='w-full h-full object-center object-cover group-hover:opacity-75'
+                        className='object-center object-cover group-hover:opacity-75'
+                        style={{
+                          height: "150px",
+                          width: "100%",
+                          borderTopLeftRadius: 8,
+                          borderTopRightRadius: 8,
+                        }}
                       />
                     </div>
-                    <p className='mt-1 text-md font-medium  truncate   text-gray-900'>
-                      {item.description}{' '}
-                    </p>
-                    <h3 className='mt-4 text-sm text-gray-700'>
-                      {item.title}- teacher:{item.instructor.firstname}
-                    </h3>
+                    <div style={{
+                      padding: "12px 14px",
+                      fontSize: "1.4rem",
+                      fontWeight: 400,
+                      lineHeight: 1.4,
+                      width: "100%",
+                    }}>
+                      <h1 style={{
+                        fontSize: "1rem",
+                        marginTop: "0.8rem",
+                        marginBottom: "0.4rem",
+                        fontWeight: 700,
+                        letterSpacing: "-.02rem",
+                        lineHeight: 1.2,
+                      }}>{item.title}</h1>
+                      <p style={{
+                        fontSize: "1rem",
+                        lineHeight: "1.4rem",
+                        margin: 0,
+                        marginBottom: "0.4rem",
+                      }} className='mt-1 truncate text-gray-900'>
+                        {item.description}
+                      </p>
+                      <h3 className='mt-4 text-sm text-gray-700'>
+                        {item.instructor.firstname}
+                      </h3>
+                    </div>
 
 
                   </div>
@@ -72,7 +103,7 @@ const Learning = () => {
               ))}
           </div>
 
-          {Math.round(data?.data.courses.length / 4) > 0 && (
+          {Math.round(data?.data.courses.length / 8) > 0 && (
             <Stack
               spacing={2}
               justifyContent='center'
@@ -80,7 +111,7 @@ const Learning = () => {
               mt={10}
             >
               <Pagination
-                count={Math.round(data?.data.courses.length / 4)}
+                count={Math.round(data?.data.courses.length / 8)}
                 onChange={handlePageChange}
               />
             </Stack>

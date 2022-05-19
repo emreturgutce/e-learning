@@ -2,15 +2,17 @@ import {Star, StarHalf} from "@mui/icons-material";
 import React, {useEffect} from "react";
 import {CourseRateReviewerNum, CourseRateScore, CourseRateStars, CourseRateWrapper } from "../../component/course/CourseCard";
 import CustomizedAccordions from "../../component/Accordion/Accordion";
-import {useParams} from "react-router-dom";
+import {Navigate, useParams} from "react-router-dom";
 import {useQuery} from "react-query";
 import {addToCart, addToWishlist, fetchCart, fetchWishlist, getCourseDetailById, removeFromWishlist} from "../../api";
 import {Button} from "@mui/material";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import {useUserContext} from "../../context/User/UserContext";
+import {useAuth} from "../../context/Auth/AuthContent";
 
 export const CourseDetail = () => {
+    const userAuth = useAuth();
     const userContext = useUserContext()
     let increment = 0;
     let max = 5;
@@ -40,6 +42,12 @@ export const CourseDetail = () => {
     useEffect(() => {
         isWishlistFn()
     }, [wishlist])
+
+
+    if (!userAuth?.loggedIn) {
+        return <Navigate to={"/SignIn"} />
+    }
+
 
     const handleFavorite = async () => {
         try {

@@ -329,6 +329,34 @@ export class CourseController {
     };
   }
 
+  @Get('get-exam-by-id/:examId')
+  public async getExamById(
+    @Param('examId') examId: string,
+    @Session() session: SessionDoc,
+  ) {
+    const exam = await this.courseService.getExamById(examId);
+
+    const completedExams: any = await this.courseService.getCompletedExams(
+      session.context.id,
+    );
+
+    const isCompleted = completedExams.completedExams
+      .map((ce: any) => ce.exam)
+      .includes(examId);
+
+    this.logger.log('Exam fetched', CourseController.name);
+
+    return {
+      message: 'Exam fetched',
+      data: {
+        exam: {
+          questions: exam.questions,
+          isCompleted,
+        },
+      },
+    };
+  }
+
   @Post()
   @Roles('INSTRUCTOR')
   public async createCourse(

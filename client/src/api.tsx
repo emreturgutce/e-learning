@@ -96,6 +96,7 @@ type CourseType = {
             duration?: number;
             owner: string;
             text?: string;
+            exam?: string;
             __v?: number
           }[];
           order: number;
@@ -345,6 +346,65 @@ export const createSection = async (courseId: string, courseContentId: string, r
   const { data } = await axios.post(
       `http://localhost:8080/api/v1.0/courses/${courseId}/${courseContentId}/sections`,
       request,
+      { withCredentials: true },
+  );
+  return data;
+}
+
+export interface Exam {
+  questions: {
+    options: string[],
+    type: "OPEN_ENDED" | "MULTIPLE_CHOICES_SINGLE_ANSWER",
+    _id: string,
+    text: string,
+    answer: string,
+    point: number,
+    owner: string,
+  }[];
+  isCompleted: boolean;
+}
+
+export interface GetExamByIdResponse {
+  data: Exam
+}
+
+export const getExamById = async (examId: string): Promise<GetExamByIdResponse> => {
+  const { data } = await axios.get(
+      `http://localhost:8080/api/v1.0/courses/get-exam-by-id/${examId}`,
+      { withCredentials: true },
+  );
+  return data;
+}
+
+export const completeExam = async (examId: string, answers: string[]) => {
+  const { data } = await axios.put(
+      `http://localhost:8080/api/v1.0/courses/exams/complete-exam/${examId}`,
+      answers,
+      { withCredentials: true },
+  );
+  return data;
+}
+
+export const getCompletedExams = async () => {
+  const { data } = await axios.get(
+      `http://localhost:8080/api/v1.0/courses/exams/completed-exam`,
+      { withCredentials: true },
+  );
+  return data;
+}
+
+export const getUnapprovedExams = async () => {
+  const { data } = await axios.get(
+      `http://localhost:8080/api/v1.0/courses/exams/unapproved-exams`,
+      { withCredentials: true },
+  );
+  return data;
+}
+
+export const approveExam = async (examId: string, point: number) => {
+  const { data } = await axios.post(
+      `http://localhost:8080/api/v1.0/courses/exams/approve-exam/${examId}`,
+      { point },
       { withCredentials: true },
   );
   return data;

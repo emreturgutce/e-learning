@@ -10,9 +10,9 @@ const SearchBar = () => {
     marginRight: 0,
     border: "1px solid #1c1d1f",
     width: "60%",
-    height: 40,
+    height: 48,
     color: "#8A8B8D",
-
+    marginLeft: 24,
   }));
 
   const SearchIconWrapper = styled("div")(({ theme }) => ({
@@ -28,7 +28,7 @@ const SearchBar = () => {
   const StyledInputBase = styled(InputBase)(({ theme }) => ({
     color: theme.palette.common.black,
     "& .MuiInputBase-input": {
-      padding: theme.spacing(1.5, 1, 1, 1),
+      padding: theme.spacing(1.5, 1.5, 1.5, 1.5),
       paddingLeft: `calc(1em + ${theme.spacing(5)})`,
       transition: theme.transitions.create("width"),
       width: "100%",
@@ -41,7 +41,7 @@ const SearchBar = () => {
         <SearchIcon sx={{ fontSize: 24 }} />
       </SearchIconWrapper>
       <StyledInputBase
-        placeholder="Search for anything"
+        placeholder="Dilediğiniz şeyi arayın"
         inputProps={{ "aria-label": "search" }}
       />
     </Search>

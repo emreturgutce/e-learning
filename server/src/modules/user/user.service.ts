@@ -247,7 +247,16 @@ export class UserService {
 
   public async getUnapprovedExams(instructorId: string) {
     return this.UserModel.findById(instructorId)
-      .populate('unapprovedExams')
+      .populate({
+        path: 'unapprovedExams',
+        populate: {
+          path: 'student exam',
+          select: 'firstname lastname _id questions',
+          populate: {
+            path: 'questions',
+          },
+        },
+      })
       .select('unapprovedExams')
       .exec();
   }

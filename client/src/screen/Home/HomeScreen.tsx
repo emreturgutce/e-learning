@@ -1,8 +1,13 @@
 import React, {useEffect, useState} from "react";
 import {Course as CourseType, fetchCourses} from "../../api";
 import CourseCard from '../../component/course/CourseCard';
+import {useUserContext} from "../../context/User/UserContext";
+import {useAuth} from "../../context/Auth/AuthContent";
+import {Navigate} from "react-router-dom";
 
 const HomeScreen = () => {
+    const userAuth = useAuth();
+    const userContext = useUserContext();
     const [activeItemIndex, setActiveItemIndex] = useState(0);
     const chevronWidth = 50;
 
@@ -14,6 +19,14 @@ const HomeScreen = () => {
         });
     }, [])
 
+    const filterOutMyCourses = () => {
+        return courses.filter((c) => !userContext?.myCourses.map((mc) => mc._id).includes(c._id))
+    }
+
+    if (!userAuth?.loggedIn) {
+        return <Navigate to={"/SignIn"} />
+    }
+
     return (
         <div>
             <div className="max-w-2xl mx-auto py-8 sm:py-8 sm:px-6 lg:max-w-7xl lg:px-8 w-3/4">
@@ -24,8 +37,18 @@ const HomeScreen = () => {
                         <p>BT alanındaki geleceğinizi keşfedin. AWS sertifikasyonu, CompTIA A+ sertifikasyonu ve daha fazlası için öğrenmeye başlayın.</p>
                     </div>
                 </div>
+                <div>
+                    <h2 style={{
+                        marginBottom: "1.8rem",
+                        fontFamily: "SuisseWorks,Georgia,Times,times new roman,serif,apple color emoji,segoe ui emoji,segoe ui symbol",
+                        fontWeight: "600",
+                        fontSize: "1.8rem",
+                        lineHeight: "1.25",
+                        letterSpacing: "-.05rem",
+                    }}>Kaydolmak isteyebileceğiniz diğer kurslar</h2>
+                </div>
                 <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-                    {courses.map((course) => {
+                    {filterOutMyCourses().map((course) => {
                         return (
                             <CourseCard item={{
                                 ...course,

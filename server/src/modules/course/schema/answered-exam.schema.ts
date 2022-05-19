@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import {
-  ANSWERED_EXAM_COLLECTION_NAME,
+  ANSWERED_EXAM_COLLECTION_NAME, EXAM_COLLECTION_NAME,
   USER_COLLECTION_NAME,
 } from 'src/config/contants';
 
@@ -11,6 +11,7 @@ export type AnsweredExamDocument = AnsweredExam & Document;
 export class AnsweredExam {
   @Prop({
     type: Types.ObjectId,
+    ref: EXAM_COLLECTION_NAME,
   })
   exam: string;
 

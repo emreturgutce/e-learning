@@ -1,0 +1,28 @@
+[
+  {
+    "title": "NestJS: The Complete Developer's Guide",
+    "description": "Build full featured backend APIs incredibly quickly with Nest, TypeORM, and Typescript. Includes testing and deployment!",
+    "price": 34.99,
+    "instructor": "Stephen Grider",
+    "categories": [],
+    "reviews": [],
+    "total_students": 0,
+    "preview": "",
+    "thumbnail": "https://img-c.udemycdn.com/course/240x135/4174580_dd1c.jpg",
+    "content": "",
+    "approved": true
+  },
+  {
+    "title": "Typescript: The Complete Developer's Guide",
+    "description": "Master Typescript by learning popular design patterns and building complex projects. Includes React and Express!",
+    "price": 34.99,
+    "instructor": "Stephen Grider",
+    "categories": [],
+    "reviews": [],
+    "total_students": 0,
+    "preview": "https://mp4-c.udemycdn.com/2021-07-19_16-25-30-54b16a1e1801fc588aae29688e4bf0ef/2/WebHD_720p.mp4?Expires=1652924196&Signature=Vglw8WywWZacbXfnVIY7fbphN~ASQcF9x-NFtoKxsvEPAUXagAlrWNKw0UTN1hjZOtYWsem0nvafw8cWhgWZuVwRu7fd2AomR2tsYnQQPoBAn2D-Ta8GN50pJjM2XYd-OBh6zbIorMKqBHFzE-cUX9LiRhGvpPi6cPy6C2Bezxeyi8bkyS7Ueir4yRVy0j5-uhYWhp8VWIiAYBovUcoXEQdS2FioGeFPyA9c7mkDmHsQqAdf-qokpTF1-lmMVkN8K2ISMqJXQ2o8IAlPB7ygFa21N0dpDCX36fo-S6lTnJptIGhsEXISDU9HcLfgAa2xf6LD76qPnEJeKd121pmHgw__&Key-Pair-Id=APKAITJV77WS5ZT7262A",
+    "thumbnail": "https://img-c.udemycdn.com/course/240x135/4174580_dd1c.jpg",
+    "content": "",
+    "approved": true
+  }
+]

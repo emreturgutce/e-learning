@@ -8,9 +8,11 @@ import {styled} from '@mui/material/styles';
 import ReactPlayer from 'react-player';
 import {height} from '@mui/system';
 import {Courses} from '../../data/course-selection-data/data';
-import {useNavigate, useParams} from 'react-router-dom';
+import {Navigate, useNavigate, useParams} from 'react-router-dom';
 import {getCourseById} from '../../api';
 import {useQuery, UseQueryOptions} from 'react-query';
+import {useAuth} from "../../context/Auth/AuthContent";
+import Quiz from "../../component/Quiz/Quiz";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -88,6 +90,7 @@ interface StyledTabProps {
 
 
 const Course = () => {
+    const userAuth = useAuth();
     const {id} = useParams();
     const {isLoading, error, data} = useQuery(["course", id], () =>
         getCourseById(id)
@@ -109,6 +112,11 @@ const Course = () => {
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
+
+    if (!userAuth?.loggedIn) {
+        return <Navigate to={"/SignIn"}/>
+    }
+
 
     return (
         <div className='w-full'>
@@ -146,8 +154,11 @@ const Course = () => {
                             )
                         }
                         {
-                            section?.type === 'QUIZ' && (
-                                <div>QUIZ</div>
+                            section?.type === 'QUIZ' && section.exam && (
+                                <div style={{padding: '3.2rem 14rem'}}>
+                                    <h1 className="mt-4 uppercase font-bold text-lg">{section.title}</h1>
+                                    <Quiz examId={section?.exam} />
+                                </div>
                             )
                         }
                     </div>

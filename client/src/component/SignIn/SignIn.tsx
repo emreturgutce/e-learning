@@ -15,7 +15,7 @@ import Email from '@mui/icons-material/Email'
 import Lock from '@mui/icons-material/Lock'
 import { fetchLogin, fetchPurchasedCourses, fetchWishlist } from '../../api';
 import { useAuth } from '../../context/Auth/AuthContent';
-import { useNavigate } from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
 
 const theme = createTheme();
 
@@ -38,6 +38,11 @@ const SignIn = () => {
     userAuth?.login(user);
     navigate("/myCourse");
   };
+
+  if (userAuth?.loggedIn) {
+    return <Navigate to={"/"}/>
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">

@@ -378,6 +378,10 @@ export class CourseService {
     ).exec();
   }
 
+  public async getExamById(examId: string) {
+    return this.ExamModel.findById(examId).populate('questions').exec();
+  }
+
   public async createExam(createExamDto: CreateExamDto) {
     const questions = await this.QuestionModel.find({
       _id: { $in: createExamDto.questions },
