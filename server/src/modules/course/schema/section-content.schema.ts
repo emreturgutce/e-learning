@@ -22,7 +22,6 @@ export class SectionContent {
   @Prop({
     type: String,
     required: true,
-    unique: true,
     maxLength: [128, 'Maximum 255 characters'],
   })
   title: string;

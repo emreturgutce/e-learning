@@ -93,7 +93,8 @@ const Course = () => {
     const userAuth = useAuth();
     const {id} = useParams();
     const {isLoading, error, data} = useQuery(["course", id], () =>
-        getCourseById(id)
+        getCourseById(id),
+        { staleTime: 0, retry: 0 }
     );
     const navigate = useNavigate()
 

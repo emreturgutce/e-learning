@@ -8,7 +8,7 @@ import {
   Session,
   Req,
   Res,
-  Logger,
+  Logger, UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
@@ -16,6 +16,7 @@ import { Session as SessionDoc } from 'express-session';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login-user.dto';
+import {AuthGuard} from "../../common/guard/auth.guard";
 
 @Controller('auth')
 @ApiTags('auth')
@@ -85,6 +86,7 @@ export class AuthController {
 
   @Get('me')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
   public async me(@Session() session: SessionDoc) {
     return {
       message: 'Logged in',

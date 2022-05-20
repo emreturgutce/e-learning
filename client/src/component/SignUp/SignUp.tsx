@@ -5,7 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-
+import PersonIcon from '@mui/icons-material/Person';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -68,9 +68,10 @@ const SignUp = () => {
               borderColor: 'GrayText',
               fontSize: 15,
               width: 340,
+              textAlign: 'center',
             }}
           >
-            Udemy Hesabınızda Oturum Açın!
+            Kayıt Olun!
           </Typography>
 
           <Box
@@ -80,44 +81,50 @@ const SignUp = () => {
             noValidate
             sx={{ mt: 5 }}
           >
-            <div className='border-2 border-black flex flex-row items-center h-12'>
-              <Email sx={{ color: 'text.disabled', fontSize: 20 }}></Email>
+            <div className='flex flex-row items-center h-12' style={{
+              border: "1px solid #1c1d1f",
+            }}>
+              <PersonIcon sx={{ color: 'text.disabled', fontSize: 20, marginLeft: '8px' }}></PersonIcon>
               <input
                 type='text'
                 id='FulName'
                 name='FulName'
                 className='ml-2 focus:outline-none focus:none focus:border-none'
-                placeholder='Tam Ad'
-                autoComplete='false'
+                placeholder='Ad'
+                autoComplete='true'
               />
             </div>
-            <div className='mt-3 border-2 border-black flex flex-row items-center h-12'>
-              <Email sx={{ color: 'text.disabled', fontSize: 20 }}></Email>
+            <div className='mt-3 flex flex-row items-center h-12' style={{
+              border: "1px solid #1c1d1f",
+            }}>
+              <Email sx={{ color: 'text.disabled', fontSize: 20, marginLeft: '8px' }}></Email>
               <input
                 type='text'
                 id='Email'
                 name='Email'
                 className='ml-2 focus:outline-none focus:none focus:border-none'
                 placeholder='E-Posta'
-                autoComplete='false'
+                autoComplete='true'
               />
             </div>
-            <div className='mt-3 border-2 border-black flex flex-row items-center h-12'>
-              <Lock sx={{ color: 'text.disabled', fontSize: 20 }}></Lock>
+            <div className='mt-3 flex flex-row items-center h-12' style={{
+            border: "1px solid #1c1d1f",
+          }}>
+              <Lock sx={{ color: 'text.disabled', fontSize: 20, marginLeft: '8px' }}></Lock>
               <input
                 type='password'
                 id='Password'
                 name='Password'
                 className='ml-2 focus:outline-none focus:none focus:border-none'
-                placeholder='Password'
-                autoComplete='false'
+                placeholder='Şifre'
+                autoComplete='true'
               />
             </div>
             <button
               type='submit'
               className='mt-6 group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-none text-white bg-purple-600 hover:bg-purple-700 focus:outline-none  focus:bg-purple-800'
             >
-              Sign in
+              Kayıt Ol
             </button>
 
             <Grid
@@ -129,26 +136,14 @@ const SignUp = () => {
               <Grid
                 item
                 xs={12}
-                sx={{ fontSize: 10, justifyContent: 'center' }}
-              >
-                Kaydolarak Kullanım Şartlarımızı ve Gizlilik Politikamızı kabul
-                etmiş
-              </Grid>
-              <Grid item xs={4} sx={{ fontSize: 10, justifyContent: 'center' }}>
-                olursunuz
-              </Grid>
-
-              <Grid
-                item
-                xs={12}
-                sx={{ fontSize: 14, justifyContent: 'center' }}
+                sx={{ fontSize: 14, justifyContent: 'center', textAlign: 'center' }}
               >
                 Zaten bir hesabınız var mı?
                 <Link
-                  href='#'
-                  sx={{ marginLeft: 2, color: 'pink', fontSize: 14 }}
+                  sx={{ marginLeft: 2, fontSize: 14, cursor: 'pointer' }}
+                  onClick={() => navigate('/SignIn')}
                 >
-                  {'Oturum Aç'}
+                  Oturum Aç
                 </Link>
               </Grid>
             </Grid>

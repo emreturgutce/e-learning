@@ -563,7 +563,7 @@ export class CourseController {
         }
         return cb(new BadRequestException('File type must be image'), false);
       },
-      limits: { fileSize: 1_000_000 },
+      limits: { fileSize: 5_000_000 },
     }),
   )
   public async uploadThumbnail(

@@ -234,7 +234,7 @@ export default function CreateSection({
 
     return (
         <>
-            <Container sx={{marginTop: 5, width: "80%", justifyItems: "center", justifyContent: "center"}}>
+            <Container sx={{marginTop: 5, justifyItems: "center", justifyContent: "center"}}>
                 <Box>
                     <Box sx={{borderBottom: 1, borderColor: 'divider'}} className="flex align-center justify-between">
                         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">

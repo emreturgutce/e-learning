@@ -8,6 +8,7 @@ import {CourseCart, fetchCart, purchaseCourses, removeFromCart} from "../../api"
 import {useUserContext} from "../../context/User/UserContext";
 import {Navigate} from "react-router-dom";
 import {useAuth} from "../../context/Auth/AuthContent";
+import {toast} from "react-toastify";
 
 const CourseRateStars = styled.div`
   display: flex;
@@ -98,8 +99,10 @@ const ShoppingCart = () => {
       const c = cart.filter((c) => c._id !== id)
       setCart(c);
       userContext?.setCart(c)
+      toast.success("Kurs sepetten kaldırıldı.")
     } catch (e) {
       console.error(e);
+      toast.success("Sepetten kaldırırken hata oluştu.")
     }
   }
 
@@ -107,13 +110,14 @@ const ShoppingCart = () => {
     try {
       const ids = cart.map((c) => c._id)
       await purchaseCourses(ids)
-      fetchCart().then(({ data: { cart } }) => {
-        console.log(cart);
-        setCart(cart);
-        userContext?.setCart(cart);
-      })
+      const { data: { cart: c } } = await fetchCart()
+      console.log(c);
+      setCart(c);
+      userContext?.setCart(c);
+      toast.success('Satın alma başarılı.')
     } catch (e) {
       console.error(e);
+      toast.error('Satın alırken hata oluştu.')
     }
   }
 

@@ -4,8 +4,9 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import { Box, Container } from '@mui/material';
+import {Box, Button, Container} from '@mui/material';
 import {CourseCart, createCourse, CreateCourseRequest} from "../../../api";
+import {DropzoneArea, DropzoneDialog} from "material-ui-dropzone";
 
 interface Props {
   title: string;
@@ -16,6 +17,8 @@ interface Props {
   setPrice: React.Dispatch<React.SetStateAction<number>>;
   thumbnail: string;
   setThumbnail: React.Dispatch<React.SetStateAction<string>>;
+  files: File[];
+  setFiles: React.Dispatch<React.SetStateAction<File[]>>;
 }
 
 const CreateCourse = ({
@@ -26,11 +29,14 @@ const CreateCourse = ({
       price,
       setPrice,
       thumbnail,
-      setThumbnail
+      setThumbnail,
+      files,
+      setFiles,
   }: Props) => {
+  const [open, setOpen] = React.useState(false);
 
   return (
-    <Container sx={{ marginTop: 10, width: "80%", justifyItems: "center", justifyContent: "center" }}>
+    <Container sx={{ marginTop: 10, justifyItems: "center", justifyContent: "center" }}>
       <Box sx={{}}>
         <Typography variant="h6" gutterBottom>
           Kurs Oluşturma
@@ -72,21 +78,24 @@ const CreateCourse = ({
           </Grid>
           <Grid item xs={12} md={12}>
             <TextField
-              required
-              id="thumbnail"
-              label="Kurs Resmi"
-              fullWidth
-              variant="standard"
-              value={thumbnail}
-              onChange={(e) => setThumbnail(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={12} md={12}>
-            <TextField
                 id="preview"
                 label="Kurs Önizleme Videosu"
                 fullWidth
                 variant="standard"
+            />
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <DropzoneArea
+                acceptedFiles={['image/*']}
+                maxFileSize={5000000}
+                initialFiles={files}
+                filesLimit={1}
+                onChange={(files) => {
+                  setFiles(files)
+                }}
+                showPreviews={false}
+                showFileNamesInPreview={false}
+                dropzoneText="Kurs resmini sürükle ve bırak."
             />
           </Grid>
           <Grid item xs={12}>

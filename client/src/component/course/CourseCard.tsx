@@ -9,6 +9,7 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import {addToCart, CourseCart, fetchCart} from "../../api";
 import {useUserContext} from "../../context/User/UserContext";
 import {useNavigate} from "react-router-dom";
+import {toast} from "react-toastify";
 
 const Container = styled.div`
   display: flex;
@@ -156,13 +157,14 @@ const CourseCard = (props: courseType) => {
   const handleAddToCart = async (courseId: string) => {
     try {
       await addToCart(courseId)
-      fetchCart().then(({ data: { cart } }) => {
-        setCart(cart);
-        userContext?.setCart(cart);
-        setIsInCart(isInCartFn(props.item._id))
-      })
+      const { data: { cart } } = await fetchCart()
+      setCart(cart);
+      userContext?.setCart(cart);
+      setIsInCart(isInCartFn(props.item._id))
+      toast.success('Kurs sepete eklendi.')
     } catch (e) {
       console.error(e);
+      toast.error('Sepete eklenirken hata meydana geldi.')
     }
   }
 

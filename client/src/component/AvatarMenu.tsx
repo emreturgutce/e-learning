@@ -16,6 +16,8 @@ import {useAuth} from "../context/Auth/AuthContent";
 import {deepPurple} from "@mui/material/colors";
 import {useNavigate} from "react-router-dom";
 import QuizIcon from '@mui/icons-material/Quiz';
+import BookOutlinedIcon from '@mui/icons-material/BookOutlined';
+
 interface Props {
     logout: () => void
 }
@@ -34,6 +36,10 @@ export default function AvatarMenu(props: Props) {
 
     const handleRedirectUnapprovedExams = () => {
         navigate("/unapproved-exams")
+    }
+
+    const handleRedirectCourseCreate = () => {
+        navigate("/createCourse")
     }
 
     return (
@@ -107,11 +113,21 @@ export default function AvatarMenu(props: Props) {
                         </MenuItem>
                     )
                 }
+                {
+                    userAuth?.user?.type === 'INSTRUCTOR' && (
+                        <MenuItem onClick={() => handleRedirectCourseCreate()}>
+                            <ListItemIcon>
+                                <BookOutlinedIcon fontSize="small" />
+                            </ListItemIcon>
+                            Kurs Oluştur
+                        </MenuItem>
+                    )
+                }
                 <MenuItem onClick={() => props.logout()}>
                     <ListItemIcon>
                         <Logout fontSize="small" />
                     </ListItemIcon>
-                    Logout
+                    Çıkış Yap
                 </MenuItem>
             </Menu>
         </React.Fragment>

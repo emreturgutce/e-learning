@@ -16,6 +16,7 @@ import Lock from '@mui/icons-material/Lock'
 import { fetchLogin, fetchPurchasedCourses, fetchWishlist } from '../../api';
 import { useAuth } from '../../context/Auth/AuthContent';
 import {Navigate, useNavigate} from "react-router-dom";
+import {toast} from "react-toastify";
 
 const theme = createTheme();
 
@@ -23,20 +24,26 @@ const SignIn = () => {
   const navigate = useNavigate();
   const userAuth = useAuth();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const LoginResponse = await fetchLogin({
-      email: data.get('email')?.toString(),
-      password: data.get('password')?.toString(),
-    });
+    try {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+      const LoginResponse = await fetchLogin({
+        email: data.get('email')?.toString(),
+        password: data.get('password')?.toString(),
+      });
 
-    const user = {
-      email: LoginResponse.data.data.user.email,
-      type: LoginResponse.data.data.user.type,
-      _id: LoginResponse.data.data.user._id
+      const user = {
+        email: LoginResponse.data.data.user.email,
+        type: LoginResponse.data.data.user.type,
+        _id: LoginResponse.data.data.user._id
+      }
+      userAuth?.login(user);
+      navigate("/");
+      toast.success("Başarıyla giriş yapıldı.")
+    } catch (e) {
+      console.error(e);
+      toast.error("Giriş işlemi sırasında hata oluştu.")
     }
-    userAuth?.login(user);
-    navigate("/myCourse");
   };
 
   if (userAuth?.loggedIn) {
@@ -54,52 +61,51 @@ const SignIn = () => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            textAlign: 'center',
           }}
         >
           <Typography sx={{ borderBottom: 1, padding: 3, color: 'GrayText', borderColor: "GrayText", fontSize: 15, width: 340 }}>
-            Udemy Hesabınızda Oturum Açın!
+            Hesabınızda Oturum Açın!
           </Typography>
 
           <Box component="form" width={335} onSubmit={handleSubmit} noValidate sx={{ mt: 5 }}>
-            <div className='border-2 border-black flex flex-row items-center h-12' >
-              <Email sx={{ color: "text.disabled", fontSize: 20 }} ></Email>
+            <div className='flex flex-row items-center h-12' style={{
+              border: "1px solid #1c1d1f",
+            }}>
+              <Email sx={{ color: "text.disabled", fontSize: 20, marginLeft: '8px' }} ></Email>
               <input
                 type="text"
                 id="Email"
                 name="email"
                 className="ml-2 focus:outline-none focus:none focus:border-none"
                 placeholder="E-Posta"
-                autoComplete="false"
+                autoComplete="true"
               />
             </div>
-            <div className='mt-3 border-2 border-black flex flex-row items-center h-12' >
-              <Lock sx={{ color: "text.disabled", fontSize: 20 }} ></Lock>
+            <div className='mt-3 flex flex-row items-center h-12' style={{
+              border: "1px solid #1c1d1f",
+            }} >
+              <Lock sx={{ color: "text.disabled", fontSize: 20, marginLeft: '8px' }} ></Lock>
               <input
                 type="password"
                 id="Password"
                 name='password'
                 className="ml-2 focus:outline-none focus:none focus:border-none"
-                placeholder="Password"
-                autoComplete="false"
+                placeholder="Şifre"
+                autoComplete="true"
               />
             </div>
             <button type="submit" className="mt-6 group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-none text-white bg-purple-600 hover:bg-purple-700 focus:outline-none  focus:bg-purple-800">
-              Sign in
+              Giriş Yap
             </button>
 
 
 
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ marginTop: 2, justifyContent: "center" }}>
-              <Grid item xs={8} sx={{ fontSize: 15, justifyContent: "center" }}>
-                veya
-                <Link href="#" sx={{ marginLeft: 2, color: "blue" }} >
-                  {"Şifremi Unuttum"}
-                </Link>
-              </Grid>
               <Grid item xs={8} sx={{ fontSize: 14, justifyContent: "center" }}>
                 Hesabınız yok mu?
-                <Link href="#" sx={{ marginLeft: 2, color: "blue" }}>
-                  {" KaydoL"}
+                <Link sx={{ marginLeft: 2, color: "blue", cursor: 'pointer' }} onClick={() => navigate('/SignUp')}>
+                  Kaydol
                 </Link>
               </Grid>
 

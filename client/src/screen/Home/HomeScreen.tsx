@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Course as CourseType, fetchCourses} from "../../api";
+import {Course as CourseType, fetchCourses, fetchPurchasedCourses} from "../../api";
 import CourseCard from '../../component/course/CourseCard';
 import {useUserContext} from "../../context/User/UserContext";
 import {useAuth} from "../../context/Auth/AuthContent";
@@ -14,15 +14,19 @@ const HomeScreen = () => {
     const [courses, setCourses] = useState<CourseType[]>([]);
 
     useEffect(() => {
-        fetchCourses().then(({data: {courses}}) => {
-            setCourses(courses)
-        });
+        fetchPurchasedCourses().then((d) => {
+            userContext?.setMyCourses(d.data.courses || [])
+            fetchCourses().then(({data: {courses}}) => {
+                setCourses(courses)
+            }).catch(console.error);
+        })
     }, [])
 
     const filterOutMyCourses = () => {
         return courses.filter((c) => !userContext?.myCourses.map((mc) => mc._id).includes(c._id))
     }
 
+    console.log(userAuth)
     if (!userAuth?.loggedIn) {
         return <Navigate to={"/SignIn"} />
     }
