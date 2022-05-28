@@ -462,3 +462,17 @@ export const searchCourses = async (search: string) => {
     );
     return data;
 }
+
+export const saveProfile = async (firstname: string, lastname: string) => {
+    const {data} = await axios.post(
+        `http://localhost:8080/api/v1.0/users/update-profile`,
+        {
+            firstname,
+            lastname
+        },
+        {
+            withCredentials: true,
+        },
+    );
+    return data;
+}

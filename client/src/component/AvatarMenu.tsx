@@ -42,6 +42,10 @@ export default function AvatarMenu(props: Props) {
         navigate("/createCourse")
     }
 
+    const handleRedirectProfile = () => {
+        navigate("/profile")
+    }
+
     return (
         <React.Fragment>
             <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -93,16 +97,10 @@ export default function AvatarMenu(props: Props) {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem>
-                    <Avatar /> Profile
+                <MenuItem onClick={handleRedirectProfile}>
+                    <Avatar sx={{ width: 32, height: 32, bgcolor: deepPurple[500] }}>{userAuth?.user?.firstname?.substring(0, 1) || 'M'}</Avatar> Profil
                 </MenuItem>
                 <Divider />
-                <MenuItem>
-                    <ListItemIcon>
-                        <Settings fontSize="small" />
-                    </ListItemIcon>
-                    Settings
-                </MenuItem>
                 {
                     userAuth?.user?.type === 'INSTRUCTOR' && (
                         <MenuItem onClick={() => handleRedirectUnapprovedExams()}>

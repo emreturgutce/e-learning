@@ -13,7 +13,6 @@ import CreateCourse from './screen/CreateCourse/CreateCourse';
 import ProtectedUserRout from './screen/ProtectedUserRout';
 import {useAuth} from './context/Auth/AuthContent';
 import {getUser} from './api';
-import {useQuery} from 'react-query';
 import {CourseDetail} from "./screen/Course/CourseDetail";
 import {useEffect, useState} from "react";
 import UnapprovedExams from './screen/UnapprovedExams';
@@ -21,6 +20,7 @@ import ApproveExam from "./screen/ApproveExam";
 import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SearchCourses from "./screen/SearchCourses";
+import Profile from "./screen/Profile";
 
 function App() {
     const userAuth = useAuth();
@@ -29,7 +29,7 @@ function App() {
 
     useEffect(() => {
         getUser().then((data) => {
-            console.log(data);
+            console.log("App", data);
             userAuth?.login(data.data.data.user)
         }).catch(() => {
             navigate('/SignIn')
@@ -69,6 +69,7 @@ function App() {
                                         <ApproveExam/>
                                     </ProtectedUserRout>
                                 }/>
+                                <Route path='/profile' element={<Profile/>}/>
                                 <Route path='/shoppingCart' element={<ShoppingCart/>}/>
                                 <Route path='/Course/:id' element={<Course/>}/>
                                 <Route path='/course-detail/:id' element={<CourseDetail/>}/>
@@ -91,7 +92,7 @@ function App() {
                         </CoursesProvider>
                         <FooterContainer/>
                     </div>
-                ) : <div>Loding</div>
+                ) : <div>Loading</div>
             }
         </>
     );

@@ -40,6 +40,8 @@ export class AuthController {
       id: user._id,
       email: user.email,
       type: user.type,
+      firstname: user.firstname,
+      lastname: user.lastname,
     };
 
     this.logger.log(

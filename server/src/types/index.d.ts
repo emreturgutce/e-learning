@@ -4,6 +4,8 @@ declare module 'express-session' {
       id: string;
       email: string;
       type: string;
+      firstname: string;
+      lastname: string;
     };
   }
 }
