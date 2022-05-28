@@ -8,7 +8,8 @@ import {
   Session,
   Req,
   Res,
-  Logger, UseGuards,
+  Logger,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
@@ -16,7 +17,8 @@ import { Session as SessionDoc } from 'express-session';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login-user.dto';
-import {AuthGuard} from "../../common/guard/auth.guard";
+import { AuthGuard } from '../../common/guard/auth.guard';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -109,6 +111,24 @@ export class AuthController {
     return {
       message: 'Logged in',
       data: { user: session.context },
+    };
+  }
+
+  @Post('/change-password')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  public async changePassword(
+    @Body() changePasswordDto: ChangePasswordDto,
+    @Session() session: SessionDoc,
+  ) {
+    await this.authService.changePassword(
+      session.context.id,
+      changePasswordDto.password,
+    );
+
+    return {
+      message: 'Password changed',
+      data: {},
     };
   }
 }

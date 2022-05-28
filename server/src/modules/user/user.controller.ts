@@ -15,6 +15,7 @@ import { Session as SessionDoc } from 'express-session';
 import { AuthGuard } from 'src/common/guard/auth.guard';
 import { SendMessageDto } from './dto/send-message.dto';
 import { UserService } from './user.service';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Controller('users')
 @UseGuards(AuthGuard)
@@ -154,6 +155,23 @@ export class UserController {
     return {
       message: 'Messages fetched',
       data: { chat },
+    };
+  }
+
+  @Post('/update-profile')
+  @HttpCode(HttpStatus.OK)
+  public async updateProfile(
+    @Body() updateProfileDto: UpdateProfileDto,
+    @Session() session: SessionDoc,
+  ) {
+    const user = await this.userService.updateUser(
+      session.context.id,
+      updateProfileDto,
+    );
+
+    return {
+      message: 'User updated',
+      data: { user },
     };
   }
 }

@@ -1,50 +1,47 @@
+import { useState } from 'react';
 import { styled } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
+import {useNavigate, createSearchParams} from "react-router-dom";
+import {InputAdornment, TextField} from "@mui/material";
 
 const SearchBar = () => {
-  const Search = styled("div")(() => ({
-    position: "relative",
-    borderRadius: 50,
-    backgroundColor: "#F7F9FA",
-    marginRight: 0,
-    border: "1px solid #1c1d1f",
-    width: "60%",
-    height: 48,
-    color: "#8A8B8D",
-    marginLeft: 24,
-  }));
+  const [search, setSearch] = useState('');
+  const navigate = useNavigate();
 
-  const SearchIconWrapper = styled("div")(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: "100%",
-    position: "absolute",
-    pointerEvents: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  }));
+  const handleSearch = () => {
+    navigate({
+          pathname: "/search-courses",
+          search: createSearchParams({
+              search,
+          }).toString()
+      });
+  }
 
-  const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: theme.palette.common.black,
-    "& .MuiInputBase-input": {
-      padding: theme.spacing(1.5, 1.5, 1.5, 1.5),
-      paddingLeft: `calc(1em + ${theme.spacing(5)})`,
-      transition: theme.transitions.create("width"),
-      width: "100%",
-      fontSize: 14,
-    },
-  }));
+  const handleEnter = (e: any) => {
+    if (e.key === 'Enter') {
+      handleSearch()
+    }
+    e.target.focus()
+  }
+
   return (
-    <Search>
-      <SearchIconWrapper>
-        <SearchIcon sx={{ fontSize: 24 }} />
-      </SearchIconWrapper>
-      <StyledInputBase
+    <div style={{ width: '60%' }}>
+      <TextField
+          inputProps={{
+            startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+            ),
+          }}
+          sx={{width: '100%'}}
         placeholder="Dilediğiniz şeyi arayın"
-        inputProps={{ "aria-label": "search" }}
+        value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={(e) => handleEnter(e)}
       />
-    </Search>
+    </div>
   );
 };
 

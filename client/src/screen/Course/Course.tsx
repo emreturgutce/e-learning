@@ -9,10 +9,20 @@ import ReactPlayer from 'react-player';
 import {height} from '@mui/system';
 import {Courses} from '../../data/course-selection-data/data';
 import {Navigate, useNavigate, useParams} from 'react-router-dom';
-import {getCourseById} from '../../api';
+import {addReview, getCourseById} from '../../api';
 import {useQuery, UseQueryOptions} from 'react-query';
 import {useAuth} from "../../context/Auth/AuthContent";
 import Quiz from "../../component/Quiz/Quiz";
+import Avatar from "@mui/material/Avatar";
+import {deepPurple} from "@mui/material/colors";
+import {Star, StarHalf} from "@mui/icons-material";
+import {
+    CourseRateReviewerNum,
+    CourseRateScore,
+    CourseRateStars,
+    CourseRateWrapper
+} from "../../component/course/CourseCard";
+import {Button, Divider, Rating, TextField} from "@mui/material";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -89,12 +99,38 @@ interface StyledTabProps {
 }
 
 
+const StarReview = ({ rating }: { rating: number }) => {
+    let increment = 0;
+    let max = 5;
+    return (
+        <CourseRateWrapper>
+            <CourseRateScore>{rating}</CourseRateScore>
+            <CourseRateStars>
+                {[...Array(5)].map((star, index) => {
+                    while (increment < rating) {
+                        if (rating - increment < 1) {
+                            increment++;
+                            return <StarHalf style={{ color: "#e59819", height: '1.2rem', width: '1rem' }}></StarHalf>;
+                        }
+                        increment++;
+                        return <Star style={{ color: "#e59819", height: '1.2rem', width: '1rem' }}></Star>;
+                    }
+                    while (max > rating) {
+                        max--;
+                        return <Star style={{ color: "gray", height: '1.2rem', width: '1rem' }}></Star>;
+                    }
+                })}
+            </CourseRateStars>
+        </CourseRateWrapper>
+    )
+}
+
 const Course = () => {
     const userAuth = useAuth();
     const {id} = useParams();
     const {isLoading, error, data} = useQuery(["course", id], () =>
-        getCourseById(id),
-        { staleTime: 0, retry: 0 }
+            getCourseById(id),
+        {staleTime: 0, retry: 0}
     );
     const navigate = useNavigate()
 
@@ -102,6 +138,8 @@ const Course = () => {
     const [course, setCourse] = React.useState(Courses[Number(1)])
     const [content, setContent] = React.useState(data?.data?.course?.content)
     const [section, setSection] = React.useState(content?.sections[0].section_contents?.[0])
+    const [rating, setRating] = React.useState(5);
+    const [comment, setComment] = React.useState("");
 
     if (error) {
         navigate(`/course-detail/${id}`)
@@ -118,6 +156,17 @@ const Course = () => {
         return <Navigate to={"/SignIn"}/>
     }
 
+    console.log("test",data?.data?.course)
+
+    const handleSend = async () => {
+        try {
+            if (id) {
+                await addReview(id, rating, comment);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
 
     return (
         <div className='w-full'>
@@ -158,7 +207,7 @@ const Course = () => {
                             section?.type === 'QUIZ' && section.exam && (
                                 <div style={{padding: '3.2rem 14rem'}}>
                                     <h1 className="mt-4 uppercase font-bold text-lg">{section.title}</h1>
-                                    <Quiz examId={section?.exam} />
+                                    <Quiz examId={section?.exam}/>
                                 </div>
                             )
                         }
@@ -168,7 +217,7 @@ const Course = () => {
                             sx={{
                                 bgcolor: '#fff',
                                 height: 400,
-                                overflow: 'hiden',
+                                overflow: 'scroll',
                                 scrollbarColor: 'white',
                             }}
                         >
@@ -177,44 +226,59 @@ const Course = () => {
                                 onChange={handleChange}
                                 aria-label='ant example'
                             >
-                                <AntTab label='Tab 1'/>
-                                <AntTab label='Tab 2'/>
-                                <AntTab label='Tab 3'/>
+                                <AntTab label='Değerlendirmeler'/>
+                                <AntTab label='Sohbet'/>
                             </AntTabs>
                             <TabPanel value={value} index={0}>
+                                <div className="flex flex-col">
+                                    <div className="flex">
+                                        <Typography>Puan: </Typography>
+                                        <Rating
+                                            className="ml-2"
+                                            name="simple-controlled"
+                                            value={rating}
+                                            onChange={(event, newValue) => {
+                                                if (newValue) {
+                                                    setRating(newValue);
+                                                }
+                                            }}
+                                        />
+                                    </div>
+                                    <TextField
+                                        label="Yorum"
+                                        sx={{marginTop: 3, marginBottom: 3}}
+                                        value={comment}
+                                        onChange={(e) => setComment(e.target.value)}
+                                    />
+                                    <Button variant="text" onClick={handleSend}>Gönder</Button>
+                                </div>
+                                <Divider sx={{ marginTop: 3, marginBottom: 3 }} />
                                 <ol className='relative border-l border-gray-200 dark:border-gray-700'>
-                                    {course.reviews.map((item: any) => (
+                                    {data?.data?.course?.reviews?.map((item: any) => (
+                                        <>
                                         <li className='mb-10 ml-6' key={item.id}>
                       <span
-                          className='flex absolute -left-3 justify-center items-center w-6 h-6 bg-blue-200 rounded-full ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900'>
-                        <img
-                            className='rounded-full shadow-lg'
-                            src='/docs/images/people/profile-picture-3.jpg'
-                        />
+                          className='flex absolute -left-3 justify-center items-center w-6 h-6 bg-blue-200 rounded-full ring-8 ring-white'>
+                        <Avatar sx={{ width: 38, height: 38, bgcolor: deepPurple[500] }}>{item.user?.firstname?.substring(0, 1) || 'M'}</Avatar>
                       </span>
                                             <div
                                                 className='justify-between items-center p-4 bg-white rounded-lg border border-gray-200 shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600'>
-                                                <time
-                                                    className='mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0'>
-                                                    just now
-                                                </time>
                                                 <div className='text-sm font-normal text-gray-500 dark:text-gray-300'>
-                                                    {item.name}{' '}
-                                                    <a
-                                                        href='#'
-                                                        className='font-semibold text-blue-600 dark:text-blue-500 hover:underline'
-                                                    >
-                                                        Jese Leos
-                                                    </a>{' '}
-                                                    to{' '}
+                                                    {item.user?.firstname || 'Anonymous'}
                                                     <span
-                                                        className='bg-gray-100 text-gray-800 text-xs font-normal mr-2 px-2.5 py-0.5 rounded dark:bg-gray-600 dark:text-gray-300'>
-                            {item.desc}
+                                                        className='bg-gray-100 text-gray-800 text-xs font-normal mx-2 px-2.5 py-0.5 rounded dark:bg-gray-600 dark:text-gray-300'>
+                            {item.description}
                           </span>
                                                 </div>
+                                                <StarReview rating={item.rating || 0} />
                                             </div>
+
+
                                         </li>
-                                    ))}
+
+                                        </>
+
+                                        ))}
                                 </ol>
                             </TabPanel>
                             <TabPanel value={value} index={1}>

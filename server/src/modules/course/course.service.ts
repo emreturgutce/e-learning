@@ -2,9 +2,11 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  Logger,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { ObjectID } from 'mongodb';
 import { nanoid } from 'nanoid';
 import { CourseContentDocument } from './schema/course-content.schema';
 import { UserService } from 'src/modules/user/user.service';
@@ -38,6 +40,7 @@ import { QuestionDocument } from './schema/question.schema';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
+import sharp from 'sharp';
 
 @Injectable()
 export class CourseService {
@@ -60,6 +63,7 @@ export class CourseService {
     private readonly QuestionModel: Model<QuestionDocument>,
     private readonly s3Service: S3Service,
     private readonly userService: UserService,
+    private readonly logger: Logger,
   ) {}
 
   public async createCourse(
@@ -185,7 +189,7 @@ export class CourseService {
   ): Promise<boolean> {
     const user = await this.userService.findUserById(userId);
 
-    return user.courses.some((course) => course === courseId);
+    return user.courses.some((course: any) => course.toString() === courseId);
   }
 
   private createCourseContent(createCourseContentDto: CreateCourseContentDto) {
@@ -218,12 +222,21 @@ export class CourseService {
     return this.CourseModel.find().exec();
   }
 
+  public searchCourses(searchQuery: string) {
+    return this.CourseModel.find({
+      $text: {
+        $search: searchQuery,
+      },
+    }).exec();
+  }
+
   public findCourseById(id: string) {
     return this.CourseModel.findById(id)
       .populate({
-        path: 'content',
+        path: 'content reviews',
         populate: {
-          path: 'sections',
+          path: 'sections user',
+          select: 'firstname lastname email',
           populate: {
             path: 'section_contents',
           },
@@ -251,13 +264,50 @@ export class CourseService {
     const path = `courses/${courseId}/thumbnails/${nanoid(10)}.webp`;
     const imageUrl = this.s3Service.generateFileUrl(path);
 
-    await this.s3Service.uploadFileToS3(path, file);
+    const webpImg = await this.convertImageTypeToWebp(file);
+    await this.s3Service.uploadFileToS3(path, webpImg);
 
     return this.CourseModel.findByIdAndUpdate(
       courseId,
       { thumbnail: imageUrl },
       { new: true },
     ).exec();
+  }
+
+  public async convertImageTypeToWebp(buffer: Buffer): Promise<Buffer> {
+    const buff = await sharp(buffer).webp({ lossless: true }).toBuffer();
+
+    this.logger.debug('Image converted to webp', S3Service.name);
+
+    return buff;
+  }
+
+  public async uploadSectionContent(sectionContentId: string, file: Buffer) {
+    const path = `videos/${sectionContentId}/${nanoid(10)}.mp4`;
+    const videoUrl = this.s3Service.generateFileUrl(path);
+
+    await this.s3Service.uploadFileToS3(path, file);
+
+    return this.SectionContentModel.findByIdAndUpdate(
+      sectionContentId,
+      { video_url: videoUrl },
+      { new: true },
+    ).exec();
+  }
+
+  public async isOwnerOfSectionContent(
+    sectionContentId: string,
+    owner: string,
+  ): Promise<boolean> {
+    const sectionContent = await this.SectionContentModel.findById(
+      sectionContentId,
+    ).exec();
+
+    if (!sectionContent) {
+      return false;
+    }
+
+    return sectionContent.owner === owner;
   }
 
   public async isOwnerOfCourse(id: string, courseId: string): Promise<boolean> {

@@ -13,6 +13,7 @@ import { SendMessageDto } from './dto/send-message.dto';
 import { Chat, ChatDocument } from './schema/chat.schema';
 import { Message, MessageDocument } from './schema/message.schema';
 import { User, UserDocument } from './schema/user.schema';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Injectable()
 export class UserService {
@@ -301,5 +302,23 @@ export class UserService {
       .populate('messages')
       .populate('participants', 'email _id')
       .exec();
+  }
+
+  public async updateUser(userId: string, updateProfileDto: UpdateProfileDto) {
+    return this.UserModel.findByIdAndUpdate(userId, updateProfileDto, {
+      new: true,
+    }).exec();
+  }
+
+  public async changePassword(userId: string, password: string) {
+    return this.UserModel.findByIdAndUpdate(
+      userId,
+      {
+        password,
+      },
+      {
+        new: true,
+      },
+    ).exec();
   }
 }

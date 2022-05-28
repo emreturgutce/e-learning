@@ -34,4 +34,8 @@ export class AuthService {
 
     return user;
   }
+
+  public async changePassword(userId: string, password: string) {
+    return this.userService.changePassword(userId, password);
+  }
 }

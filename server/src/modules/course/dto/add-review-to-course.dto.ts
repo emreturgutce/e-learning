@@ -12,5 +12,5 @@ export class AddReviewToCourseDto {
   @IsNumber()
   @Min(0)
   @Max(5)
-  rating: string;
+  rating: number;
 }

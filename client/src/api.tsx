@@ -424,3 +424,41 @@ export const uploadThumbnail = async (courseId: string, formData: any) => {
     );
     return data;
 }
+
+export const uploadVideo = async (sectionContentId: string, formData: any) => {
+    const {data} = await axios.post(
+        `http://localhost:8080/api/v1.0/courses/upload-video/${sectionContentId}`,
+        formData,
+        {
+            withCredentials: true, headers: {
+                'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+
+            }
+        },
+    );
+    return data;
+}
+
+export const addReview = async (courseId: string, rating: number, comment: string) => {
+    const {data} = await axios.post(
+        `http://localhost:8080/api/v1.0/courses/add-reviews/${courseId}/reviews`,
+        {
+            rating,
+            description: comment,
+        },
+        {
+            withCredentials: true,
+        },
+    );
+    return data;
+}
+
+export const searchCourses = async (search: string) => {
+    const {data} = await axios.get(
+        `http://localhost:8080/api/v1.0/courses/search-courses?search=${search}`,
+        {
+            withCredentials: true,
+        },
+    );
+    return data;
+}

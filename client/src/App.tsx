@@ -20,6 +20,7 @@ import UnapprovedExams from './screen/UnapprovedExams';
 import ApproveExam from "./screen/ApproveExam";
 import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import SearchCourses from "./screen/SearchCourses";
 
 function App() {
     const userAuth = useAuth();
@@ -71,6 +72,7 @@ function App() {
                                 <Route path='/shoppingCart' element={<ShoppingCart/>}/>
                                 <Route path='/Course/:id' element={<Course/>}/>
                                 <Route path='/course-detail/:id' element={<CourseDetail/>}/>
+                                <Route path='/search-courses' element={<SearchCourses/>}></Route>
                                 <Route
                                     path='/myCourse'
                                     element={

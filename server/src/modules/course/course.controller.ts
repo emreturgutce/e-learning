@@ -9,6 +9,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Session,
   UnauthorizedException,
   UploadedFile,
@@ -16,7 +17,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags } from '@nestjs/swagger';
+import {ApiQuery, ApiTags} from '@nestjs/swagger';
 import { Session as SessionDoc } from 'express-session';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { AuthGuard } from 'src/common/guard/auth.guard';
@@ -51,6 +52,20 @@ export class CourseController {
   @Get()
   public async getCourses() {
     const courses = await this.courseService.getCourses();
+
+    this.logger.log('Courses fetched', CourseController.name);
+
+    return {
+      message: 'Courses fetched',
+      data: { courses },
+    };
+  }
+
+  // courses/search-courses?search=React
+  @Get('search-courses')
+  @ApiQuery({ name: 'search', type: 'string' })
+  public async searchCourses(@Query() { search }: { search: string }) {
+    const courses = await this.courseService.searchCourses(search);
 
     this.logger.log('Courses fetched', CourseController.name);
 
@@ -596,11 +611,54 @@ export class CourseController {
     };
   }
 
+  @Post('upload-video/:sectionContentId')
+  @Roles('INSTRUCTOR')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: (_, { mimetype }, cb) => {
+        if (mimetype.includes('video')) {
+          return cb(null, true);
+        }
+        return cb(new BadRequestException('File type must be video'), false);
+      },
+      limits: { fileSize: 50_000_000 },
+    }),
+  )
+  public async uploadVideo(
+    @Param('sectionContentId') sectionContentId: string,
+    @UploadedFile() file: Express.Multer.File,
+    @Session() session: SessionDoc,
+  ) {
+    const isOwner = await this.courseService.isOwnerOfSectionContent(
+      sectionContentId,
+      session.context.id,
+    );
+
+    if (!isOwner) {
+      throw new ForbiddenException('Not owner of the section content');
+    }
+
+    const course = await this.courseService.uploadSectionContent(
+      sectionContentId,
+      file.buffer,
+    );
+
+    this.logger.log(
+      `Section content video uploaded [sectionContentId: ${sectionContentId}]`,
+      CourseController.name,
+    );
+
+    return {
+      message: 'Section content video uploaded',
+      data: { course },
+    };
+  }
+
   @Post('add-reviews/:id/reviews')
   public async addReviewToCourse(
     @Param('id') id: string,
     @Session() session: SessionDoc,
-    @Body() addReviewToCourseDto: Omit<AddReviewToCourseDto, 'user'>,
+    @Body() addReviewToCourseDto: AddReviewToCourseDto,
   ) {
     const isBought = await this.courseService.didBuyTheCourse(
       session.context.id,

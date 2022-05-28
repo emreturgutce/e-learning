@@ -9,12 +9,12 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
     DialogTitle, FormControlLabel, MenuItem, Radio,
     RadioGroup,
     TextField
 } from '@mui/material';
-import {createExam, CreateExamRequest, createSectionContent} from "../../../api";
+import {createExam, CreateExamRequest, createSectionContent, uploadVideo} from "../../../api";
+import {DropzoneArea} from "material-ui-dropzone";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -114,6 +114,7 @@ export default function CreateSection({
     const [questions, setQuestions] = React.useState<Question[]>([]);
     const [exam, setExam] = React.useState<string>("");
     const [sectionTitle, setSectionTitle] = React.useState("");
+    const [files, setFiles] = React.useState<File[]>([])
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -186,7 +187,7 @@ export default function CreateSection({
             } else if (contentType === 'VIDEO') {
                 sectionContent = {
                     ...sectionContent,
-                    video_url: videoUrl,
+                    video_url: "",
                 }
             } else if (contentType === 'TEXT') {
                 sectionContent = {
@@ -197,6 +198,11 @@ export default function CreateSection({
 
             console.log(sectionContent);
             const data = await createSectionContent(sectionContent)
+            if (contentType === 'VIDEO' && files.length > 0) {
+                const formData = new FormData()
+                formData.append('file', files[0])
+                await uploadVideo(data.data.sectionContent._id, formData)
+            }
             sectionContent.id = data.data.sectionContent._id
 
             const sectionsCopy = [...otherSections, {
@@ -329,18 +335,20 @@ export default function CreateSection({
                     </TextField>
                     {
                         contentType === 'VIDEO' && (
-                            <TextField
-                                required
-                                autoFocus
-                                margin="dense"
-                                id="videoUrl"
-                                label="Video Linki"
-                                type="text"
-                                fullWidth
-                                variant="standard"
-                                value={videoUrl}
-                                onChange={(e) => setVideoUrl(e.target.value)}
-                            />
+                            <>
+                                <DropzoneArea
+                                    acceptedFiles={['video/*']}
+                                    maxFileSize={50_000_000}
+                                    initialFiles={files}
+                                    filesLimit={1}
+                                    onChange={(files) => {
+                                        setFiles(files)
+                                    }}
+                                    showPreviews={false}
+                                    showFileNamesInPreview={false}
+                                    dropzoneText="İçerik videosunu sürükle ve bırak."
+                                />
+                            </>
                         )
                     }
                     {
