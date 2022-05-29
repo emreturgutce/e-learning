@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { S3 } from 'aws-sdk';
-import sharp from 'sharp';
 import {
   AWS_ACCESS_KEY_ID,
   AWS_S3_BUCKET,

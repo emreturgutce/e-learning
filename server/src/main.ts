@@ -22,6 +22,7 @@ async function bootstrap() {
   const redisService = app.get(RedisService);
 
   // Config
+  app.set('trust proxy', 1);
   app.disable('x-powered-by');
   app.setGlobalPrefix(GLOBAL_PREFIX);
   app.enableCors({
