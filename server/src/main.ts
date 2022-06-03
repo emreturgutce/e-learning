@@ -26,7 +26,7 @@ async function bootstrap() {
   app.disable('x-powered-by');
   app.setGlobalPrefix(GLOBAL_PREFIX);
   app.enableCors({
-    origin: FRONTEND_URL || 'http://localhost:3000',
+    origin: 'http://localhost:3000',
     credentials: true,
   });
 

@@ -321,4 +321,12 @@ export class UserService {
       },
     ).exec();
   }
+
+  public async addToCourses(userId: string, courseId: string) {
+    return this.UserModel.findByIdAndUpdate(
+      userId,
+      { $push: { courses: courseId } },
+      { new: true },
+    ).exec();
+  }
 }

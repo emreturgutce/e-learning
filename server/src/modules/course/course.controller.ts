@@ -76,7 +76,7 @@ export class CourseController {
   }
 
   @Get('get-course/:id')
-  @Roles('USER')
+  @Roles('USER', 'INSTRUCTOR')
   public async getCourseById(
     @Param('id') id: string,
     @Session() session: SessionDoc,
@@ -315,7 +315,7 @@ export class CourseController {
   }
 
   @Get('list-purchased-courses')
-  @Roles('USER')
+  @Roles('USER', 'INSTRUCTOR')
   public async listPurchasedCourses(@Session() session: SessionDoc) {
     const courses = await this.courseService.listPurchasedCourses(
       session.context.id,
@@ -749,7 +749,7 @@ export class CourseController {
   }
 
   @Post('purchase-course')
-  @Roles('USER')
+  @Roles('USER', 'INSTRUCTOR')
   public async purchaseCourse(
     @Session() session: SessionDoc,
     @Body() purchaseCourseDto: PurchaseCourseDto,

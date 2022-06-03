@@ -8,14 +8,22 @@ import Typography from '@mui/material/Typography';
 import {Container} from '@mui/material';
 import CreateSection, {Section} from './Section/CreateSection';
 import CreateCourse from './Course/CreateCourse';
-import {Course, createCourse, CreateCourseRequest, createSection, uploadThumbnail} from "../../api";
+import {
+    Course,
+    createCourse,
+    CreateCourseRequest,
+    createSection,
+    getCourseById,
+    updateCourse,
+    uploadThumbnail
+} from "../../api";
 import {toast} from "react-toastify";
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 
 const steps = ['Kurs Oluşturma', 'Kurs Bölümlerini Oluşturma'];
 
-export default function HorizontalNonLinearStepper() {
+export default function HorizontalNonLinearStepper({ id }: { id: string | undefined }) {
     const navigate = useNavigate();
     const [activeStep, setActiveStep] = React.useState(0);
     const [completed, setCompleted] = React.useState<{
@@ -33,6 +41,19 @@ export default function HorizontalNonLinearStepper() {
     useEffect(() => {
         console.log(files);
     }, [files])
+
+    useEffect(() => {
+        if (id) {
+            getCourseById(id)
+                .then((course) => {
+                    setTitle(course?.data?.course?.title || "");
+                    setDescription(course?.data?.course?.description || "");
+                    setPrice(course?.data?.course?.price || 0);
+                    // TODO! Thumbnail
+                })
+                .catch(console.error)
+        }
+    }, [])
 
     const handleCreateCourse = async () => {
         try {
@@ -96,6 +117,17 @@ export default function HorizontalNonLinearStepper() {
     const handleStep = (step: number) => () => {
         setActiveStep(step);
     };
+
+    const handleUpdate = async () => {
+        try {
+            if (id) {
+                await updateCourse(id, title, description, price);
+                navigate("/");
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
 
     const handleCreateSections = async () => {
         try {
@@ -187,7 +219,7 @@ export default function HorizontalNonLinearStepper() {
                             }
                             <Box sx={{display: 'flex', flexDirection: 'row', pt: 2}}>
                                 <Box sx={{flex: '1 1 auto'}}/>
-                                {activeStep !== steps.length &&
+                                {!id && activeStep !== steps.length &&
                                     (completed[activeStep] ? (
                                         <Typography variant="caption" sx={{display: 'inline-block'}}>
                                             Step {activeStep + 1} already completed
@@ -206,6 +238,13 @@ export default function HorizontalNonLinearStepper() {
                                             }
                                         </>
                                     ))}
+                                {
+                                    id && (
+                                    <Button onClick={handleUpdate}>
+                                    Güncelle
+                                    </Button>
+                                    )
+                                }
                             </Box>
                         </React.Fragment>
                     )}

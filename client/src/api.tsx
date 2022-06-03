@@ -476,3 +476,18 @@ export const saveProfile = async (firstname: string, lastname: string) => {
     );
     return data;
 }
+
+export const updateCourse = async (courseId: string, title: string ,description: string, price: number) => {
+    const {data}= await axios.put(
+        `http://localhost:8080/api/v1.0/courses/${courseId}`,
+        {
+            title,
+            description,
+            price,
+        },
+        {
+            withCredentials: true,
+        }
+    )
+    return data;
+}

@@ -1,4 +1,6 @@
 import React from 'react'
+import {useUserContext} from "../../context/User/UserContext";
+import {useAuth} from "../../context/Auth/AuthContent";
 
 type naviType = {
   test: string;
@@ -7,12 +9,16 @@ type naviType = {
 const style2 = "inline-block py-2 px-3 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-4 border-transparent hover:text-gray-600 hover:border-gray-300 dark:text-gray-400  dark:hover:text-gray-100"
 const style1 = "inline-block py-2 px-3 text-sm font-medium text-center text-white rounded-t-lg border-b-4 border-gray-50 active dark:text-white dark:border-white"
 const UserCourseNavigation = (props: naviType) => {
+  const auth = useAuth()
+
   return (
     <div className="min-h-full">
       <nav className="bg-black ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-start text-3xl  h-20">
-            <p className='text-white ml-11 font-serif font-bold'>Öğrenim İçeriğim</p>
+            <p className='text-white ml-11 font-serif font-bold'>{
+              auth?.user?.type === "USER" ? "Öğrenim İçeriğim" : "Kurslarım"
+            }</p>
           </div>
 
           <div className="flex items-end justify-start mt-5">
@@ -24,9 +30,13 @@ const UserCourseNavigation = (props: naviType) => {
                   <a href="#" className={props.test == "mycourse" ? style1 : style2} onClick={() => props.setTest("mycourse")} aria-current="page">Tüm kurslar
                   </a>
 
-                  <a href="#" className={props.test == "Wishlist" ? style1 : style2} onClick={() => props.setTest("Wishlist")}>İstek Listesi
-                  </a>
-                  {/* 
+                  {
+                    auth?.user?.type === "USER" && (
+                          <a href="#" className={props.test == "Wishlist" ? style1 : style2} onClick={() => props.setTest("Wishlist")}>İstek Listesi
+                          </a>
+                      )
+                  }
+                  {/*
                   <a href="#" className="inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-3 border-transparent hover:text-gray-600 hover:border-gray-300 dark:text-gray-400  dark:hover:text-gray-100" >Projects</a>
 
                   <a href="#" className="inline-block py-4 px-4 text-sm font-medium text-center text-white rounded-t-lg border-b-2 border-white active dark:text-white dark:border-white">Calendar</a>

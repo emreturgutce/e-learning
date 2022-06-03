@@ -71,10 +71,14 @@ export class CourseService {
   ): Promise<CourseDocument> {
     const courseContent = await this.createCourseContent({ sections: [] });
 
-    return this.CourseModel.create({
+    const course = await this.CourseModel.create({
       ...createCourseDto,
       content: courseContent._id,
     });
+
+    await this.userService.addToCourses(createCourseDto.instructor, course._id);
+
+    return course;
   }
 
   public updateCourse(
