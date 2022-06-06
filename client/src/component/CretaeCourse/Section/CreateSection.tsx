@@ -9,12 +9,25 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle, FormControlLabel, MenuItem, Radio,
+    DialogTitle,
+    FormControlLabel,
+    IconButton,
+    MenuItem,
+    Radio,
     RadioGroup,
     TextField
 } from '@mui/material';
 import {createExam, CreateExamRequest, createSectionContent, uploadVideo} from "../../../api";
 import {DropzoneArea} from "material-ui-dropzone";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import DeleteIcon from '@mui/icons-material/Delete'
+
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -141,6 +154,7 @@ export default function CreateSection({
     const handleAddSection = () => {
         setSections([...sections, {title: sectionTitle, section_contents: [], id: id, order: id}])
         setId(id + 1)
+        setSectionTitle("")
         handleClose()
     }
 
@@ -211,6 +225,13 @@ export default function CreateSection({
             }];
             setSections(sectionsCopy.sort((a, b) => a.id - b.id))
             handleCloseContent()
+            setExam("")
+            setVideoUrl("")
+            setText("")
+            setContentTitle("")
+            setContentType(ContentType.TEXT)
+            setDuration(0)
+            handleCloseContent()
         } catch (e) {
             console.error(e);
         }
@@ -221,6 +242,7 @@ export default function CreateSection({
             return;
         }
         setOptions([...options, option]);
+        setOption("")
     }
 
     const handleCreateQuestion = () => {
@@ -237,6 +259,29 @@ export default function CreateSection({
         setOptions([])
         setPoint(0)
     };
+
+    const handleRemove = (contentId: string | undefined) => {
+        if (contentId === undefined) {
+            return
+        }
+        const section = sections.find((s) => s.id === selectedSection);
+        if (!section) {
+            return;
+        }
+        section.section_contents = section.section_contents.filter((sc) => sc.id !== contentId)
+        const s = sections.map((s) => {
+            if (s.id === selectedSection) {
+                return section
+            }
+            return s
+        })
+        setSections(s)
+    }
+
+    const handleRemoveQuestion = (text: string) => {
+        const qs = questions.filter((q) => q.text !== text)
+        setQuestions(qs);
+    }
 
     return (
         <>
@@ -257,9 +302,46 @@ export default function CreateSection({
                             <TabPanel key={i} value={value} index={i}>
                                 <Button onClick={() => handleClickOpenContent(s.id)}>Bölüm İçeriği Ekle</Button>
                                 <div>
-                                    {s.section_contents.map((sc) => (
-                                        <div>{sc.title}</div>
-                                    ))}
+                                    <>
+                                        <TableContainer component={Paper}>
+                                            <Table sx={{minWidth: 650}} aria-label="simple table">
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell>İçerik Adı</TableCell>
+                                                        <TableCell>İçerik Süresi</TableCell>
+                                                        <TableCell>İçerik Tipi</TableCell>
+                                                        <TableCell align="right">Aksiyonlar</TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {s.section_contents.map((sc) => (
+                                                        <TableRow
+                                                            key={sc.id}
+                                                            sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                                        >
+                                                            <TableCell component="th" scope="row">
+                                                                {sc.title}
+                                                            </TableCell>
+                                                            <TableCell component="th"
+                                                                       scope="row">{sc.duration}dk</TableCell>
+                                                            <TableCell component="th"
+                                                                       scope="row">{sc.type === ContentType.TEXT ? "Yazı" : (sc.type === ContentType.QUIZ ? "Sınav" : "Video")}</TableCell>
+                                                            <TableCell align="right">
+                                                                <IconButton
+                                                                    onClick={() => handleRemove(sc.id)}
+                                                                    size="small"
+                                                                    sx={{ml: 2}}
+                                                                >
+                                                                    <DeleteIcon/>
+                                                                </IconButton>
+
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </>
                                 </div>
                             </TabPanel>
                         ))
@@ -305,7 +387,7 @@ export default function CreateSection({
                         autoFocus
                         margin="dense"
                         id="duration"
-                        label="İçerik Süresi"
+                        label="İçerik Süresi (dk)"
                         type="number"
                         fullWidth
                         variant="standard"
@@ -358,10 +440,12 @@ export default function CreateSection({
                                 autoFocus
                                 margin="dense"
                                 id="text"
-                                label="Yazı"
+                                label="Yazı İçeriği"
                                 type="text"
                                 fullWidth
                                 variant="standard"
+                                multiline
+                                rows={4}
                                 value={text}
                                 onChange={(e) => setText(e.target.value)}
                             />
@@ -455,9 +539,44 @@ export default function CreateSection({
                     />
                     <Button onClick={handleCreateQuestion}>Soruyu Kaydet</Button>
                     {
-                        questions.map((q) => (
-                            <div key={q.text}>{q.text}</div>
-                        ))
+
+                        <>
+                            <TableContainer component={Paper}>
+                                <Table sx={{minWidth: 650}} aria-label="simple table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Soru</TableCell>
+                                            <TableCell>Puan</TableCell>
+                                            <TableCell align="right">Aksiyonlar</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {questions.map((q) => (
+                                            <TableRow
+                                                key={q.text}
+                                                sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                            >
+                                                <TableCell component="th" scope="row">
+                                                    {q.text}
+                                                </TableCell>
+                                                <TableCell component="th" scope="row">{q.point}</TableCell>
+                                                <TableCell align="right">
+                                                    <IconButton
+                                                        onClick={() => handleRemoveQuestion(q.text)}
+                                                        size="small"
+                                                        sx={{ml: 2}}
+                                                    >
+                                                        <DeleteIcon/>
+                                                    </IconButton>
+
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+
+                        </>
                     }
                 </DialogContent>
                 <DialogActions>

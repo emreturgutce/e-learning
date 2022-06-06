@@ -47,7 +47,7 @@ const Learning = () => {
           <div className='grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-6'>
             {myCourses &&
               myCourses.map((item: any) => (
-                <Link to={`/CreateCourse/${item._id}`} key={item._id + Math.random().toString()} style={{height: 250}}>
+                <Link to={`/UpdateCourse/${item._id}`} key={item._id + Math.random().toString()} style={{height: 250}}>
                   <div
                       style={{borderRadius: 8}}
                     className='group border-2 marging border-slate-100 h-full' >

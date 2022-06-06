@@ -157,15 +157,20 @@ type MyCoursesType = {
         courses: MyCourse[]
     }
 }
+
+const PROD_URL = "https://e-learning-marmara.herokuapp.com/api/v1.0"
+const LOCAL_URL = "http://localhost:8080/api/v1.0"
+export const BASE_URL = PROD_URL;
+
 export const getCourseById = async (id: string | undefined): Promise<CourseType> => {
-    const {data} = await axios.get(`https://e-learning-marmara.herokuapp.com/api/v1.0/courses/get-course/${id}`, {
+    const {data} = await axios.get(`${BASE_URL}/courses/get-course/${id}`, {
         withCredentials: true,
     });
     return data;
 };
 
 export const getUser = async () => {
-    const {data} = await axios.get(`https://e-learning-marmara.herokuapp.com/api/v1.0/auth/me`, {
+    const {data} = await axios.get(`${BASE_URL}/auth/me`, {
         withCredentials: true,
     });
     return {data};
@@ -173,7 +178,7 @@ export const getUser = async () => {
 
 export const logoutUser = async () => {
     const {data} = await axios.get(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/auth/logout`,
+        `${BASE_URL}/auth/logout`,
         {withCredentials: true},
     );
     return {data};
@@ -181,7 +186,7 @@ export const logoutUser = async () => {
 
 export const signup = async (input: SignupRequest) => {
     const {data} = await axios.post(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/auth/signup`,
+        `${BASE_URL}/auth/signup`,
         input,
     );
     return {data};
@@ -189,7 +194,7 @@ export const signup = async (input: SignupRequest) => {
 
 export const fetchLogin = async (input: userLoginType) => {
     const {data} = await axios.post(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/auth/login`,
+        `${BASE_URL}/auth/login`,
         input,
         {withCredentials: true},
     );
@@ -198,7 +203,7 @@ export const fetchLogin = async (input: userLoginType) => {
 
 export const fetchWishlist = async () => {
     const response = await axios.get(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/users/getWishlist`,
+        `${BASE_URL}/users/getWishlist`,
         {withCredentials: true},
     );
     //console.log(response);
@@ -207,7 +212,7 @@ export const fetchWishlist = async () => {
 
 export const fetchPurchasedCourses = async (): Promise<MyCoursesType> => {
     const {data} = await axios.get(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/courses/list-purchased-courses`,
+        `${BASE_URL}/courses/list-purchased-courses`,
         {withCredentials: true},
     );
     return data;
@@ -215,7 +220,7 @@ export const fetchPurchasedCourses = async (): Promise<MyCoursesType> => {
 
 export const fetchWishlistCourses = async () => {
     const response = await axios.get(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/users/getWishlist`,
+        `${BASE_URL}/users/getWishlist`,
         {withCredentials: true},
     );
     return {data: response.data};
@@ -223,7 +228,7 @@ export const fetchWishlistCourses = async () => {
 
 export const fetchCourses = async (): Promise<FetchCoursesResponse> => {
     const {data} = await axios.get(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/courses`,
+        `${BASE_URL}/courses`,
         {withCredentials: true},
     );
     return data;
@@ -231,7 +236,7 @@ export const fetchCourses = async (): Promise<FetchCoursesResponse> => {
 
 export const fetchCart = async (): Promise<FetchCartResponse> => {
     const {data} = await axios.get(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/users/getCart`,
+        `${BASE_URL}/users/getCart`,
         {withCredentials: true},
     );
     return data;
@@ -239,7 +244,7 @@ export const fetchCart = async (): Promise<FetchCartResponse> => {
 
 export const removeFromCart = async (id: string): Promise<FetchCartResponse> => {
     const {data} = await axios.delete(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/users/removeFromCart/${id}`,
+        `${BASE_URL}/users/removeFromCart/${id}`,
         {withCredentials: true},
     );
     return data;
@@ -247,7 +252,7 @@ export const removeFromCart = async (id: string): Promise<FetchCartResponse> => 
 
 export const addToCart = async (courseId: string): Promise<void> => {
     const {data} = await axios.post(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/users/addCourseToCart/${courseId}`,
+        `${BASE_URL}/users/addCourseToCart/${courseId}`,
         null,
         {withCredentials: true},
     );
@@ -256,21 +261,21 @@ export const addToCart = async (courseId: string): Promise<void> => {
 
 export const purchaseCourses = async (courseIds: string[]): Promise<void> => {
     const {data} = await axios.post(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/courses/purchase-course`,
+        `${BASE_URL}/courses/purchase-course`,
         {ids: courseIds},
         {withCredentials: true},
     );
     return data;
 }
 export const getCourseDetailById = async (id: string | undefined): Promise<CourseDetailType> => {
-    const {data} = await axios.get(`https://e-learning-marmara.herokuapp.com/api/v1.0/courses/get-course-detail/${id}`, {
+    const {data} = await axios.get(`${BASE_URL}/courses/get-course-detail/${id}`, {
         withCredentials: true,
     });
     return data;
 };
 export const addToWishlist = async (courseId: string): Promise<void> => {
     const {data} = await axios.post(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/users/addCourseToWishlist/${courseId}`,
+        `${BASE_URL}/users/addCourseToWishlist/${courseId}`,
         null,
         {withCredentials: true},
     );
@@ -278,7 +283,7 @@ export const addToWishlist = async (courseId: string): Promise<void> => {
 }
 export const removeFromWishlist = async (courseId: string): Promise<void> => {
     const {data} = await axios.delete(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/users/removeFromWishlist/${courseId}`,
+        `${BASE_URL}/users/removeFromWishlist/${courseId}`,
         {withCredentials: true},
     );
     return data;
@@ -293,7 +298,7 @@ export interface CreateCourseRequest {
 
 export const createCourse = async (request: CreateCourseRequest) => {
     const {data} = await axios.post(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/courses`,
+        `${BASE_URL}/courses`,
         request,
         {withCredentials: true},
     );
@@ -312,7 +317,7 @@ export interface CreateExamRequest {
 
 export const createExam = async (request: CreateExamRequest) => {
     const {data} = await axios.post(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/courses/exams/create-exam/v2`,
+        `${BASE_URL}/courses/exams/create-exam/v2`,
         request,
         {withCredentials: true},
     );
@@ -330,7 +335,7 @@ export interface CreateSectionContentRequest {
 
 export const createSectionContent = async (request: CreateSectionContentRequest) => {
     const {data} = await axios.post(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/courses/section-contents`,
+        `${BASE_URL}/courses/section-contents`,
         request,
         {withCredentials: true},
     );
@@ -345,7 +350,7 @@ export interface CreateSectionRequest {
 
 export const createSection = async (courseId: string, courseContentId: string, request: CreateSectionRequest) => {
     const {data} = await axios.post(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/courses/${courseId}/${courseContentId}/sections`,
+        `${BASE_URL}/courses/${courseId}/${courseContentId}/sections`,
         request,
         {withCredentials: true},
     );
@@ -371,7 +376,7 @@ export interface GetExamByIdResponse {
 
 export const getExamById = async (examId: string): Promise<GetExamByIdResponse> => {
     const {data} = await axios.get(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/courses/get-exam-by-id/${examId}`,
+        `${BASE_URL}/courses/get-exam-by-id/${examId}`,
         {withCredentials: true},
     );
     return data;
@@ -379,7 +384,7 @@ export const getExamById = async (examId: string): Promise<GetExamByIdResponse> 
 
 export const completeExam = async (examId: string, answers: string[]) => {
     const {data} = await axios.put(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/courses/exams/complete-exam/${examId}`,
+        `${BASE_URL}/courses/exams/complete-exam/${examId}`,
         answers,
         {withCredentials: true},
     );
@@ -388,7 +393,7 @@ export const completeExam = async (examId: string, answers: string[]) => {
 
 export const getCompletedExams = async () => {
     const {data} = await axios.get(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/courses/exams/completed-exam`,
+        `${BASE_URL}/courses/exams/completed-exam`,
         {withCredentials: true},
     );
     return data;
@@ -396,7 +401,7 @@ export const getCompletedExams = async () => {
 
 export const getUnapprovedExams = async () => {
     const {data} = await axios.get(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/courses/exams/unapproved-exams`,
+        `${BASE_URL}/courses/exams/unapproved-exams`,
         {withCredentials: true},
     );
     return data;
@@ -404,7 +409,7 @@ export const getUnapprovedExams = async () => {
 
 export const approveExam = async (examId: string, point: number) => {
     const {data} = await axios.post(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/courses/exams/approve-exam/${examId}`,
+        `${BASE_URL}/courses/exams/approve-exam/${examId}`,
         {point},
         {withCredentials: true},
     );
@@ -413,7 +418,7 @@ export const approveExam = async (examId: string, point: number) => {
 
 export const uploadThumbnail = async (courseId: string, formData: any) => {
     const {data} = await axios.post(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/courses/upload-thumbnail/${courseId}/thumbnail`,
+        `${BASE_URL}/courses/upload-thumbnail/${courseId}/thumbnail`,
         formData,
         {
             withCredentials: true, headers: {
@@ -427,7 +432,7 @@ export const uploadThumbnail = async (courseId: string, formData: any) => {
 
 export const uploadVideo = async (sectionContentId: string, formData: any) => {
     const {data} = await axios.post(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/courses/upload-video/${sectionContentId}`,
+        `${BASE_URL}/courses/upload-video/${sectionContentId}`,
         formData,
         {
             withCredentials: true, headers: {
@@ -441,7 +446,7 @@ export const uploadVideo = async (sectionContentId: string, formData: any) => {
 
 export const addReview = async (courseId: string, rating: number, comment: string) => {
     const {data} = await axios.post(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/courses/add-reviews/${courseId}/reviews`,
+        `${BASE_URL}/courses/add-reviews/${courseId}/reviews`,
         {
             rating,
             description: comment,
@@ -455,7 +460,7 @@ export const addReview = async (courseId: string, rating: number, comment: strin
 
 export const searchCourses = async (search: string) => {
     const {data} = await axios.get(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/courses/search-courses?search=${search}`,
+        `${BASE_URL}/courses/search-courses?search=${search}`,
         {
             withCredentials: true,
         },
@@ -465,7 +470,7 @@ export const searchCourses = async (search: string) => {
 
 export const saveProfile = async (firstname: string, lastname: string) => {
     const {data} = await axios.post(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/users/update-profile`,
+        `${BASE_URL}/users/update-profile`,
         {
             firstname,
             lastname
@@ -479,7 +484,7 @@ export const saveProfile = async (firstname: string, lastname: string) => {
 
 export const updateCourse = async (courseId: string, title: string ,description: string, price: number) => {
     const {data}= await axios.put(
-        `https://e-learning-marmara.herokuapp.com/api/v1.0/courses/${courseId}`,
+        `${BASE_URL}/courses/${courseId}`,
         {
             title,
             description,

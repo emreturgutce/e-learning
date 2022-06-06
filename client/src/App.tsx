@@ -81,7 +81,12 @@ function App() {
                                     }
                                 />
                                 <Route path='/list' element={<Wishlist/>}/>
-                                <Route path='/CreateCourse/:id' element={
+                                <Route path='/CreateCourse' element={
+                                    <ProtectedUserRout user={"INSTRUCTOR"}>
+                                        <CreateCourse/>
+                                    </ProtectedUserRout>
+                                }/>
+                                <Route path='/UpdateCourse/:id' element={
                                     <ProtectedUserRout user={"INSTRUCTOR"}>
                                         <CreateCourse/>
                                     </ProtectedUserRout>

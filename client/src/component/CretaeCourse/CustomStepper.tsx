@@ -140,6 +140,7 @@ export default function HorizontalNonLinearStepper({ id }: { id: string | undefi
                 })));
                 toast.success("Bölümler eklendi.")
                 navigate('/')
+                setSections([])
             }
         } catch (e) {
             console.error(e);
@@ -226,7 +227,7 @@ export default function HorizontalNonLinearStepper({ id }: { id: string | undefi
                                         </Typography>
                                     ) : (
                                         <>
-                                            {completedSteps() === totalSteps() - 1 ? (
+                                            {activeStep === totalSteps() - 1 ? (
                                                 <Button onClick={handleComplete}>
                                                     Tamamla
                                                 </Button>

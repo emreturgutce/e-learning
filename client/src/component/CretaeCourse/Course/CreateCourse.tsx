@@ -98,12 +98,6 @@ const CreateCourse = ({
                 dropzoneText="Kurs resmini sürükle ve bırak."
             />
           </Grid>
-          <Grid item xs={12}>
-            <FormControlLabel
-              control={<Checkbox color="secondary" name="saveCard" value="yes" />}
-              label="Bu aşama tamamlandıktan sonra bir daha güncellenemez!"
-            />
-          </Grid>
         </Grid>
       </Box>
 
