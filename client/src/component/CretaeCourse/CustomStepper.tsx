@@ -133,6 +133,7 @@ export default function HorizontalNonLinearStepper({ id }: { id: string | undefi
         try {
             console.log(course)
             if (course && course._id && course.content) {
+                console.log("Test2 ", sections)
                 await Promise.all(sections.map((s) => createSection(course._id, course.content!, {
                     title: s.title,
                     section_contents: s.section_contents.map((sc) => sc.id!),
@@ -157,7 +158,6 @@ export default function HorizontalNonLinearStepper({ id }: { id: string | undefi
         const newCompleted = completed;
         newCompleted[activeStep] = true;
         setCompleted(newCompleted);
-        handleNext();
         navigate("/")
     };
 

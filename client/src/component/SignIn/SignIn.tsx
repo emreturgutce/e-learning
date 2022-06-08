@@ -17,7 +17,7 @@ import { fetchLogin, fetchPurchasedCourses, fetchWishlist } from '../../api';
 import { useAuth } from '../../context/Auth/AuthContent';
 import {Navigate, useNavigate} from "react-router-dom";
 import {toast} from "react-toastify";
-
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 const theme = createTheme();
 
 const SignIn = () => {
@@ -52,7 +52,7 @@ const SignIn = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" sx={{marginBottom: "80px"}}>
         <CssBaseline />
         <Box
           sx={{
@@ -64,11 +64,14 @@ const SignIn = () => {
             textAlign: 'center',
           }}
         >
-          <Typography sx={{ borderBottom: 1, padding: 3, color: 'GrayText', borderColor: "GrayText", fontSize: 15, width: 340 }}>
-            Hesabınızda Oturum Açın!
-          </Typography>
+          <div>
+            <Typography sx={{ borderBottom: 1, padding: 3, color: 'GrayText', borderColor: "GrayText", fontSize: 15, width: 340, marginBottom: "16px" }}>
+              Hesabınızda Oturum Açın!
+            </Typography>
+            <img width={100} height={100} alt={"img"} style={{borderRadius: "50%", margin: "auto"}} src="https://img-c.udemycdn.com/user/100x100/anonymous_3.png"/>
+          </div>
 
-          <Box component="form" width={335} onSubmit={handleSubmit} noValidate sx={{ mt: 5 }}>
+          <Box component="form" width={335} onSubmit={handleSubmit} noValidate sx={{ mt: "16px" }}>
             <div className='flex flex-row items-center h-12' style={{
               border: "1px solid #1c1d1f",
             }}>

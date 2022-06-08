@@ -50,7 +50,7 @@ const SignUp = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component='main' maxWidth='xs'>
+      <Container component='main' maxWidth='xs' sx={{marginBottom: "80px"}}>
         <CssBaseline />
         <Box
           sx={{
@@ -60,6 +60,7 @@ const SignUp = () => {
             alignItems: 'center',
           }}
         >
+          <div>
           <Typography
             sx={{
               borderBottom: 1,
@@ -69,17 +70,19 @@ const SignUp = () => {
               fontSize: 15,
               width: 340,
               textAlign: 'center',
+              marginBottom: "16px"
             }}
           >
             Kayıt Olun!
           </Typography>
-
+          <img width={100} height={100} alt={"img"} style={{borderRadius: "50%", margin: "auto"}} src="https://img-c.udemycdn.com/user/100x100/anonymous_3.png"/>
+          </div>
           <Box
             component='form'
             width={335}
             onSubmit={handleSubmit}
             noValidate
-            sx={{ mt: 5 }}
+            sx={{ mt: "16px" }}
           >
             <div className='flex flex-row items-center h-12' style={{
               border: "1px solid #1c1d1f",

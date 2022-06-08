@@ -158,6 +158,10 @@ export default function CreateSection({
         handleClose()
     }
 
+    React.useEffect(() => {
+        console.log("test ", sections);
+    }, [sections])
+
     const handleCreateQuestions = async () => {
         try {
             const request: CreateExamRequest = {
