@@ -170,6 +170,7 @@ export default function CreateSection({
             const data = await createExam(request);
             console.log(data);
             setExam(data.data.exam._id);
+            setQuestions([]);
             handleCloseQuestion();
         } catch (e) {
             console.error(e);

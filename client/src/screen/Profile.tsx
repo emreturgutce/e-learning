@@ -45,7 +45,7 @@ const Profile = () => {
 
 
     return (
-        <Container>
+        <Container style={{marginBottom: '180px'}}>
             <Grid
                 container
                 direction="column"

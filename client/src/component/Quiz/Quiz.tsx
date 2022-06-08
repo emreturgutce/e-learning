@@ -16,14 +16,14 @@ export default function Quiz(props: Props) {
     useEffect(() => {
         getExamById(props.examId)
             .then((data: any) => {
-                console.log(data)
+                console.log("Sada", data)
                 setExam({questions: data.data.exam.questions, isCompleted: data.data.exam.isCompleted});
             })
             .catch(console.error)
             .finally(() => {
                 setIsLoading(false);
             })
-    }, [])
+    }, [props.examId])
 
     const handleNext = () => {
         setActiveIdx(activeIdx + 1);
@@ -36,7 +36,7 @@ export default function Quiz(props: Props) {
             const newAnswers = [...answers, answer];
             setAnswers(newAnswers)
             setAnswer("");
-            console.log(newAnswers)
+            console.log("Asd", newAnswers)
             await completeExam(props.examId, newAnswers)
             getExamById(props.examId)
                 .then((data: any) => {
