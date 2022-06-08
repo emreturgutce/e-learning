@@ -77,14 +77,6 @@ const CreateCourse = ({
             />
           </Grid>
           <Grid item xs={12} md={12}>
-            <TextField
-                id="preview"
-                label="Kurs Önizleme Videosu"
-                fullWidth
-                variant="standard"
-            />
-          </Grid>
-          <Grid item xs={12} md={12}>
             <DropzoneArea
                 acceptedFiles={['image/*']}
                 maxFileSize={5000000}

@@ -20,14 +20,18 @@ export const CourseDetail = () => {
     const { isLoading, error, data } = useQuery(["course-detail", id], () =>
         getCourseDetailById(id) , {
             staleTime: 0,
+        retry: 0,
         }
     );
     const [content, setContent] = React.useState(data?.data?.course?.content)
     const [section, setSection] = React.useState(content?.sections[0])
     const [isWishlist, setIsWishlist] = React.useState(false)
     const [wishlist, setWishlist] = React.useState(userContext?.wishlist);
+    const [rating, setRating] = React.useState(0);
+    const [reviews, setReviews] = React.useState(data?.data?.course?.reviews);
 
     const isWishlistFn = () => setIsWishlist(!!wishlist?.find((u) => u._id === id));
+
 
     console.log(data);
 
@@ -45,11 +49,25 @@ export const CourseDetail = () => {
         isWishlistFn()
     }, [wishlist])
 
+    useEffect(() => {
+        if (reviews) {
+            console.log("Test2 ", reviews)
+            calculateRatingAvg(reviews);
+        }
+    }, [reviews])
+
 
     if (!userAuth?.loggedIn) {
         return <Navigate to={"/SignIn"} />
     }
 
+    const calculateRatingAvg = (ratings: any[])  => {
+        if (ratings) {
+            const rat = ratings.reduce((prev, curr) => prev + curr.rating, 0);
+            console.log(rat, ratings.length)
+            setRating(rat / ratings.length);
+        }
+    }
 
     const handleFavorite = async () => {
         try {
@@ -107,18 +125,18 @@ export const CourseDetail = () => {
                     <div style={{display: "flex", alignItems: "center", marginBottom: "0.8rem"}}>
                         <a>
                             <CourseRateWrapper style={{display: "flex", alignItems: "center", marginBottom: 0}}>
-                                <CourseRateScore>4.7</CourseRateScore>
+                                <CourseRateScore>{rating}</CourseRateScore>
                                 <CourseRateStars>
                                     {[...Array(5)].map((star, index) => {
-                                        while (increment < 4.7) {
-                                            if (4.7 - increment < 1) {
+                                        while (increment < rating) {
+                                            if (rating - increment < 1) {
                                                 increment++;
                                                 return <StarHalf style={{ color: "#e59819" }}></StarHalf>;
                                             }
                                             increment++;
                                             return <Star style={{ color: "#e59819" }}></Star>;
                                         }
-                                        while (max > 4.7) {
+                                        while (max > rating) {
                                             max--;
                                             return <Star style={{ color: "gray" }}></Star>;
                                         }
@@ -131,7 +149,7 @@ export const CourseDetail = () => {
                         <div style={{fontSize: "0.85rem", fontWeight: 200, marginLeft: "7px"}}>{data?.data.course.total_students} öğrenci</div>
                     </div>
                     <div>
-                        Oluşturan Ariel Weinberger
+                        Oluşturan {(data?.data?.course?.instructor as any)?.firstname || "Arial"} {(data?.data?.course?.instructor as any)?.lastname || "Weinberger"}
                     </div>
                 </div>
             </div>

@@ -252,7 +252,8 @@ export class CourseService {
   public findCourseDetailById(id: string) {
     return this.CourseModel.findById(id)
       .populate({
-        path: 'content',
+        path: 'content reviews instructor',
+        select: 'firstname lastname email rating',
         populate: {
           path: 'sections',
           populate: {
