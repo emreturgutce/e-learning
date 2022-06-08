@@ -17,8 +17,10 @@ export const CourseDetail = () => {
     let increment = 0;
     let max = 5;
     const { id } = useParams();
-    const { isLoading, error, data } = useQuery(["course", id], () =>
-        getCourseDetailById(id)
+    const { isLoading, error, data } = useQuery(["course-detail", id], () =>
+        getCourseDetailById(id) , {
+            staleTime: 0,
+        }
     );
     const [content, setContent] = React.useState(data?.data?.course?.content)
     const [section, setSection] = React.useState(content?.sections[0])

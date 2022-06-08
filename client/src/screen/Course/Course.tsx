@@ -137,12 +137,13 @@ const Course = () => {
     const [value, setValue] = React.useState(0);
     const [course, setCourse] = React.useState(Courses[Number(1)])
     const [content, setContent] = React.useState(data?.data?.course?.content)
-    const [section, setSection] = React.useState(content?.sections[0].section_contents?.[0])
+    const [section, setSection] = React.useState(content?.sections?.[0]?.section_contents?.[0])
     const [rating, setRating] = React.useState(5);
     const [comment, setComment] = React.useState("");
 
+    console.log("Test ", error, data)
     if (error) {
-        navigate(`/course-detail/${id}`)
+        navigate(`/course-detail/${id}`, { replace: true })
     }
 
 
