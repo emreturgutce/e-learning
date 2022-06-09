@@ -172,7 +172,7 @@ const CourseCard = (props: courseType) => {
 
   return (
     <div className="border-slate-100" style={{boxShadow:'0 0 1px 1px rgb(28 29 31 / 10%), 0 3px 1px 0 rgb(28 29 31 / 10%)', borderRadius: 8}}>
-      <CourseImgWrapper onClick={() => navigate(`/Course/${props.item._id}`)}
+      <CourseImgWrapper onClick={() => navigate(`/course-detail/${props.item._id}`)}
       style={{
         cursor: 'pointer',
         borderTopLeftRadius: 8,

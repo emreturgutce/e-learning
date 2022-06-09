@@ -2,9 +2,17 @@ import {Star, StarHalf} from "@mui/icons-material";
 import React, {useEffect} from "react";
 import {CourseRateReviewerNum, CourseRateScore, CourseRateStars, CourseRateWrapper } from "../../component/course/CourseCard";
 import CustomizedAccordions from "../../component/Accordion/Accordion";
-import {Navigate, useParams} from "react-router-dom";
+import {Navigate, useNavigate, useParams} from "react-router-dom";
 import {useQuery} from "react-query";
-import {addToCart, addToWishlist, fetchCart, fetchWishlist, getCourseDetailById, removeFromWishlist} from "../../api";
+import {
+    addToCart,
+    addToWishlist,
+    fetchCart,
+    fetchWishlist,
+    getCourseDetailById,
+    removeFromWishlist,
+    UserType
+} from "../../api";
 import {Button} from "@mui/material";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -23,6 +31,7 @@ export const CourseDetail = () => {
         retry: 0,
         }
     );
+    const navigate = useNavigate();
     const [content, setContent] = React.useState(data?.data?.course?.content)
     const [section, setSection] = React.useState(content?.sections[0])
     const [isWishlist, setIsWishlist] = React.useState(false)

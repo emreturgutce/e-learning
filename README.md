@@ -1,5 +1,4 @@
 # Bulut Bilişim Tabanlı E-Öğrenme Sitesi
-<hr>
 
 ## Projenin Amacı
 Günümüz dünyasında sürekli artan kendini geliştirme ve yenileme gereksiniminden dolayı modern bir öğrenme platformuna ihtiyaç duyuluyor. Platformumuzu herhangi bir alanda kendini geliştirmek veya yeni bir şey öğrenmek isteyen kullanıcılar örgün öğretimden farklı olarak zaman, mekan ve cihaz farketmeksizin ulaşabilecekler ve eğitimlerine ara vermeden devam edebilecekler.

@@ -5,9 +5,12 @@ import Stack from '@mui/material/Stack';
 import { useCourses } from '../../context/Course/CourseContext';
 import { useQuery } from 'react-query';
 import {fetchPurchasedCourses, MyCourse} from '../../api';
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {useUserContext} from "../../context/User/UserContext";
+import {useAuth} from "../../context/Auth/AuthContent";
 const Learning = () => {
+  const navigate = useNavigate();
+  const auth = useAuth()
 
 
   const userContext = useUserContext();
@@ -47,7 +50,7 @@ const Learning = () => {
           <div className='grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-6'>
             {myCourses &&
               myCourses.map((item: any) => (
-                <Link to={`/Course/${item._id}`} key={item._id + Math.random().toString()} style={{height: 250}}>
+                <Link to={`/${auth?.user?.type === "INSTRUCTOR" ? "UpdateCourse" : "Course"}/${item._id}`} key={item._id + Math.random().toString()} style={{height: 250}}>
                   <div
                       style={{borderRadius: 8}}
                     className='group border-2 marging border-slate-100 h-full' >

@@ -128,7 +128,7 @@ const StarReview = ({ rating }: { rating: number }) => {
 const Course = () => {
     const userAuth = useAuth();
     const {id} = useParams();
-    const {isLoading, error, data} = useQuery(["course", id], () =>
+    const {isLoading, error, data} = useQuery(["course-my-course", id], () =>
             getCourseById(id),
         {staleTime: 0, retry: 0}
     );
